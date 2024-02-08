@@ -2,15 +2,14 @@
 
 #include "DiamondProjectPlayerController.h"
 #include "GameFramework/Pawn.h"
-#include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "NiagaraSystem.h"
-#include "NiagaraFunctionLibrary.h"
 #include "DiamondProjectCharacter.h"
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
+#include "PlayerEventsDispatcher.h"
 #include "Engine/LocalPlayer.h"
+
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -18,41 +17,31 @@ ADiamondProjectPlayerController::ADiamondProjectPlayerController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
-	CachedDestination = FVector::ZeroVector;
-	FollowTime = 0.f;
 }
 
 void ADiamondProjectPlayerController::BeginPlay()
 {
-	// Call the base class  
 	Super::BeginPlay();
 
-	//Add Input Mapping Context
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		Subsystem->AddMappingContext(PlayerMappingContext, 0);
 	}
+
+	PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
 }
 
-void ADiamondProjectPlayerController::SetupInputComponent()
-{
-	// set up gameplay key bindings
+
+
+void ADiamondProjectPlayerController::SetupInputComponent() {
 	Super::SetupInputComponent();
 
-	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
-		// Setup mouse input events
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::OnInputStarted);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &ADiamondProjectPlayerController::OnSetDestinationTriggered);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnSetDestinationReleased);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &ADiamondProjectPlayerController::OnSetDestinationReleased);
+		EnhancedInputComponent->BindAction(MovementAction,ETriggerEvent::Triggered,this,&ADiamondProjectPlayerController::Move);
 
-		// Setup touch input events
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::OnInputStarted);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &ADiamondProjectPlayerController::OnTouchTriggered);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnTouchReleased);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &ADiamondProjectPlayerController::OnTouchReleased);
+		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this,&ADiamondProjectPlayerController::Jump);
+		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&ADiamondProjectPlayerController::StopJump);
 	}
 	else
 	{
@@ -60,66 +49,45 @@ void ADiamondProjectPlayerController::SetupInputComponent()
 	}
 }
 
-void ADiamondProjectPlayerController::OnInputStarted()
+void ADiamondProjectPlayerController::Move(const FInputActionValue& Value)
 {
-	StopMovement();
-}
+	FVector2D MovementVector = Value.Get<FVector2D>();
 
-// Triggered every frame when the input is held down
-void ADiamondProjectPlayerController::OnSetDestinationTriggered()
-{
-	// We flag that the input is being pressed
-	FollowTime += GetWorld()->GetDeltaSeconds();
-	
-	// We look for the location in the world where the player has pressed the input
-	FHitResult Hit;
-	bool bHitSuccessful = false;
-	if (bIsTouch)
+	bool isCanceled = false;
+	PlayerEventsDispatcher->OnPlayerMove.Broadcast(GetCharacter(),MovementVector,isCanceled);
+
+	if(isCanceled)
 	{
-		bHitSuccessful = GetHitResultUnderFinger(ETouchIndex::Touch1, ECollisionChannel::ECC_Visibility, true, Hit);
+		return;
+	}
+	
+	// find out which way is forward
+	const FRotator Rotation =GetControlRotation();
+	const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+	// get forward vector
+	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+
+	// get right vector 
+	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+	if(isUsingDepthMovement)
+	{
+		GetCharacter()->AddMovementInput(ForwardDirection, MovementVector.Y);
+		GetCharacter()->AddMovementInput(RightDirection, MovementVector.X);	
 	}
 	else
 	{
-		bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
-	}
-
-	// If we hit a surface, cache the location
-	if (bHitSuccessful)
-	{
-		CachedDestination = Hit.Location;
-	}
-	
-	// Move towards mouse pointer or touch
-	APawn* ControlledPawn = GetPawn();
-	if (ControlledPawn != nullptr)
-	{
-		FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
-		ControlledPawn->AddMovementInput(WorldDirection, 1.0, false);
+		GetCharacter()->AddMovementInput(ForwardDirection, MovementVector.X);
 	}
 }
 
-void ADiamondProjectPlayerController::OnSetDestinationReleased()
+void ADiamondProjectPlayerController::Jump()
 {
-	// If it was a short press
-	if (FollowTime <= ShortPressThreshold)
-	{
-		// We move there and spawn some particles
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
-	}
-
-	FollowTime = 0.f;
+	GetCharacter()->Jump();
 }
 
-// Triggered every frame when the input is held down
-void ADiamondProjectPlayerController::OnTouchTriggered()
+void ADiamondProjectPlayerController::StopJump()
 {
-	bIsTouch = true;
-	OnSetDestinationTriggered();
-}
-
-void ADiamondProjectPlayerController::OnTouchReleased()
-{
-	bIsTouch = false;
-	OnSetDestinationReleased();
+	GetCharacter()->StopJumping();
 }
