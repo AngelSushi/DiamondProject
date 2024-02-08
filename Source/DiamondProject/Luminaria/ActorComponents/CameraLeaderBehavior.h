@@ -20,5 +20,11 @@ public:
 private:
 	UPROPERTY()
 	TObjectPtr<class ACharacter> Leader;
+
+	UPROPERTY()
+	TArray<ACharacter*> Characters;
+	
+	UFUNCTION()
+	void RegisterPlayer(ACharacter* Character);
 	
 };

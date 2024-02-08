@@ -1,7 +1,6 @@
 
 #include "CameraBehavior.h"
-
-#include "LuminariaCamera.h"
+#include "DiamondProject/Luminaria/Actors/LuminariaCamera.h"
 
 UCameraBehavior::UCameraBehavior()
 {

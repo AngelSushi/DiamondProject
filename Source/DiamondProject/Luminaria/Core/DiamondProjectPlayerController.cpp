@@ -7,7 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
-#include "PlayerEventsDispatcher.h"
+#include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
 #include "Engine/LocalPlayer.h"
 
 

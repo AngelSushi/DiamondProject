@@ -1,5 +1,7 @@
 #include "LuminariaCamera.h"
 
+#include "DiamondProject/Luminaria/ActorComponents/CameraLeaderBehavior.h"
+
 void ALuminariaCamera::BeginPlay()
 {
 	Super::BeginPlay();
@@ -10,7 +12,8 @@ void ALuminariaCamera::BeginPlay()
 		default:
 			break;
 
-		case LEADER:
+	case LEADER:
+			AddComponentByClass(UCameraLeaderBehavior::StaticClass(),false,GetActorTransform(),false);
 			break;
 
 		case SPLIT:

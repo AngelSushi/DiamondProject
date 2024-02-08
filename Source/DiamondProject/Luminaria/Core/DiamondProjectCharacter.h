@@ -14,6 +14,7 @@ class ADiamondProjectCharacter : public ACharacter
 public:
 	ADiamondProjectCharacter();
 
+	virtual void BeginPlay() override;
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
 
