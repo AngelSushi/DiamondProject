@@ -9,9 +9,7 @@ enum ECameraBehavior : uint8
 {
 	DEFAULT,
 	LEADER,
-	SPLIT,
 	DYNAMIC,
-	DYNAMIC_SPLIT
 };
 
 UCLASS()

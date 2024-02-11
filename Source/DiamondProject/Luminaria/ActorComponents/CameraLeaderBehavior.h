@@ -13,9 +13,6 @@ class DIAMONDPROJECT_API UCameraLeaderBehavior : public UCameraBehavior
 	
 protected:
 	virtual void BeginPlay() override;
-	
-public:	
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
 	UPROPERTY()
@@ -26,5 +23,8 @@ private:
 	
 	UFUNCTION()
 	void RegisterPlayer(ACharacter* Character);
+
+	UFUNCTION()
+	void OnPlayerMove(ACharacter* player,FVector2D direction, bool& isCancelled);
 	
 };

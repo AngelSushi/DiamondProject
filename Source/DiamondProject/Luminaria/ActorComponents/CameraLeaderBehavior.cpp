@@ -5,9 +5,7 @@
 #include "GameFramework/Character.h"
 
 UCameraLeaderBehavior::UCameraLeaderBehavior()
-{
-	PrimaryComponentTick.bCanEverTick = true;
-}
+{}
 
 void UCameraLeaderBehavior::BeginPlay()
 {
@@ -16,6 +14,7 @@ void UCameraLeaderBehavior::BeginPlay()
 	
 	UPlayerEventsDispatcher* PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
 	PlayerEventsDispatcher->OnPlayerRegister.AddDynamic(this,&UCameraLeaderBehavior::RegisterPlayer);
+	PlayerEventsDispatcher->OnPlayerMove.AddDynamic(this,&UCameraLeaderBehavior::OnPlayerMove);
 }
 
 void UCameraLeaderBehavior::RegisterPlayer(ACharacter* Character) 
@@ -25,10 +24,8 @@ void UCameraLeaderBehavior::RegisterPlayer(ACharacter* Character)
 	Leader = Characters[FMath::RandRange(0,Characters.Num() - 1)];
 }
 
-void UCameraLeaderBehavior::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UCameraLeaderBehavior::OnPlayerMove(ACharacter* player, FVector2D direction, bool& isCancelled)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 	if(Leader != nullptr)
 	{
 		FVector LeaderPosition = Leader->GetActorLocation();
@@ -41,6 +38,7 @@ void UCameraLeaderBehavior::TickComponent(float DeltaTime, ELevelTick TickType, 
 		OwnerActor->SetActorLocation(NewPosition);
 	}
 }
+
 
 
 

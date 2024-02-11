@@ -1,5 +1,7 @@
 #include "LuminariaCamera.h"
 
+#include "DiamondProject/CameraDynamicBehavior.h"
+#include "DiamondProject/Luminaria/ActorComponents/CameraDefaultBehavior.h"
 #include "DiamondProject/Luminaria/ActorComponents/CameraLeaderBehavior.h"
 
 void ALuminariaCamera::BeginPlay()
@@ -10,18 +12,14 @@ void ALuminariaCamera::BeginPlay()
 	{
 		case DEFAULT:
 		default:
+			AddComponentByClass(UCameraDefaultBehavior::StaticClass(),false,GetActorTransform(),false);
 			break;
 
-	case LEADER:
+		case LEADER:
 			AddComponentByClass(UCameraLeaderBehavior::StaticClass(),false,GetActorTransform(),false);
 			break;
-
-		case SPLIT:
-			break;
 		case DYNAMIC:
-			break;
-
-		case DYNAMIC_SPLIT:
+			AddComponentByClass(UCameraDynamicBehavior::StaticClass(),false,GetActorTransform(),false);
 			break;
 	}
 }
