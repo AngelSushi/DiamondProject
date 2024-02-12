@@ -34,11 +34,18 @@ void ADiamondProjectCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	UPlayerEventsDispatcher* PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
+	PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
 	PlayerEventsDispatcher->OnPlayerRegister.Broadcast(this);
 }
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+}
+
+void ADiamondProjectCharacter::Death()
+{
+
+
+	PlayerEventsDispatcher->OnPlayerDeath.Broadcast(this);
 }

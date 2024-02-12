@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "DiamondProjectCharacter.generated.h"
 
+class UPlayerEventsDispatcher;
+
 UCLASS(Blueprintable)
 class ADiamondProjectCharacter : public ACharacter
 {
@@ -23,6 +25,9 @@ public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
+	UFUNCTION(BlueprintCallable)
+	void Death();
+
 private:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -31,6 +36,9 @@ private:
 	/** Camera boom positioning the camera above the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
+
+	UPROPERTY()
+	UPlayerEventsDispatcher* PlayerEventsDispatcher;
 	
 };
 

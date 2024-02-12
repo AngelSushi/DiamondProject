@@ -20,13 +20,13 @@ public:
 	virtual void BeginPlay() override;
 	
 	UPROPERTY()
-	TArray<ACharacter*> _characters;
+	TArray<ADiamondProjectCharacter*> _characters;
 	
 	UFUNCTION()
-	void RegisterPlayer(ACharacter* character);
+	void RegisterPlayer(ADiamondProjectCharacter* character);
 
 	UFUNCTION()
-	void OnPlayerMove(ACharacter* character,FVector2D direction,bool& isCanceled);
+	void OnPlayerMove(ADiamondProjectCharacter* character,FVector2D direction,bool& isCanceled);
 
 private:
 	UPROPERTY()

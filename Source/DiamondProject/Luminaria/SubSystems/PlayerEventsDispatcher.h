@@ -6,8 +6,9 @@
 
 class ADiamondProjectCharacter;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPlayerMove,ACharacter*,Character, FVector2D,Direction,bool&,isCanceled);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerRegister,ACharacter*,Character);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPlayerMove,ADiamondProjectCharacter*,Character, FVector2D,Direction,bool&,isCanceled);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerRegister,ADiamondProjectCharacter*,Character);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerDeath,ADiamondProjectCharacter*,Character);
 UCLASS()	
 class DIAMONDPROJECT_API UPlayerEventsDispatcher : public UWorldSubsystem
 {
@@ -20,5 +21,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	FOnPlayerRegister OnPlayerRegister;
-	
+
+	UPROPERTY(VisibleAnywhere)
+	FOnPlayerDeath OnPlayerDeath;
 };
