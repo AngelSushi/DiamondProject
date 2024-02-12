@@ -2,7 +2,7 @@
 
 
 #include "AbsorbLightEnemy.h"
-#include "Components/BoxXomponent.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 AAbsorbLightEnemy::AAbsorbLightEnemy()
@@ -10,7 +10,7 @@ AAbsorbLightEnemy::AAbsorbLightEnemy()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	damage = 5000;
+/*	damage = 5000;
 	isAbsorb = false;
 
 	TriggerZone = CreateDefaultSubobject<UBoxComponent>(FName("TriggerZone"));
@@ -18,7 +18,7 @@ AAbsorbLightEnemy::AAbsorbLightEnemy()
 
 
 	TriggerZone->OnComponentBeginOverlap.AddDynamic(this, &AAbsorbLightEnemy::OnOverlapBegin);
-
+*/
 }
 
 // Called when the game starts or when spawned
@@ -39,7 +39,7 @@ void AAbsorbLightEnemy::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp
 {
 	if (OtherActor && (OtherActor != this) && OtherComp)
 	{
-		print("lalalalala");
+//		print("lalalalala");
 	}
 }
 
