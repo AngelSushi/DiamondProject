@@ -30,7 +30,7 @@ private:
 	UPROPERTY()
 	FVector _barycenter;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	float _minZoomDistance;
 
 	UPROPERTY()
@@ -38,7 +38,4 @@ private:
 
 	UPROPERTY()
 	FVector _defaultCameraPosition;
-
-	UFUNCTION()
-	void CalculateZoomDistance(float& minDistance, float& maxDistance);
 };

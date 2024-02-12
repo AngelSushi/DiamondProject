@@ -17,6 +17,8 @@ void UCameraDynamicBehavior::BeginPlay()
 	PlayerEventsDispatcher->OnPlayerMove.AddDynamic(this,&UCameraDynamicBehavior::OnPlayerMove);
 	
 	_defaultCameraPosition = OwnerActor->GetActorLocation();
+
+	_maxZoomDistance = _minZoomDistance * 5.f;
 }
 
 void UCameraDynamicBehavior::OnRegisterPlayer(ACharacter* player)
@@ -36,7 +38,6 @@ void UCameraDynamicBehavior::OnPlayerMove(ACharacter* player, FVector2D directio
 
 		_barycenter = (First + Second) / 2.F;
 		_barycenter += FVector(0,0,45.F);
-		_barycenter.Y = _defaultCameraPosition.Y;
 	}
 }
 
@@ -44,38 +45,18 @@ void UCameraDynamicBehavior::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if(_characters.Num() >= 2)
+	if(_characters.Num() >= 2 && _barycenter != FVector::ZeroVector)
 	{
-		CalculateZoomDistance(_minZoomDistance,_maxZoomDistance);
+		FVector smoothPosition = FMath::Lerp(OwnerActor->GetActorLocation(),_barycenter,50 * DeltaTime);
 		
 		float distance = FVector::Distance( _characters[0]->GetActorLocation(),_characters[1]->GetActorLocation());
 		float zoomAlpha = FMath::Clamp((distance - _minZoomDistance) / (_maxZoomDistance - _minZoomDistance),0.F,1.F);
-		
-		FVector smoothPosition = FMath::Lerp(OwnerActor->GetActorLocation(),_barycenter,50 * DeltaTime);
-		float lerpY = FMath::Lerp(_defaultCameraPosition.Y,(_defaultCameraPosition + FVector(0,1,0) * 500).Y,zoomAlpha * 1.1f);
-
+	
+		float lerpY = FMath::Lerp(_defaultCameraPosition.Y,(_defaultCameraPosition + FVector(0,1,0) * 500).Y,zoomAlpha);
 		smoothPosition.Y = lerpY;
 
 		OwnerActor->SetActorLocation(smoothPosition);
 	}
 }
 
-void UCameraDynamicBehavior::CalculateZoomDistance(float& minDistance, float& maxDistance)
-{
-	if(_minZoomDistance == 0.F)
-	{
-		if(APlayerController* PlayerController = Cast<APlayerController>( _characters[0]->GetController()))
-		{
-			FVector RightViewportCorner = FVector();
-			FVector RightViewportCornerDirection = FVector();
 
-			FVector2D ViewportSize = FVector2D();
-			GEngine->GameViewport->GetViewportSize(ViewportSize);
-
-			PlayerController->DeprojectScreenPositionToWorld(ViewportSize.X,0,RightViewportCorner,RightViewportCornerDirection);
-
-			minDistance = RightViewportCorner.Y - 100.F;
-			maxDistance = _minZoomDistance * 1.5f;
-		}
-	}
-}

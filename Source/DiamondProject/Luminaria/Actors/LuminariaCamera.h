@@ -4,7 +4,7 @@
 #include "Camera/CameraActor.h"
 #include "LuminariaCamera.generated.h"
 
-UENUM()
+UENUM(BlueprintType)
 enum ECameraBehavior : uint8
 {
 	DEFAULT,
@@ -19,9 +19,8 @@ class DIAMONDPROJECT_API ALuminariaCamera : public ACameraActor
 
 public:
 	virtual void BeginPlay() override;
-
-private:
-	UPROPERTY(EditAnywhere)
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TEnumAsByte<ECameraBehavior> CameraBehavior;
 	
 };

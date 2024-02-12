@@ -7,8 +7,8 @@
 
 class ALuminariaCamera;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class DIAMONDPROJECT_API UCameraBehavior : public UActorComponent
+UCLASS( ClassGroup=(Custom),Blueprintable, meta=(BlueprintSpawnableComponent) )
+class DIAMONDPROJECT_API UCameraBehavior : public USceneComponent
 {
 	GENERATED_BODY()
 
