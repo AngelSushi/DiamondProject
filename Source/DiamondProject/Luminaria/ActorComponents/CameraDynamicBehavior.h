@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Luminaria/ActorComponents/CameraBehavior.h"
+#include "DiamondProject/Luminaria/ActorComponents/CameraBehavior.h"
 #include "CameraDynamicBehavior.generated.h"
 
 

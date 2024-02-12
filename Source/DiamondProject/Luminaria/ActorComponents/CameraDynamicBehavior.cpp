@@ -2,8 +2,8 @@
 
 #include "Camera/CameraComponent.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
-#include "Luminaria/Actors/LuminariaCamera.h"
-#include "Luminaria/SubSystems/PlayerEventsDispatcher.h"
+#include "DiamondProject/Luminaria/Actors/LuminariaCamera.h"
+#include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
 
 
 UCameraDynamicBehavior::UCameraDynamicBehavior() {}
