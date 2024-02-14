@@ -13,7 +13,6 @@ void UCameraDynamicBehavior::BeginPlay()
 	
 	UPlayerEventsDispatcher* PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
 	PlayerEventsDispatcher->OnPlayerRegister.AddDynamic(this,&UCameraDynamicBehavior::OnRegisterPlayer);
-	PlayerEventsDispatcher->OnPlayerMove.AddDynamic(this,&UCameraDynamicBehavior::OnPlayerMove);
 	
 	_defaultCameraPosition = OwnerActor->GetActorLocation();
 
@@ -23,29 +22,19 @@ void UCameraDynamicBehavior::BeginPlay()
 void UCameraDynamicBehavior::OnRegisterPlayer(ADiamondProjectCharacter* player)
 {
 	_characters.Add(player);
-	
-	bool isCanceled = false;
-	OnPlayerMove(player,FVector2D(),isCanceled);
 }
 
-void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* player, FVector2D direction, bool& isCanceled)
-{
-	if(_characters.Num() >= 2)
-	{
-		FVector First = _characters[0]->GetActorLocation();
-		FVector Second = _characters[1]->GetActorLocation();
-
-		_barycenter = (First + Second) / 2.F;
-		_barycenter += FVector(0,0,45.F);
-	}
-}
 
 void UCameraDynamicBehavior::TickComponent(float DeltaTime, ELevelTick TickType,FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if(_characters.Num() >= 2 && _barycenter != FVector::ZeroVector)
-	{
+	if(_characters.Num() >= 2) {
+		CalculateBarycenter();
+
+		if (_barycenter == FVector::Zero())
+			return;
+
 		FVector smoothPosition = FMath::Lerp(OwnerActor->GetActorLocation(),_barycenter,50 * DeltaTime);
 		
 		float distance = FVector::Distance( _characters[0]->GetActorLocation(),_characters[1]->GetActorLocation());
@@ -56,6 +45,26 @@ void UCameraDynamicBehavior::TickComponent(float DeltaTime, ELevelTick TickType,
 
 		OwnerActor->SetActorLocation(smoothPosition);
 	}
+}
+
+void UCameraDynamicBehavior::CalculateBarycenter() {
+	FVector First = _characters[0]->GetActorLocation();
+	FVector Second = _characters[1]->GetActorLocation();
+
+	float divider = 2.F;
+
+	if (!_characters[0]->GetMesh()->IsVisible()) {
+		First = FVector::Zero();
+		divider -= 1.F;
+	}
+
+	if (!_characters[1]->GetMesh()->IsVisible()) {
+		Second = FVector::Zero();
+		divider -= 1.F;
+	}
+
+	_barycenter = (First + Second) / divider;
+	_barycenter += FVector(0, 0, 45.F);
 }
 
 

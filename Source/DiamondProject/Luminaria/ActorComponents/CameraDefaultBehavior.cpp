@@ -47,13 +47,33 @@ void UCameraDefaultBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 			}
 		}
 		
+		
+	}
+}
+
+void UCameraDefaultBehavior::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (_characters.Num() >= 2) {
 		FVector First = _characters[0]->GetActorLocation();
 		FVector Second = _characters[1]->GetActorLocation();
 
-		FVector barycenter = (First + Second) / 2.F;
-		barycenter += FVector(0,0,45.F);
+		float divider = 2.F;
+
+		if (!_characters[0]->GetMesh()->IsVisible()) {
+			First = FVector::Zero();
+			divider -= 1.F;
+		}
+
+		if (!_characters[1]->GetMesh()->IsVisible()) {
+			Second = FVector::Zero();
+			divider -= 1.F;
+		}
+
+		FVector barycenter = (First + Second) / divider;
+		barycenter += FVector(0, 0, 45.F);
 		barycenter.Y = _defaultY;
-		
+
 		OwnerActor->SetActorLocation(barycenter);
 	}
 }

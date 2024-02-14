@@ -16,15 +16,16 @@ protected:
 
 private:
 	UPROPERTY()
-	TObjectPtr<class ADiamondProjectCharacter> Leader;
+	ADiamondProjectCharacter* _leader;
 
 	UPROPERTY()
-	TArray<ADiamondProjectCharacter*> Characters;
+	TArray<ADiamondProjectCharacter*> _characters;
 	
 	UFUNCTION()
 	void RegisterPlayer(ADiamondProjectCharacter* Character);
-
-	UFUNCTION()
-	void OnPlayerMove(ADiamondProjectCharacter* player,FVector2D direction, bool& isCancelled);
 	
+	UFUNCTION()
+	void OnPlayerDeath(ADiamondProjectCharacter* deathPlayer);
+
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };

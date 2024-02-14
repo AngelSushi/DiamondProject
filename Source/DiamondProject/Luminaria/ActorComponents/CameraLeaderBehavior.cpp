@@ -14,30 +14,53 @@ void UCameraLeaderBehavior::BeginPlay()
 	
 	UPlayerEventsDispatcher* PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
 	PlayerEventsDispatcher->OnPlayerRegister.AddDynamic(this,&UCameraLeaderBehavior::RegisterPlayer);
-	PlayerEventsDispatcher->OnPlayerMove.AddDynamic(this,&UCameraLeaderBehavior::OnPlayerMove);
+	PlayerEventsDispatcher->OnPlayerDeath.AddDynamic(this, &UCameraLeaderBehavior::OnPlayerDeath);
 }
 
 void UCameraLeaderBehavior::RegisterPlayer(ADiamondProjectCharacter* Character) 
 {
-	Characters.AddUnique(Character);
+	_characters.AddUnique(Character);
 	GEngine->AddOnScreenDebugMessage(-1,15.F,FColor::Yellow,TEXT("Register Player From Leader Behavior"));
-	Leader = Characters[FMath::RandRange(0,Characters.Num() - 1)];
+	_leader = _characters[FMath::RandRange(0,_characters.Num() - 1)];
 }
 
-void UCameraLeaderBehavior::OnPlayerMove(ADiamondProjectCharacter* player, FVector2D direction, bool& isCancelled)
-{
-	if(Leader != nullptr)
+void UCameraLeaderBehavior::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (_leader != nullptr)
 	{
-		FVector LeaderPosition = Leader->GetActorLocation();
+		FVector LeaderPosition = _leader->GetActorLocation();
 		FVector CamPosition = OwnerActor->GetActorLocation();
 
-		/// A CHANGER SELON LE FORWARD DU JOUEUR 
+		// find out which way is forward
+		const FRotator Rotation = _leader->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-		FVector NewPosition = FVector(LeaderPosition.X,CamPosition.Y,LeaderPosition.Z + 45.F);
+		// get forward vector
+		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+
+		FVector NewPosition = FVector(0, 0, LeaderPosition.Z + 45.F);
+
+		if (ForwardDirection.X != 0) {
+			NewPosition.X = CamPosition.X;
+			NewPosition.Y = LeaderPosition.Y;
+		}
+		else if (ForwardDirection.Y != 0) {
+			NewPosition.X = LeaderPosition.X;
+			NewPosition.Y = CamPosition.Y;
+		}
 
 		OwnerActor->SetActorLocation(NewPosition);
 	}
 }
+
+void UCameraLeaderBehavior::OnPlayerDeath(ADiamondProjectCharacter* deathPlayer) {
+	_leader = *_characters.FindByPredicate([&deathPlayer](const ADiamondProjectCharacter* player) {
+		return deathPlayer != player;
+	});
+}
+
+
 
 
 

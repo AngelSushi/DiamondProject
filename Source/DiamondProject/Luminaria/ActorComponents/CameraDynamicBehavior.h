@@ -18,9 +18,6 @@ public:
 	UFUNCTION()
 	void OnRegisterPlayer(ADiamondProjectCharacter* player);
 	
-	UFUNCTION()
-	void OnPlayerMove(ADiamondProjectCharacter* player, FVector2D direction,bool& isCanceled);
-	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
@@ -38,4 +35,7 @@ private:
 
 	UPROPERTY()
 	FVector _defaultCameraPosition;
+
+	UFUNCTION()
+	void CalculateBarycenter();
 };
