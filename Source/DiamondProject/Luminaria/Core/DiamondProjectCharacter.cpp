@@ -9,6 +9,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+#include "DiamondProject/Luminaria/Actors/Checkpoint.h"
 
 ADiamondProjectCharacter::ADiamondProjectCharacter()
 {
@@ -34,11 +35,33 @@ void ADiamondProjectCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	UPlayerEventsDispatcher* PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
+	PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
 	PlayerEventsDispatcher->OnPlayerRegister.Broadcast(this);
 }
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+}
+
+void ADiamondProjectCharacter::Death()
+{
+	GetMesh()->SetVisibility(false);
+
+	FTimerHandle RespawnTimer;
+
+	if (_checkPoint != FVector::Zero()) {
+		GetWorld()->GetTimerManager().SetTimer(RespawnTimer, [this, &RespawnTimer]() {
+			SetActorLocation(_checkPoint);
+			GetMesh()->SetVisibility(true);
+			GetWorld()->GetTimerManager().ClearTimer(RespawnTimer);
+		}, 3.F, false);
+	}
+
+	PlayerEventsDispatcher->OnPlayerDeath.Broadcast(this);
+}
+
+void ADiamondProjectCharacter::UpdateCheckpoint(ACheckpoint* checkpoint) {
+	_checkPoint = checkpoint->checkPoint->GetComponentLocation();
+	PlayerEventsDispatcher->OnPlayerUpdateCheckpoint.Broadcast(this, checkpoint);
 }

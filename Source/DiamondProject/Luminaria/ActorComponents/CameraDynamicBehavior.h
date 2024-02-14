@@ -16,16 +16,16 @@ public:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	void OnRegisterPlayer(ACharacter* player);
+	void OnRegisterPlayer(ADiamondProjectCharacter* player);
 	
 	UFUNCTION()
-	void OnPlayerMove(ACharacter* player, FVector2D direction,bool& isCanceled);
+	void OnPlayerMove(ADiamondProjectCharacter* player, FVector2D direction,bool& isCanceled);
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
 	UPROPERTY()
-	TArray<ACharacter*> _characters;
+	TArray<ADiamondProjectCharacter*> _characters;
 
 	UPROPERTY()
 	FVector _barycenter;

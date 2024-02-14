@@ -1,6 +1,5 @@
 #include "CameraDynamicBehavior.h"
 
-#include "Camera/CameraComponent.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 #include "DiamondProject/Luminaria/Actors/LuminariaCamera.h"
 #include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
@@ -21,7 +20,7 @@ void UCameraDynamicBehavior::BeginPlay()
 	_maxZoomDistance = _minZoomDistance * 5.f;
 }
 
-void UCameraDynamicBehavior::OnRegisterPlayer(ACharacter* player)
+void UCameraDynamicBehavior::OnRegisterPlayer(ADiamondProjectCharacter* player)
 {
 	_characters.Add(player);
 	
@@ -29,7 +28,7 @@ void UCameraDynamicBehavior::OnRegisterPlayer(ACharacter* player)
 	OnPlayerMove(player,FVector2D(),isCanceled);
 }
 
-void UCameraDynamicBehavior::OnPlayerMove(ACharacter* player, FVector2D direction, bool& isCanceled)
+void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* player, FVector2D direction, bool& isCanceled)
 {
 	if(_characters.Num() >= 2)
 	{

@@ -2,7 +2,7 @@
 
 #include "DiamondProject/Luminaria/Actors/LuminariaCamera.h"
 #include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
-#include "GameFramework/Character.h"
+#include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 
 UCameraLeaderBehavior::UCameraLeaderBehavior()
 {}
@@ -17,14 +17,14 @@ void UCameraLeaderBehavior::BeginPlay()
 	PlayerEventsDispatcher->OnPlayerMove.AddDynamic(this,&UCameraLeaderBehavior::OnPlayerMove);
 }
 
-void UCameraLeaderBehavior::RegisterPlayer(ACharacter* Character) 
+void UCameraLeaderBehavior::RegisterPlayer(ADiamondProjectCharacter* Character) 
 {
 	Characters.AddUnique(Character);
 	GEngine->AddOnScreenDebugMessage(-1,15.F,FColor::Yellow,TEXT("Register Player From Leader Behavior"));
 	Leader = Characters[FMath::RandRange(0,Characters.Num() - 1)];
 }
 
-void UCameraLeaderBehavior::OnPlayerMove(ACharacter* player, FVector2D direction, bool& isCancelled)
+void UCameraLeaderBehavior::OnPlayerMove(ADiamondProjectCharacter* player, FVector2D direction, bool& isCancelled)
 {
 	if(Leader != nullptr)
 	{
