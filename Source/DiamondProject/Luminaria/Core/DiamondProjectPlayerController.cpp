@@ -54,7 +54,7 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value)
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	bool isCanceled = false;
-	PlayerEventsDispatcher->OnPlayerMove.Broadcast(GetCharacter(),MovementVector,isCanceled);
+	PlayerEventsDispatcher->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()),MovementVector,isCanceled);
 
 	if(isCanceled)
 	{

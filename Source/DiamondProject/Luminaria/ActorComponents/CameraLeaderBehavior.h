@@ -16,15 +16,15 @@ protected:
 
 private:
 	UPROPERTY()
-	TObjectPtr<class ACharacter> Leader;
+	TObjectPtr<class ADiamondProjectCharacter> Leader;
 
 	UPROPERTY()
-	TArray<ACharacter*> Characters;
+	TArray<ADiamondProjectCharacter*> Characters;
 	
 	UFUNCTION()
-	void RegisterPlayer(ACharacter* Character);
+	void RegisterPlayer(ADiamondProjectCharacter* Character);
 
 	UFUNCTION()
-	void OnPlayerMove(ACharacter* player,FVector2D direction, bool& isCancelled);
+	void OnPlayerMove(ADiamondProjectCharacter* player,FVector2D direction, bool& isCancelled);
 	
 };
