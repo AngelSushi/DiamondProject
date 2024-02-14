@@ -5,10 +5,13 @@
 #include "PlayerEventsDispatcher.generated.h"
 
 class ADiamondProjectCharacter;
+class ACheckpoint;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPlayerMove,ADiamondProjectCharacter*,Character, FVector2D,Direction,bool&,isCanceled);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerRegister,ADiamondProjectCharacter*,Character);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerDeath,ADiamondProjectCharacter*,Character);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerUpdateCheckpoint, ADiamondProjectCharacter*, Character, ACheckpoint*, Checkpoint);
+
 UCLASS()	
 class DIAMONDPROJECT_API UPlayerEventsDispatcher : public UWorldSubsystem
 {
@@ -24,4 +27,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	FOnPlayerDeath OnPlayerDeath;
+
+	UPROPERTY(VisibleAnywhere)
+	FOnPlayerUpdateCheckpoint OnPlayerUpdateCheckpoint;
 };

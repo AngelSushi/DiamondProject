@@ -28,6 +28,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Death();
 
+	UFUNCTION(BlueprintCallable)
+	void UpdateCheckpoint(ACheckpoint* checkpoint);
+
 private:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -40,5 +43,7 @@ private:
 	UPROPERTY()
 	UPlayerEventsDispatcher* PlayerEventsDispatcher;
 	
+	UPROPERTY()
+	FVector _checkPoint;
 };
 
