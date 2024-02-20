@@ -1,7 +1,7 @@
 #include "DiamondProject/Luminaria/ActorComponents/CameraDefaultBehavior.h"
 #include "DiamondProject/Luminaria/Actors/LuminariaCamera.h"
 #include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
-#include "GameFramework/Character.h"
+#include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 
 UCameraDefaultBehavior::UCameraDefaultBehavior()
 {
@@ -18,7 +18,7 @@ void UCameraDefaultBehavior::BeginPlay()
 	_defaultY = OwnerActor->GetActorLocation().Y;
 }
 
-void UCameraDefaultBehavior::RegisterPlayer(ACharacter* Character)
+void UCameraDefaultBehavior::RegisterPlayer(ADiamondProjectCharacter* Character)
 {
 	_characters.AddUnique(Character);
 
@@ -26,11 +26,11 @@ void UCameraDefaultBehavior::RegisterPlayer(ACharacter* Character)
 	OnPlayerMove(Character,FVector2D(),isCanceled);
 }
 
-void UCameraDefaultBehavior::OnPlayerMove(ACharacter* character, FVector2D direction, bool& isCanceled)
+void UCameraDefaultBehavior::OnPlayerMove(ADiamondProjectCharacter* character, FVector2D direction, bool& isCanceled)
 {
 	if(_characters.Num() >= 2)
 	{
-		for(ACharacter* player : _characters) {
+		for(ADiamondProjectCharacter* player : _characters) {
 			if(const APlayerController* PlayerController = Cast<APlayerController>(player->GetController())) {
 				FVector2D WorldScreenPos = FVector2D();
 				PlayerController->ProjectWorldLocationToScreen(player->GetActorLocation(),WorldScreenPos);
