@@ -39,7 +39,6 @@ void AAbsorbLightEnemy::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp
 {
 	if (OtherActor && (OtherActor != this) && OtherComp)
 	{
-//		print("lalalalala");
 	}
 }
 
