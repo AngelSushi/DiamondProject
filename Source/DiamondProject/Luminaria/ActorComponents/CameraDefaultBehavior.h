@@ -21,11 +21,14 @@ public:
 	void RegisterPlayer(ADiamondProjectCharacter* character);
 
 	UFUNCTION()
-	void OnPlayerMove(ADiamondProjectCharacter* character,FVector2D direction,bool& isCanceled);
+	void OnPlayerMove(ADiamondProjectCharacter* character,FVector direction,bool& isCanceled);
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
 	UPROPERTY()
 	float _defaultY;
+
+	UPROPERTY(EditAnywhere)
+	float maxDistance;
 };

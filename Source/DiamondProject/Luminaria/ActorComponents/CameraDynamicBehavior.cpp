@@ -41,9 +41,13 @@ void UCameraDynamicBehavior::TickComponent(float DeltaTime, ELevelTick TickType,
 		float zoomAlpha = FMath::Clamp((distance - _minZoomDistance) / (_maxZoomDistance - _minZoomDistance),0.F,1.F);
 	
 		float lerpY = FMath::Lerp(_defaultCameraPosition.Y,(_defaultCameraPosition + FVector(0,1,0) * 500).Y,zoomAlpha);
-		smoothPosition.X = lerpY;
-
-		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Yellow, FString::Printf(TEXT("lerp %f"), lerpY));
+		
+		if (ForwardDirection.X != 0) {
+			smoothPosition.X = lerpY;
+		}
+		else if (ForwardDirection.Y != 0) {
+			smoothPosition.Y = lerpY;
+		}
 
 		OwnerActor->SetActorLocation(smoothPosition);
 	}

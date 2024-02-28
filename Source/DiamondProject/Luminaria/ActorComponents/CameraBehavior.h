@@ -21,6 +21,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<ALuminariaCamera> OwnerActor;
 
+	UPROPERTY()
+	FVector ForwardDirection;
+
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };

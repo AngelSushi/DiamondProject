@@ -27,17 +27,9 @@ void UCameraLeaderBehavior::RegisterPlayer(ADiamondProjectCharacter* Character)
 void UCameraLeaderBehavior::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (_leader != nullptr)
-	{
+	if (_leader != nullptr) {
 		FVector LeaderPosition = _leader->GetActorLocation();
 		FVector CamPosition = OwnerActor->GetActorLocation();
-
-		// find out which way is forward
-		const FRotator Rotation = _leader->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-		// get forward vector
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 
 		FVector NewPosition = FVector(0, 0, LeaderPosition.Z + 45.F);
 

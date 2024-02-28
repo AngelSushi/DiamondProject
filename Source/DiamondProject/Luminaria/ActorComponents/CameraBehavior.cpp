@@ -22,5 +22,12 @@ void UCameraBehavior::BeginPlay()
 void UCameraBehavior::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	// find out which way is forward
+	const FRotator Rotation = OwnerActor->GetActorRotation(); // Prendre la caméra 
+	const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+	// get forward vector
+	ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 }
 
