@@ -14,9 +14,6 @@ class DIAMONDPROJECT_API UCameraDefaultBehavior : public UCameraBehavior
 public:
 	virtual void BeginPlay() override;
 	
-	UPROPERTY()
-	TArray<ADiamondProjectCharacter*> _characters;
-	
 	UFUNCTION()
 	void RegisterPlayer(ADiamondProjectCharacter* character);
 
@@ -24,11 +21,4 @@ public:
 	void OnPlayerMove(ADiamondProjectCharacter* character,FVector direction,bool& isCanceled);
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-private:
-	UPROPERTY()
-	float _defaultY;
-
-	UPROPERTY(EditAnywhere)
-	float maxDistance;
 };

@@ -17,9 +17,6 @@ protected:
 private:
 	UPROPERTY()
 	ADiamondProjectCharacter* _leader;
-
-	UPROPERTY()
-	TArray<ADiamondProjectCharacter*> _characters;
 	
 	UFUNCTION()
 	void RegisterPlayer(ADiamondProjectCharacter* Character);

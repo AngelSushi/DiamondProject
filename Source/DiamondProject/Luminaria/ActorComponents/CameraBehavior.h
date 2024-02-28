@@ -6,6 +6,7 @@
 
 
 class ALuminariaCamera;
+class ADiamondProjectCharacter;
 
 UCLASS( ClassGroup=(Custom),Blueprintable, meta=(BlueprintSpawnableComponent) )
 class DIAMONDPROJECT_API UCameraBehavior : public USceneComponent
@@ -24,6 +25,19 @@ protected:
 	UPROPERTY()
 	FVector ForwardDirection;
 
+	UFUNCTION()
+	void CalculateBarycenter();
+
+	UPROPERTY()
+	TArray<ADiamondProjectCharacter*> _characters;
+
+	UPROPERTY()
+	FVector _barycenter;
+
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+protected:
+	UPROPERTY()
+	float _defaultY;
 };

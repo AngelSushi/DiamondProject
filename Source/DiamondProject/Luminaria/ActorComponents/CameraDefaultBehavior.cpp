@@ -14,7 +14,7 @@ void UCameraDefaultBehavior::BeginPlay()
 	UPlayerEventsDispatcher* PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
 	PlayerEventsDispatcher->OnPlayerRegister.AddDynamic(this,&UCameraDefaultBehavior::RegisterPlayer);
 	PlayerEventsDispatcher->OnPlayerMove.AddDynamic(this,&UCameraDefaultBehavior::OnPlayerMove);
-	_defaultY = OwnerActor->GetActorLocation().Y;
+	
 }
 
 void UCameraDefaultBehavior::RegisterPlayer(ADiamondProjectCharacter* Character)
@@ -33,12 +33,10 @@ void UCameraDefaultBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 		FSceneView* SceneView = LocalPlayer->CalcSceneView(&ViewFamily, ViewLocation, ViewRotation, LocalPlayer->ViewportClient->Viewport);
 		if (SceneView != nullptr) {
 
-			FVector Center = character->GetActorLocation() + character->GetActorForwardVector() * 125.f;
-			FVector CenterSecond = character->GetActorLocation() - direction * 125.f;
-			DrawDebugSphere(GetWorld(), CenterSecond, character->GetSimpleCollisionRadius(), 8, FColor::Red, false, 1.F, 1, 3.F);
+			FVector Center = character->GetActorLocation() - direction * 125.f;
+			DrawDebugSphere(GetWorld(), Center, character->GetSimpleCollisionRadius(), 8, FColor::Red, false, 1.F, 1, 3.F);
 
-			if (!SceneView->ViewFrustum.IntersectSphere(Center, character->GetSimpleCollisionRadius()) && !SceneView->ViewFrustum.IntersectSphere(CenterSecond, character->GetSimpleCollisionRadius())) {
-				GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Pas de Caméra"));
+			if (!SceneView->ViewFrustum.IntersectSphere(Center, character->GetSimpleCollisionRadius())) {
 				isCanceled = true;
 			}
 		}
@@ -49,37 +47,9 @@ void UCameraDefaultBehavior::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	if (_characters.Num() >= 2) {
-		FVector First = _characters[0]->GetActorLocation();
-		FVector Second = _characters[1]->GetActorLocation();
+		CalculateBarycenter();
 
-		float divider = 2.F;
-
-		if (!_characters[0]->GetMesh()->IsVisible()) {
-			First = FVector::Zero();
-			divider -= 1.F;
-		}
-
-		if (!_characters[1]->GetMesh()->IsVisible()) {
-			Second = FVector::Zero();
-			divider -= 1.F;
-		}
-
-		FVector barycenter = (First + Second) / divider;
-		barycenter += FVector(0, 0, 45.F);
-
-		if (ForwardDirection.X != 0) {
-			barycenter.X = _defaultY;
-		}
-		else if (ForwardDirection.Y != 0) {
-			barycenter.Y = _defaultY;
-		}
-
-		OwnerActor->SetActorLocation(barycenter);
-
-		for (ADiamondProjectCharacter* character : _characters) {
-			FVector Center = character->GetActorLocation() + character->GetActorForwardVector() * 125.f;
-			DrawDebugSphere(GetWorld(), Center, character->GetSimpleCollisionRadius(), 8, FColor::Yellow, false, 1.F, 1, 3.F);
-		}
+		OwnerActor->SetActorLocation(_barycenter);
 	}
 }
 

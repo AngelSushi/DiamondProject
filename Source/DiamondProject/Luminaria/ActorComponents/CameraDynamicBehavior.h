@@ -5,6 +5,17 @@
 #include "CameraDynamicBehavior.generated.h"
 
 
+USTRUCT()
+struct FExtendData {
+
+	GENERATED_BODY()
+
+public:
+	FVector position;
+	FVector direction;
+	FVector cameraPosition;
+};
+
 UCLASS()
 class DIAMONDPROJECT_API UCameraDynamicBehavior : public UCameraBehavior
 {
@@ -17,25 +28,19 @@ public:
 
 	UFUNCTION()
 	void OnRegisterPlayer(ADiamondProjectCharacter* player);
+
+	UFUNCTION()
+	void OnPlayerMove(ADiamondProjectCharacter* character, FVector direction, bool& isCanceled);
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
 	UPROPERTY()
-	TArray<ADiamondProjectCharacter*> _characters;
+	FVector _offset;
 
 	UPROPERTY()
-	FVector _barycenter;
-
-	UPROPERTY(EditAnywhere)
-	float _minZoomDistance;
+	bool _canExtend;
 
 	UPROPERTY()
-	float _maxZoomDistance;
-
-	UPROPERTY()
-	FVector _defaultCameraPosition;
-
-	UFUNCTION()
-	void CalculateBarycenter();
+	TMap<FVector, FVector> _extendPositions;
 };
