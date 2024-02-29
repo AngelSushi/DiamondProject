@@ -6,7 +6,7 @@
 
 
 USTRUCT()
-struct FExtendData {
+struct  DIAMONDPROJECT_API FExtendData {
 
 	GENERATED_BODY()
 
@@ -14,11 +14,18 @@ public:
 	FVector position;
 	FVector direction;
 	FVector cameraPosition;
+
+	FExtendData() : position(FVector::ZeroVector), direction(FVector::ZeroVector), cameraPosition(FVector::ZeroVector) {}
+	FExtendData(const FVector& Position, const FVector& Direction, const FVector& CameraPosition): position(Position), direction(Direction),cameraPosition(CameraPosition) {}
+	
+	bool operator==(const FExtendData& other) const {
+		return position == other.position && direction == other.direction && cameraPosition == other.cameraPosition;
+	}
+
 };
 
 UCLASS()
-class DIAMONDPROJECT_API UCameraDynamicBehavior : public UCameraBehavior
-{
+class DIAMONDPROJECT_API UCameraDynamicBehavior : public UCameraBehavior {
 	GENERATED_BODY()
 
 	UCameraDynamicBehavior();
@@ -42,5 +49,8 @@ private:
 	bool _canExtend;
 
 	UPROPERTY()
-	TMap<FVector, FVector> _extendPositions;
+	TArray<FExtendData> _extendPositions;
+
+	UFUNCTION()
+	void CalculateOffsideFrustumOffset(ADiamondProjectCharacter* character, FVector direction);
 };
