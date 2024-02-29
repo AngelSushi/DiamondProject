@@ -49,8 +49,7 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 	}
 }
 
-void ADiamondProjectPlayerController::Move(const FInputActionValue& Value)
-{
+void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	
 	// find out which way is forward

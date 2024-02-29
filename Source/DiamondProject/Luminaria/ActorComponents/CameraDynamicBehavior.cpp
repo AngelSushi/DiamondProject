@@ -27,14 +27,14 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, FString::Printf(TEXT("Direction %s"), *direction.ToString()));
 
 	if (_extendPositions.Num() > 0) {
-		for (FExtendData& extendData : _extendPositions) {
+		_extendPositions.RemoveAll([=](const FExtendData& extendData) {
 			FVector ExtendToPlayer = extendData.position - character->GetActorLocation();
 			FVector Forward = extendData.direction;
 
 			float angle = FVector::DotProduct(ExtendToPlayer, Forward);
 
 			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Blue, FString::Printf(TEXT("Angle : %f"), angle));
-		
+
 			if (angle < 0) {
 				if (ForwardDirection.X != 0) {
 					_offset.X -= extendData.cameraPosition.X;
@@ -43,9 +43,11 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 					_offset.Y -= extendData.cameraPosition.Y;
 				}
 
-				_extendPositions.Remove(extendData);
+				return true;
 			}
-		}
+			
+			return false;
+		});
 	}
 }
 
