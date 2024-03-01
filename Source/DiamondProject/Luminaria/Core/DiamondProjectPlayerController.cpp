@@ -49,17 +49,8 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 	}
 }
 
-void ADiamondProjectPlayerController::Move(const FInputActionValue& Value)
-{
+void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	FVector2D MovementVector = Value.Get<FVector2D>();
-
-	bool isCanceled = false;
-	PlayerEventsDispatcher->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()),MovementVector,isCanceled);
-
-	if(isCanceled)
-	{
-		return;
-	}
 	
 	// find out which way is forward
 	const FRotator Rotation =GetControlRotation();
@@ -71,6 +62,22 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value)
 	// get right vector 
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
+	FVector MovementDirection = FVector::Zero();
+
+	if (ForwardDirection.X != 0) {
+		MovementDirection = FVector(0.F, MovementVector.X, 0.f);
+	}
+	else if (ForwardDirection.Y != 0) {
+		MovementDirection = FVector(MovementVector.X,0.F, 0.F);
+	}
+
+	bool isCanceled = false;
+	PlayerEventsDispatcher->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()), MovementDirection, isCanceled);
+
+	if (isCanceled) {
+		return;
+	}
+
 	if(isUsingDepthMovement)
 	{
 		GetCharacter()->AddMovementInput(ForwardDirection, MovementVector.Y);
@@ -80,6 +87,7 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value)
 	{
 		GetCharacter()->AddMovementInput(ForwardDirection, MovementVector.X);
 	}
+
 }
 
 void ADiamondProjectPlayerController::Jump()
