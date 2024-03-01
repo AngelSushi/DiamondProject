@@ -33,13 +33,7 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 
 			if (angle < 0 && Forward == -direction) {
 				GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("True"));
-
-				if (ForwardDirection.X != 0) {
-					_offset.X += 250.F;
-				}
-				else if (ForwardDirection.Y != 0) {
-					_offset.Y += 250.F;
-				}
+				_offset.X += 250.F;
 
 				return true;
 			}
@@ -61,12 +55,11 @@ void UCameraDynamicBehavior::TickComponent(float DeltaTime, ELevelTick TickType,
 			return;
 
 		OwnerActor->SetActorLocation(_barycenter);
-		FVector LerpVector = FMath::Lerp(FVector::Zero(),_offset, DeltaTime);
+		FVector LerpVector = FMath::Lerp(FVector::Zero(), _offset, DeltaTime);
 
-		
-
-		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Yellow, FString::Printf(TEXT("Offset %s"), *_offset.ToString()));
-	//	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, FString::Printf(TEXT("Distance %f"), FVector::Distance(_barycenter, _barycenter + _offset)));
+		if (FVector::Distance(_barycenter, _barycenter + _offset) < 100.F) {
+			LerpVector = _offset;
+		}
 
 		OwnerActor->AddActorLocalOffset(-LerpVector);
 
@@ -94,15 +87,11 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 
 			if (!SceneView->ViewFrustum.IntersectSphere(Center, character->GetSimpleCollisionRadius()) && _canExtend) {
 
-				if (ForwardDirection.X != 0) {
-					_offset.X += 250.F;
-				}
-				else if (ForwardDirection.Y != 0) {
-					_offset.Y += 250.F;
-				}
+				_offset.X += 250.F;
+
 
 				for (auto& extendPosition : _extendPositions) {
-					if (FVector::Distance(extendPosition.position, Center) < 500.F) {
+					if (FVector::Distance(extendPosition.position, Center) < 250.F) {
 						return;
 					}
 				}

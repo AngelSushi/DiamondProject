@@ -33,14 +33,9 @@ void UCameraLeaderBehavior::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 		FVector NewPosition = FVector(0, 0, LeaderPosition.Z + 45.F);
 
-		if (ForwardDirection.X != 0) {
-			NewPosition.X = CamPosition.X;
-			NewPosition.Y = LeaderPosition.Y;
-		}
-		else if (ForwardDirection.Y != 0) {
-			NewPosition.X = LeaderPosition.X;
-			NewPosition.Y = CamPosition.Y;
-		}
+		NewPosition.X = CamPosition.X;
+		NewPosition.Y = LeaderPosition.Y;
+
 
 		OwnerActor->SetActorLocation(NewPosition);
 	}

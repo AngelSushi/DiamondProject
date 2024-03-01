@@ -18,7 +18,7 @@ void UCameraBehavior::BeginPlay()
 		OwnerActor = Camera;
 	}
 
-	_defaultY = OwnerActor->GetActorLocation().Y;
+	_defaultY = OwnerActor->GetActorLocation().X;
 }
 
 
@@ -51,14 +51,8 @@ void UCameraBehavior::CalculateBarycenter() {
 	}
 
 	_barycenter = (First + Second) / divider;
+
 	_barycenter += FVector(0, 0, 45.F);
-
-	if (ForwardDirection.X != 0) {
-		_barycenter.X = _defaultY;
-	}
-	else if (ForwardDirection.Y != 0) {
-		_barycenter.Y = _defaultY;
-	}
-
+	_barycenter.X = _defaultY;
 }
 
