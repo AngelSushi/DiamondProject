@@ -2,6 +2,10 @@
 	"BuildId": "27405482",
 	"Modules": 
 	{
+<<<<<<< HEAD
 		"DiamondProject": "UnrealEditor-DiamondProject-1828.dll"
+=======
+		"DiamondProject": "UnrealEditor-DiamondProject.dll"
+>>>>>>> origin/main
 	}
 }
