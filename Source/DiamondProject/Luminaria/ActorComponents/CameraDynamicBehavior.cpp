@@ -24,23 +24,21 @@ void UCameraDynamicBehavior::OnRegisterPlayer(ADiamondProjectCharacter* player) 
 void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, FVector direction, bool& isCanceled) {
 	CalculateOffsideFrustumOffset(character, direction);
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, FString::Printf(TEXT("Direction %s"), *direction.ToString()));
-
 	if (_extendPositions.Num() > 0) {
-		_extendPositions.RemoveAll([=](const FExtendData& extendData) {
+		_extendPositions.RemoveAll([this, &character, &direction](const FExtendData& extendData) {
 			FVector ExtendToPlayer = extendData.position - character->GetActorLocation();
 			FVector Forward = extendData.direction;
 
 			float angle = FVector::DotProduct(ExtendToPlayer, Forward);
 
-			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Blue, FString::Printf(TEXT("Angle : %f"), angle));
+			if (angle < 0 && Forward == -direction) {
+				GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("True"));
 
-			if (angle < 0) {
 				if (ForwardDirection.X != 0) {
-					_offset.X -= extendData.cameraPosition.X;
+					_offset.X += 250.F;
 				}
 				else if (ForwardDirection.Y != 0) {
-					_offset.Y -= extendData.cameraPosition.Y;
+					_offset.Y += 250.F;
 				}
 
 				return true;
@@ -49,6 +47,7 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 			return false;
 		});
 	}
+	
 }
 
 
@@ -62,9 +61,14 @@ void UCameraDynamicBehavior::TickComponent(float DeltaTime, ELevelTick TickType,
 			return;
 
 		OwnerActor->SetActorLocation(_barycenter);
+		FVector LerpVector = FMath::Lerp(FVector::Zero(),_offset, DeltaTime);
 
-		FVector LerpVector = FMath::Lerp(OwnerActor->GetActorLocation(),_offset,DeltaTime);
-		OwnerActor->SetActorLocation(LerpVector);
+		
+
+		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Yellow, FString::Printf(TEXT("Offset %s"), *_offset.ToString()));
+	//	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, FString::Printf(TEXT("Distance %f"), FVector::Distance(_barycenter, _barycenter + _offset)));
+
+		OwnerActor->AddActorLocalOffset(-LerpVector);
 
 		for (auto& extendPosition : _extendPositions) {
 			DrawDebugLine(GetWorld(), extendPosition.position, extendPosition.position + FVector::UpVector * 250.f,FColor::White,false,1.F,1,2.F);
@@ -85,7 +89,7 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 		FSceneView* SceneView = LocalPlayer->CalcSceneView(&ViewFamily, ViewLocation, ViewRotation, LocalPlayer->ViewportClient->Viewport);
 
 		if (SceneView != nullptr) {
-			FVector Center = character->GetActorLocation() - direction * 125.f;
+			FVector Center = character->GetActorLocation() - direction * 200.F;
 			DrawDebugSphere(GetWorld(), Center, character->GetSimpleCollisionRadius(), 8, FColor::Red, false, 1.F, 1, 3.F);
 
 			if (!SceneView->ViewFrustum.IntersectSphere(Center, character->GetSimpleCollisionRadius()) && _canExtend) {
@@ -98,14 +102,12 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 				}
 
 				for (auto& extendPosition : _extendPositions) {
-					if (FVector::Distance(extendPosition.position, Center) < 250.F) {
+					if (FVector::Distance(extendPosition.position, Center) < 500.F) {
 						return;
 					}
-
-					return;
 				}
-
-				_extendPositions.Add(FExtendData(Center, direction, _offset));
+				
+				_extendPositions.Add(FExtendData(Center, direction, OwnerActor->GetActorLocation()));
 			}
 		}
 	}
