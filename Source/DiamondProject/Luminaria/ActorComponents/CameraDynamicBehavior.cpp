@@ -63,8 +63,6 @@ void UCameraDynamicBehavior::TickComponent(float DeltaTime, ELevelTick TickType,
 		OwnerActor->SetActorLocation(_barycenter);
 		FVector LerpVector = FMath::Lerp(FVector::Zero(),_offset, DeltaTime);
 
-		
-
 		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Yellow, FString::Printf(TEXT("Offset %s"), *_offset.ToString()));
 	//	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, FString::Printf(TEXT("Distance %f"), FVector::Distance(_barycenter, _barycenter + _offset)));
 
@@ -102,7 +100,7 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 				}
 
 				for (auto& extendPosition : _extendPositions) {
-					if (FVector::Distance(extendPosition.position, Center) < 500.F) {
+					if (FVector::Distance(extendPosition.position, Center) < 250.F) {
 						return;
 					}
 				}
