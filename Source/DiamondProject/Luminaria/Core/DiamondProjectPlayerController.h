@@ -35,6 +35,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
 
+	UPROPERTY()
+	FVector LastDirection;
+
 protected:
 
 	virtual void SetupInputComponent() override;

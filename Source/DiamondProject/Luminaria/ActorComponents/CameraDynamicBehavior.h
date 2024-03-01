@@ -5,9 +5,27 @@
 #include "CameraDynamicBehavior.generated.h"
 
 
+USTRUCT()
+struct  DIAMONDPROJECT_API FExtendData {
+
+	GENERATED_BODY()
+
+public:
+	FVector position;
+	FVector direction;
+	FVector cameraPosition;
+
+	FExtendData() : position(FVector::ZeroVector), direction(FVector::ZeroVector), cameraPosition(FVector::ZeroVector) {}
+	FExtendData(const FVector& Position, const FVector& Direction, const FVector& CameraPosition): position(Position), direction(Direction),cameraPosition(CameraPosition) {}
+	
+	bool operator==(const FExtendData& other) const {
+		return position == other.position && direction == other.direction && cameraPosition == other.cameraPosition;
+	}
+
+};
+
 UCLASS()
-class DIAMONDPROJECT_API UCameraDynamicBehavior : public UCameraBehavior
-{
+class DIAMONDPROJECT_API UCameraDynamicBehavior : public UCameraBehavior {
 	GENERATED_BODY()
 
 	UCameraDynamicBehavior();
@@ -17,25 +35,22 @@ public:
 
 	UFUNCTION()
 	void OnRegisterPlayer(ADiamondProjectCharacter* player);
-	
+
 	UFUNCTION()
-	void OnPlayerMove(ADiamondProjectCharacter* player, FVector2D direction,bool& isCanceled);
+	void OnPlayerMove(ADiamondProjectCharacter* character, FVector direction, bool& isCanceled);
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
 	UPROPERTY()
-	TArray<ADiamondProjectCharacter*> _characters;
+	FVector _offset;
 
 	UPROPERTY()
-	FVector _barycenter;
-
-	UPROPERTY(EditAnywhere)
-	float _minZoomDistance;
+	bool _canExtend;
 
 	UPROPERTY()
-	float _maxZoomDistance;
+	TArray<FExtendData> _extendPositions;
 
-	UPROPERTY()
-	FVector _defaultCameraPosition;
+	UFUNCTION()
+	void CalculateOffsideFrustumOffset(ADiamondProjectCharacter* character, FVector direction);
 };
