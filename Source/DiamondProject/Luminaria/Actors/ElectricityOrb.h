@@ -9,8 +9,6 @@ class DIAMONDPROJECT_API AElectricityOrb : public AActor {
 	GENERATED_BODY()
 	
 private:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UStaticMeshComponent> _mesh;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USphereComponent> _sphereCollision;
@@ -20,6 +18,9 @@ private:
 
 public:	
 	AElectricityOrb();
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UStaticMeshComponent> mesh;
 
 	UPROPERTY(EditAnywhere)
 	float orbSpeed;

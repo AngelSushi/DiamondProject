@@ -5,8 +5,8 @@
 AElectricityOrb::AElectricityOrb() {
  	PrimaryActorTick.bCanEverTick = true;
 
-	_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	RootComponent = _mesh;
+	mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	RootComponent = mesh;
 
 	_sphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
 	_sphereCollision->SetupAttachment(RootComponent);
