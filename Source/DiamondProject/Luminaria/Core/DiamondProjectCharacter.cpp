@@ -42,6 +42,7 @@ void ADiamondProjectCharacter::BeginPlay()
 void ADiamondProjectCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+	
 }
 
 void ADiamondProjectCharacter::Death()

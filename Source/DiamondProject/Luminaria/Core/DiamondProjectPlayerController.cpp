@@ -19,6 +19,7 @@ ADiamondProjectPlayerController::ADiamondProjectPlayerController()
 	DefaultMouseCursor = EMouseCursor::Default;
 }
 
+
 void ADiamondProjectPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -30,7 +31,6 @@ void ADiamondProjectPlayerController::BeginPlay()
 
 	PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
 }
-
 
 
 void ADiamondProjectPlayerController::SetupInputComponent() {
@@ -51,6 +51,36 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 
 void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	FVector2D MovementVector = Value.Get<FVector2D>();
+
+
+	if (MovementDirection.Y < 0)
+	{
+		if (bCanFlip == true) 
+		{
+			GetPawn()->SetActorRotation(FRotator(0, 90, 0), ETeleportType::None);
+
+		}
+
+		/*if (bIsLookingLeft == false)
+		{
+			bIsLookingLeft = true;
+		}*/
+	}
+	else
+	{
+		if (bCanFlip == true)
+		{
+			GetPawn()->SetActorRotation(FRotator(0, -90, 0), ETeleportType::None);
+
+		}
+		/*if (bIsLookingLeft == true)
+		{
+			bIsLookingLeft = false;
+		}*/
+
+	}
+
+
 	
 	// find out which way is forward
 	const FRotator Rotation =GetControlRotation();
@@ -62,8 +92,6 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	// get right vector 
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-	FVector MovementDirection = FVector::Zero();
-
 	if (ForwardDirection.X != 0) {
 		MovementDirection = FVector(0.F, MovementVector.X, 0.f);
 	}
@@ -71,6 +99,8 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 		MovementDirection = FVector(MovementVector.X,0.F, 0.F);
 	}
 
+
+	
 	bool isCanceled = false;
 	PlayerEventsDispatcher->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()), MovementDirection, isCanceled);
 
