@@ -22,7 +22,7 @@ void AMecanism::BeginPlay() {
 	_mecanismEventsDispatcher->OnMecanismDeactivate.AddDynamic(this, &AMecanism::OnMecanismDeactivate);
 }
 
-void AMecanism::OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mecanismActivator) { // Besoin du mécanisme 
+void AMecanism::OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mActivator) { // Besoin du mécanisme 
 	bool isMecanismOn = true;
 
 	for (AMecanismActivator* mecanismActivator : mecanismActivators) {

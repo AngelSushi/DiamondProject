@@ -10,7 +10,7 @@ public class DiamondProject : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine",
 	        "InputCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput",
-	        "Slate", "EngineSettings", "ApplicationCore", "SlateCore"
+	        "Slate", "EngineSettings", "ApplicationCore","UnrealEd","SlateCore","UMG","ProceduralMeshComponent"
         });
     }
 }

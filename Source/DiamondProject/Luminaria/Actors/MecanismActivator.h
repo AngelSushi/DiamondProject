@@ -4,6 +4,9 @@
 #include "GameFramework/Actor.h"
 #include "MecanismActivator.generated.h"
 
+
+
+
 UCLASS()
 class DIAMONDPROJECT_API AMecanismActivator : public AActor {
 	GENERATED_BODY()
@@ -11,16 +14,26 @@ class DIAMONDPROJECT_API AMecanismActivator : public AActor {
 public:	
 	AMecanismActivator();
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class USceneComponent> root;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UMecanismComponent> mesh;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UBoxComponent> boxCollision;
+
 	UFUNCTION()
 	bool IsActivatorActive() { return isActivatorActivate; }
 
+	virtual void OnConstruction(const FTransform& Transform) override;
+	virtual void Tick(float DeltaTime) override;
+
+	virtual bool ShouldTickIfViewportsOnly() const override;
+
 protected:
-	virtual void BeginPlay() override;
 
 	UPROPERTY()
 	bool isActivatorActivate;
-
-public:
-	virtual void Tick(float DeltaTime) override;
 
 };

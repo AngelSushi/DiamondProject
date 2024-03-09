@@ -7,12 +7,6 @@
 
 AElectricDetector::AElectricDetector() {
 	PrimaryActorTick.bCanEverTick = true;
-
-	mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	RootComponent = mesh;
-
-	boxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collision"));
-	boxCollision->SetupAttachment(RootComponent);
 }
 
 void AElectricDetector::BeginPlay() {

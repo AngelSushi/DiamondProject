@@ -2,6 +2,7 @@
 #include "DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
 
 #include "Components/SphereComponent.h"
+
 AElectricityOrb::AElectricityOrb() {
  	PrimaryActorTick.bCanEverTick = true;
 
@@ -10,7 +11,6 @@ AElectricityOrb::AElectricityOrb() {
 
 	_sphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
 	_sphereCollision->SetupAttachment(RootComponent);
-
 
 }
 

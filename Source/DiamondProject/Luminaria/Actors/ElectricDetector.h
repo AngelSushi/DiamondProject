@@ -15,11 +15,6 @@ class DIAMONDPROJECT_API AElectricDetector : public AMecanismActivator {
 public:	
 	AElectricDetector();
 
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UStaticMeshComponent> mesh;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UBoxComponent> boxCollision;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UMaterial> activeMaterial;

@@ -2,13 +2,17 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/EditorActorSubsystem.h"
-#include "MecanismEditorActorSubsystem.h"
+#include "MecanismEditorActorSubsystem.generated.h"
 
 UCLASS(Blueprintable)
 class DIAMONDPROJECT_API UMecanismEditorActorSubsystem : public UEditorActorSubsystem {
-	
 	GENERATED_BODY()
 	
-	//virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-	//virtual void Deinitialize() override;
+	void Initialize(FSubsystemCollectionBase& Collection) override;
+	void Deinitialize() override;
+
+private:
+	UFUNCTION()
+	void OnPlaceActors(UObject* usedObject,const TArray<AActor*>& placedActors);
+
 };
