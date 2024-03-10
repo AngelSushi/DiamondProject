@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Luminaria/MecanismsResult/MecanismResultAction.h"
+#include "MecanismResultAction.h"
 #include "MRA_PropsDissapear.generated.h"
 
 UCLASS()

@@ -2,7 +2,7 @@
 #include "Components/BoxComponent.h"
 #include "DiamondProject/Luminaria/Actors/ElectricityOrb.h"
 #include "DiamondProject/Luminaria/Actors/Link.h"
-#include "DiamondProject/MecanismEventsDispatcher.h"
+#include "DiamondProject/Luminaria/SubSystems/MecanismEventsDispatcher.h"
 #include "DiamondProject/Luminaria/Actors/MecanismActivator.h"
 
 AElectricDetector::AElectricDetector() {

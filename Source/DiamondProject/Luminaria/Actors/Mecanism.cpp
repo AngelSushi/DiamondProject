@@ -1,7 +1,7 @@
 #include "DiamondProject/Luminaria/Actors/Mecanism.h"
 #include "Components/BoxComponent.h"
 
-#include "DiamondProject/MecanismEventsDispatcher.h"
+#include "DiamondProject/Luminaria/SubSystems/MecanismEventsDispatcher.h"
 #include "DiamondProject/Luminaria/Actors/MecanismActivator.h"
 
 AMecanism::AMecanism() {

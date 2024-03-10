@@ -13,7 +13,12 @@
 				"CoreUObject",
 				"UnrealEd"
 			]
-		}
+		},
+  		{
+    			"Name": "CustomLuminariaModule",
+				"Type": "Editor",
+    			"LoadingPhase": "PostEngineInit"
+  		}
 	],
 	"Plugins": [
 		{

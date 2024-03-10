@@ -8,7 +8,7 @@
 #include "ProceduralMeshComponent.h"
 #include "Components/BoxComponent.h"
 
-#include "DiamondProject/MecanismComponent.h"
+#include "DiamondProject/Luminaria/ActorComponents/MecanismComponent.h"
 
 AMecanismActivator::AMecanismActivator() {
  	PrimaryActorTick.bCanEverTick = true;
