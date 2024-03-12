@@ -3,34 +3,26 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MecanismActivator.h"
-#include "ElectricDetector.generated.h"
+#include "DefaultGenerator.generated.h"
 
 class UMecanismEventsDispatcher;
 class AMecanismActivator;
 
 UCLASS()
-class DIAMONDPROJECT_API AElectricDetector : public AMecanismActivator {
+class DIAMONDPROJECT_API ADefaultGenerator : public AMecanismActivator {
 	GENERATED_BODY()
 	
 public:	
-	AElectricDetector();
+	ADefaultGenerator();
 
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UMaterial> activeMaterial;
 
-private:
+protected:
+
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor,UPrimitiveComponent* OtherComp,int32 OtherBodyIndex,bool bFromSweep,const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	UPROPERTY(EditAnywhere)
-	bool shouldLinkStayOn;
-
-	UPROPERTY()
-	UMecanismEventsDispatcher* _mecanismEventsDispatcher;
 
 	UFUNCTION()
 	void OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mecanismActivator);
@@ -40,6 +32,10 @@ private:
 
 
 protected:
+	UPROPERTY()
+	UMecanismEventsDispatcher* _mecanismEventsDispatcher;
+
+
 	virtual void BeginPlay() override;
 
 public:	

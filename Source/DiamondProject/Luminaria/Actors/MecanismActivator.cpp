@@ -9,6 +9,7 @@
 #include "Components/BoxComponent.h"
 
 #include "DiamondProject/Luminaria/ActorComponents/MecanismComponent.h"
+#include "DiamondProject/Luminaria/Actors/Mecanism.h"
 
 AMecanismActivator::AMecanismActivator() {
  	PrimaryActorTick.bCanEverTick = true;
@@ -26,19 +27,25 @@ AMecanismActivator::AMecanismActivator() {
 	GLog->Log("Log of Mecanism Activator");
 }
 
-void AMecanismActivator::OnConstruction(const FTransform& Transform) {
-	FVector Loc = Transform.GetLocation();
+void AMecanismActivator::BeginPlay() {
+	Super::BeginPlay();
+
+	TArray<AActor*> MecanismArray;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AMecanism::StaticClass(), MecanismArray);
+
+	for (AActor* MecanismActor : MecanismArray) {
+		if (AMecanism* Mecanism = Cast<AMecanism>(MecanismActor)) {
+			targetMecanism = Mecanism;
+			break;
+		}
+	}
 }
 
-void AMecanismActivator::Tick(float DeltaTime)
-{
+void AMecanismActivator::Tick(float DeltaTime) {
 	if (WITH_EDITOR) {
 		//GLog->Log("tick in actor");
 	}
 
 }
 
-bool AMecanismActivator::ShouldTickIfViewportsOnly() const
-{
-	return true;
-}
+

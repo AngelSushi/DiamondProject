@@ -23,17 +23,21 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UBoxComponent> boxCollision;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class AMecanism> targetMecanism;
+
+
 	UFUNCTION()
 	bool IsActivatorActive() { return isActivatorActivate; }
 
-	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void Tick(float DeltaTime) override;
 
-	virtual bool ShouldTickIfViewportsOnly() const override;
+	virtual void BeginPlay() override;
 
 protected:
 
 	UPROPERTY()
 	bool isActivatorActivate;
+
 
 };

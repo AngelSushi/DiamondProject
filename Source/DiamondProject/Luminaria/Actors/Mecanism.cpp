@@ -23,7 +23,15 @@ void AMecanism::BeginPlay() {
 }
 
 void AMecanism::OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mActivator) { // Besoin du mécanisme 
+	if (mecanism != this) {
+		return;
+	}
+
 	bool isMecanismOn = true;
+
+	if (mecanismActivators.Num() == 0) {
+		isMecanismOn = false;
+	}
 
 	for (AMecanismActivator* mecanismActivator : mecanismActivators) {
 		if (!mecanismActivator->IsActivatorActive()) {
@@ -32,9 +40,7 @@ void AMecanism::OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mActi
 		}
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Yellow, FString::Printf(TEXT("Is Mecanism On %f"), isMecanismOn));
-
-	if (isMecanismOn) {
+	if (isMecanismOn && !_isSolve) {
 		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Solve Mecanism"));
 		_mecanismEventsDispatcher->OnMecanismOn.Broadcast();
 		_isSolve = true;
@@ -42,5 +48,7 @@ void AMecanism::OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mActi
 }
 
 void AMecanism::OnMecanismDeactivate(AMecanism* mecanism,AMecanismActivator* mecanismActivator) {
-	_mecanismEventsDispatcher->OnMecanismOff.Broadcast();
+	//_mecanismEventsDispatcher->OnMecanismOff.Broadcast();
+
+	//GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Mecanism Deactivate from Mecanism"));
 }

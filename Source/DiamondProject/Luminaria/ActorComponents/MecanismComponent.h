@@ -11,15 +11,11 @@ class DIAMONDPROJECT_API UMecanismComponent : public UStaticMeshComponent {
 
 public:
 	UMecanismComponent();
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UProceduralMeshComponent> proceduralMesh;
 	
 	UFUNCTION()
 	void GenerateMesh(FVector Location);
 
 private:
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
 	UPROPERTY()
 	FVector MeshLocation;

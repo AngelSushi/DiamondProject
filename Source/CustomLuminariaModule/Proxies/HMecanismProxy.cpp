@@ -1,7 +1,9 @@
 #include "HMecanismProxy.h"
 
-HMecanismProxy::HMecanismProxy(const UActorComponent* InComponent, int32 InTargetIndex) : HTargetingVisProxy(InComponent), TargetIndex(InTargetIndex)
+IMPLEMENT_HIT_PROXY(HMecanismVisProxy,HComponentVisProxy)
+IMPLEMENT_HIT_PROXY(HMecanismProxy,HMecanismVisProxy)
+
+HMecanismProxy::HMecanismProxy(const UActorComponent* InComponent, int32 InTargetIndex) : HMecanismVisProxy(InComponent), TargetIndex(InTargetIndex)
 {
 }
 
-HMecanismProxy::~HMecanismProxy() {}

@@ -3,26 +3,9 @@
 #include "Kismet/KismetSystemLibrary.h"
 
 UMecanismComponent::UMecanismComponent() {
-	proceduralMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("PMesh"));
-	proceduralMesh->SetupAttachment(this);
 }
 
-void UMecanismComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) {
-	Super::PostEditChangeProperty(PropertyChangedEvent);
 
-	if (!proceduralMesh->GetProcMeshSection(0)) {
-		GLog->Log("generate my mesh");
-		GenerateMesh(FVector::Zero());
-	}
-	else {
-		GLog->Log("reload my mesh");
-		GenerateMesh(MeshLocation);
-	}
-
-
-
-
-}
 
 void UMecanismComponent::GenerateMesh(FVector Location) {
 	float radius = 10.F;
@@ -79,6 +62,6 @@ void UMecanismComponent::GenerateMesh(FVector Location) {
 		}
 	}
 
-	proceduralMesh->CreateMeshSection_LinearColor(0, vertices, triangles, TArray<FVector>(), TArray<FVector2D>(), TArray<FLinearColor>(), TArray<FProcMeshTangent>(), true);
+	//proceduralMesh->CreateMeshSection_LinearColor(0, vertices, triangles, TArray<FVector>(), TArray<FVector2D>(), TArray<FLinearColor>(), TArray<FProcMeshTangent>(), true);
 	MeshLocation = ActorPosition;
 }

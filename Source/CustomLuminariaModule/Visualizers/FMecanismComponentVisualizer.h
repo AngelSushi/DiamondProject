@@ -27,4 +27,11 @@ public:
 
     virtual void DrawVisualizationHUD(const UActorComponent* Component, const FViewport* Viewport, const FSceneView* View, FCanvas* Canvas);
     virtual bool IsVisualizingArchetype();
+    
+    
+private:
+    void DrawWireSphere(FPrimitiveDrawInterface* PDI, const FVector& Center, const FColor& Color, float Radius, int32 NumSides, uint8 DepthPriorityGroup) const;
+
+    UPROPERTY()
+    FEditorViewportClient* CurrentViewport;
 };
