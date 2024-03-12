@@ -4,12 +4,12 @@
 #include "UObject/NoExportTypes.h"
 #include "MecanismResultAction.generated.h"
 
-UCLASS(BlueprintType,Blueprintable)
-class DIAMONDPROJECT_API UMecanismResultAction : public UObject {
+UCLASS(ClassGroup = (Custom), Blueprintable, meta = (BlueprintSpawnableComponent))
+class DIAMONDPROJECT_API UMecanismResultAction : public USceneComponent {
 
 	GENERATED_BODY()
 
 public:
 	UFUNCTION()
-	virtual void OnMecanismTurnOn();
+	virtual void DoAction();
 };

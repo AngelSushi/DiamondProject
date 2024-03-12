@@ -15,16 +15,16 @@ class DIAMONDPROJECT_API UMecanismEventsDispatcher : public UWorldSubsystem {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere,BlueprintAssignable)
 	FOnMecanismOn OnMecanismOn;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere,BlueprintAssignable)
 	FOnMecanismOff OnMecanismOff;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintAssignable)
 	FOnMecanismActivate OnMecanismActivate;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintAssignable)
 	FOnMecanismDeactivate OnMecanismDeactivate;
 	
 };

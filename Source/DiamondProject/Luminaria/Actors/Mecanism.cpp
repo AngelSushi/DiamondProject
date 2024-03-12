@@ -20,6 +20,8 @@ void AMecanism::BeginPlay() {
 	
 	_mecanismEventsDispatcher->OnMecanismActivate.AddDynamic(this, &AMecanism::OnMecanismActivate);
 	_mecanismEventsDispatcher->OnMecanismDeactivate.AddDynamic(this, &AMecanism::OnMecanismDeactivate);
+
+	_mecanismEventsDispatcher->OnMecanismOn.AddDynamic(this, &AMecanism::OnMecanismOn);
 }
 
 void AMecanism::OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mActivator) { // Besoin du mécanisme 
@@ -48,7 +50,10 @@ void AMecanism::OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mActi
 }
 
 void AMecanism::OnMecanismDeactivate(AMecanism* mecanism,AMecanismActivator* mecanismActivator) {
-	//_mecanismEventsDispatcher->OnMecanismOff.Broadcast();
+	_mecanismEventsDispatcher->OnMecanismOff.Broadcast();
+	_isSolve = false;
+}
 
-	//GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Mecanism Deactivate from Mecanism"));
+void AMecanism::OnMecanismOn() {
+	// On veut pouvoir assigner une 
 }

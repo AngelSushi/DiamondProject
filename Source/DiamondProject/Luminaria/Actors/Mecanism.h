@@ -34,6 +34,9 @@ public:
 	void OnMecanismDeactivate(AMecanism* mecanism,AMecanismActivator* mecanismActivator);
 
 	UFUNCTION()
+	void OnMecanismOn();
+
+	UFUNCTION()
 	bool IsSolve() { return _isSolve; }
 
 protected:

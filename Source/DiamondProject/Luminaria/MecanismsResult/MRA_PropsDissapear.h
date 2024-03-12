@@ -9,6 +9,6 @@ class DIAMONDPROJECT_API UMRA_PropsDissapear : public UMecanismResultAction {
 	GENERATED_BODY()
 	
 public:
-	virtual void OnMecanismTurnOn() override;
+	virtual void DoAction() override;
 	
 };
