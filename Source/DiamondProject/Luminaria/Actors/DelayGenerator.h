@@ -23,8 +23,6 @@ protected:
 	void OnMecanismDeactivateDelay(AMecanism* mecanism, AMecanismActivator* mecanismActivator);
 
 private:
-	UPROPERTY()
-	TObjectPtr<class UMaterial> basicMaterial;
 
 	UPROPERTY(EditAnywhere)
 	float Delay;

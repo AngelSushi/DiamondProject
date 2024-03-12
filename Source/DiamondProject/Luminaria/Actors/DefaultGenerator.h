@@ -25,20 +25,27 @@ protected:
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor,UPrimitiveComponent* OtherComp,int32 OtherBodyIndex,bool bFromSweep,const FHitResult& SweepResult);
 
 	UFUNCTION()
+	void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
 	void OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mecanismActivator);
 
 	UFUNCTION()
 	void OnMecanismDeactivate(AMecanism* mecanism,AMecanismActivator* mecanismActivator);
 
-
-protected:
 	UPROPERTY()
 	UMecanismEventsDispatcher* _mecanismEventsDispatcher;
 
+	UPROPERTY(EditAnywhere)
+	bool bNeedLink;
 
 	virtual void BeginPlay() override;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class UMaterial> basicMaterial;
 
 };

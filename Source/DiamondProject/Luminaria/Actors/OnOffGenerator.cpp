@@ -4,21 +4,19 @@
 #include "DiamondProject/Luminaria/SubSystems/MecanismEventsDispatcher.h"
 #include "DiamondProject/Luminaria/ActorComponents/MecanismComponent.h"
 
-
-AOnOffGenerator::AOnOffGenerator() {
-}
+AOnOffGenerator::AOnOffGenerator() {}
 
 void AOnOffGenerator::BeginPlay() {
 	Super::BeginPlay();
 
 	_mecanismEventsDispatcher->OnMecanismDeactivate.AddDynamic(this, &AOnOffGenerator::OnMecanismDeactivateOnOff);
 
-	boxCollision->OnComponentEndOverlap.AddDynamic(this, &AOnOffGenerator::OnEndOverlap);
+	boxCollision->OnComponentEndOverlap.AddDynamic(this, &AOnOffGenerator::OnEndOverlapOnOff);
 	basicMaterial = mesh->GetMaterial(0)->GetMaterial();
 
 }
 
-void AOnOffGenerator::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+void AOnOffGenerator::OnEndOverlapOnOff(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if (OtherActor->IsA(AElectricityOrb::StaticClass())) {
 		isActivatorActivate = false;
 		_mecanismEventsDispatcher->OnMecanismDeactivate.Broadcast(targetMecanism,this);

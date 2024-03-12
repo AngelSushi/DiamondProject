@@ -23,11 +23,7 @@ protected:
 
 public:
 	UFUNCTION()
-	void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	void OnEndOverlapOnOff(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-
-private:
-	UPROPERTY()
-	TObjectPtr<class UMaterial> basicMaterial;
 	
 };

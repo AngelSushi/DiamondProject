@@ -5,6 +5,8 @@
 #include "DiamondProject/Luminaria/SubSystems/MecanismEventsDispatcher.h"
 #include "DiamondProject/Luminaria/Actors/MecanismActivator.h"
 
+#include "DiamondProject/Luminaria/ActorComponents/MecanismComponent.h"
+
 ADefaultGenerator::ADefaultGenerator() {
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -17,8 +19,9 @@ void ADefaultGenerator::BeginPlay() {
 	_mecanismEventsDispatcher->OnMecanismDeactivate.AddDynamic(this, &ADefaultGenerator::OnMecanismDeactivate);
 
 	boxCollision->OnComponentBeginOverlap.AddDynamic(this, &ADefaultGenerator::OnBeginOverlap);
+	boxCollision->OnComponentEndOverlap.AddDynamic(this, &ADefaultGenerator::OnEndOverlap);
 
-
+	basicMaterial = mesh->GetMaterial(0)->GetMaterial();
 }
 
 void ADefaultGenerator::Tick(float DeltaTime) {
@@ -37,6 +40,15 @@ void ADefaultGenerator::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	}
 }
 
+void ADefaultGenerator::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+	if (OtherActor->IsA(ALink::StaticClass())) {
+		if (bNeedLink) {
+			_mecanismEventsDispatcher->OnMecanismDeactivate.Broadcast(targetMecanism, this);
+		}
+	}
+
+}
+
 void ADefaultGenerator::OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mecanismActivator) {
 	if (mecanismActivator == this) {
 		mesh->SetMaterial(0, activeMaterial);
@@ -47,6 +59,7 @@ void ADefaultGenerator::OnMecanismDeactivate(AMecanism* mecanism,AMecanismActiva
 	if (mecanismActivator == this) {
 		//GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Mecanism Deactivate Parent"));
 		isActivatorActivate = false;
+		mesh->SetMaterial(0, basicMaterial);
 	}
 }
 
