@@ -18,8 +18,7 @@ void AOnOffGenerator::BeginPlay() {
 
 void AOnOffGenerator::OnEndOverlapOnOff(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if (OtherActor->IsA(AElectricityOrb::StaticClass())) {
-		isActivatorActivate = false;
-		_mecanismEventsDispatcher->OnMecanismDeactivate.Broadcast(targetMecanism,this);
+		SetActivatorActivate(false);
 	}
 }
 

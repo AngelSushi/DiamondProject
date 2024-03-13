@@ -14,7 +14,6 @@ ADefaultGenerator::ADefaultGenerator() {
 void ADefaultGenerator::BeginPlay() {
 	Super::BeginPlay();
 
-	_mecanismEventsDispatcher = GetWorld()->GetSubsystem<UMecanismEventsDispatcher>();
 	_mecanismEventsDispatcher->OnMecanismActivate.AddDynamic(this,&ADefaultGenerator::OnMecanismActivate);
 	_mecanismEventsDispatcher->OnMecanismDeactivate.AddDynamic(this, &ADefaultGenerator::OnMecanismDeactivate);
 
@@ -34,8 +33,7 @@ void ADefaultGenerator::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 		AElectricityOrb* orb = Cast<AElectricityOrb>(OtherActor);
 
 		if (orb) {
-			isActivatorActivate = true;
-			_mecanismEventsDispatcher->OnMecanismActivate.Broadcast(targetMecanism,this);
+			SetActivatorActivate(true);
 		}
 	}
 }
@@ -43,7 +41,7 @@ void ADefaultGenerator::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 void ADefaultGenerator::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if (OtherActor->IsA(ALink::StaticClass())) {
 		if (bNeedLink) {
-			_mecanismEventsDispatcher->OnMecanismDeactivate.Broadcast(targetMecanism, this);
+			SetActivatorActivate(false);
 		}
 	}
 
@@ -57,8 +55,6 @@ void ADefaultGenerator::OnMecanismActivate(AMecanism* mecanism,AMecanismActivato
 
 void ADefaultGenerator::OnMecanismDeactivate(AMecanism* mecanism,AMecanismActivator* mecanismActivator) {
 	if (mecanismActivator == this) {
-		//GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Mecanism Deactivate Parent"));
-		isActivatorActivate = false;
 		mesh->SetMaterial(0, basicMaterial);
 	}
 }

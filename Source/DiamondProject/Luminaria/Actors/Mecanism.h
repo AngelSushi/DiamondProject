@@ -5,6 +5,7 @@
 #include "Mecanism.generated.h"
 
 class AMecanismActivator;
+class AMecanismRewardActor;
 class UMecanismResultAction;
 class UMecanismEventsDispatcher;
 
@@ -22,10 +23,10 @@ public:
 	TObjectPtr<class UBoxComponent> boxCollision;
 
 	UPROPERTY(EditAnywhere)
-	TArray<AMecanismActivator*> mecanismActivators;
+	TArray<AMecanismActivator*> MecanismActivators;
 
 	UPROPERTY(EditAnywhere)
-	TArray<UMecanismResultAction*> MecanismResults;
+	TArray<AMecanismRewardActor*> MecanismResults;
 
 	UFUNCTION()
 	void OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mecanismActivator);
@@ -34,7 +35,10 @@ public:
 	void OnMecanismDeactivate(AMecanism* mecanism,AMecanismActivator* mecanismActivator);
 
 	UFUNCTION()
-	void OnMecanismOn();
+	void OnMecanismOn(AMecanism* TargetMecanism);
+
+	UFUNCTION()
+	void OnMecanismOff(AMecanism* TargetMecanism);
 
 	UFUNCTION()
 	bool IsSolve() { return _isSolve; }

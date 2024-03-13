@@ -5,8 +5,8 @@
 #include "MecanismEventsDispatcher.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnMecanismOn);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnMecanismOff);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMecanismOn,AMecanism*,TargetMecanism);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMecanismOff,AMecanism*,TargetMecanism);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMecanismActivate,AMecanism*,mecanism,AMecanismActivator*, mecanismActivator);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMecanismDeactivate,AMecanism*,mecanism,AMecanismActivator*, mecanismActivator);
 

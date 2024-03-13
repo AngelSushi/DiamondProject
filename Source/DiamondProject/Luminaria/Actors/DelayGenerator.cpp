@@ -18,7 +18,7 @@ void ADelayGenerator::OnMecanismActivateDelay(AMecanism* mecanism, AMecanismActi
 		FTimerHandle DelayTimer;
 
 		GetWorld()->GetTimerManager().SetTimer(DelayTimer, [&]() {
-			_mecanismEventsDispatcher->OnMecanismDeactivate.Broadcast(mecanism, this);
+			SetActivatorActivate(false);
 		} , Delay, false);
 	}
 }

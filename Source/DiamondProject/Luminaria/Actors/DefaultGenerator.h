@@ -33,9 +33,6 @@ protected:
 	UFUNCTION()
 	void OnMecanismDeactivate(AMecanism* mecanism,AMecanismActivator* mecanismActivator);
 
-	UPROPERTY()
-	UMecanismEventsDispatcher* _mecanismEventsDispatcher;
-
 	UPROPERTY(EditAnywhere)
 	bool bNeedLink;
 

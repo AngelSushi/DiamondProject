@@ -3,6 +3,7 @@
 
 #include "DiamondProject/Luminaria/SubSystems/MecanismEventsDispatcher.h"
 #include "DiamondProject/Luminaria/Actors/MecanismActivator.h"
+#include "DiamondProject/Luminaria/Actors/MecanismRewardActor.h"
 
 AMecanism::AMecanism() {
 
@@ -22,6 +23,7 @@ void AMecanism::BeginPlay() {
 	_mecanismEventsDispatcher->OnMecanismDeactivate.AddDynamic(this, &AMecanism::OnMecanismDeactivate);
 
 	_mecanismEventsDispatcher->OnMecanismOn.AddDynamic(this, &AMecanism::OnMecanismOn);
+	_mecanismEventsDispatcher->OnMecanismOff.AddDynamic(this, &AMecanism::OnMecanismOff);
 }
 
 void AMecanism::OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mActivator) { // Besoin du mécanisme 
@@ -31,11 +33,11 @@ void AMecanism::OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mActi
 
 	bool isMecanismOn = true;
 
-	if (mecanismActivators.Num() == 0) {
+	if (MecanismActivators.Num() == 0) {
 		isMecanismOn = false;
 	}
 
-	for (AMecanismActivator* mecanismActivator : mecanismActivators) {
+	for (AMecanismActivator* mecanismActivator : MecanismActivators) {
 		if (!mecanismActivator->IsActivatorActive()) {
 			isMecanismOn = false;
 			break;
@@ -44,16 +46,34 @@ void AMecanism::OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mActi
 
 	if (isMecanismOn && !_isSolve) {
 		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Solve Mecanism"));
-		_mecanismEventsDispatcher->OnMecanismOn.Broadcast();
+		_mecanismEventsDispatcher->OnMecanismOn.Broadcast(this);
 		_isSolve = true;
 	}
 }
 
 void AMecanism::OnMecanismDeactivate(AMecanism* mecanism,AMecanismActivator* mecanismActivator) {
-	_mecanismEventsDispatcher->OnMecanismOff.Broadcast();
+	_mecanismEventsDispatcher->OnMecanismOff.Broadcast(this);
 	_isSolve = false;
 }
 
-void AMecanism::OnMecanismOn() {
-	// On veut pouvoir assigner une 
+void AMecanism::OnMecanismOn(AMecanism* TargetMecanism) { 
+	if (TargetMecanism != this) {
+		return;
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Launch Reward"));
+
+	for (AMecanismRewardActor* MecanismRewardActor : MecanismResults) {
+		MecanismRewardActor->Reward();
+	}
+}
+
+void AMecanism::OnMecanismOff(AMecanism* TargetMecanism) {
+	if (TargetMecanism != this) {
+		return;
+	}
+
+	for (AMecanismRewardActor* MecanismRewardActor : MecanismResults) {
+		MecanismRewardActor->CancelReward();
+	}
 }

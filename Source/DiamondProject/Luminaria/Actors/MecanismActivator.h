@@ -5,7 +5,7 @@
 #include "MecanismActivator.generated.h"
 
 
-
+class UMecanismEventsDispatcher;
 
 UCLASS()
 class DIAMONDPROJECT_API AMecanismActivator : public AActor {
@@ -34,10 +34,14 @@ public:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable)
+	void SetActivatorActivate(bool IsActive);
+
 protected:
 
 	UPROPERTY()
 	bool isActivatorActivate;
 
-
+	UPROPERTY()
+	UMecanismEventsDispatcher* _mecanismEventsDispatcher;
 };
