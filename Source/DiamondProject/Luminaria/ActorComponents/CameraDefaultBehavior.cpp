@@ -2,10 +2,10 @@
 #include "DiamondProject/Luminaria/Actors/LuminariaCamera.h"
 #include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
+#include "DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
+#include "SceneView.h"
 
-UCameraDefaultBehavior::UCameraDefaultBehavior()
-{
-}
+UCameraDefaultBehavior::UCameraDefaultBehavior(){}
 
 void UCameraDefaultBehavior::BeginPlay()
 {
@@ -14,47 +14,42 @@ void UCameraDefaultBehavior::BeginPlay()
 	UPlayerEventsDispatcher* PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
 	PlayerEventsDispatcher->OnPlayerRegister.AddDynamic(this,&UCameraDefaultBehavior::RegisterPlayer);
 	PlayerEventsDispatcher->OnPlayerMove.AddDynamic(this,&UCameraDefaultBehavior::OnPlayerMove);
-
-	_defaultY = OwnerActor->GetActorLocation().Y;
+	
 }
 
 void UCameraDefaultBehavior::RegisterPlayer(ADiamondProjectCharacter* Character)
 {
 	_characters.AddUnique(Character);
-
-	bool isCanceled = false;
-	OnPlayerMove(Character,FVector2D(),isCanceled);
 }
 
-void UCameraDefaultBehavior::OnPlayerMove(ADiamondProjectCharacter* character, FVector2D direction, bool& isCanceled)
-{
-	if(_characters.Num() >= 2)
-	{
-		for(ADiamondProjectCharacter* player : _characters) {
-			if(const APlayerController* PlayerController = Cast<APlayerController>(player->GetController())) {
-				FVector2D WorldScreenPos = FVector2D();
-				PlayerController->ProjectWorldLocationToScreen(player->GetActorLocation(),WorldScreenPos);
+void UCameraDefaultBehavior::OnPlayerMove(ADiamondProjectCharacter* character, FVector direction, bool& isCanceled) {
 
-				FVector2D ViewportSize = FVector2D();
-			
-				GEngine->GameViewport->GetViewportSize(ViewportSize);
+	ULocalPlayer* LocalPlayer = character->GetWorld()->GetFirstLocalPlayerFromController();
+	if (LocalPlayer != nullptr && LocalPlayer->ViewportClient != nullptr && LocalPlayer->ViewportClient->Viewport) {
+		FSceneViewFamilyContext ViewFamily(FSceneViewFamily::ConstructionValues(LocalPlayer->ViewportClient->Viewport, character->GetWorld()->Scene, LocalPlayer->ViewportClient->EngineShowFlags).SetRealtimeUpdate(true));
 
-				if(WorldScreenPos.X < 0 || WorldScreenPos.X > ViewportSize.X)
-				{
-					isCanceled = true;
-					return;
-				}
+		FVector ViewLocation;
+		FRotator ViewRotation;
+		FSceneView* SceneView = LocalPlayer->CalcSceneView(&ViewFamily, ViewLocation, ViewRotation, LocalPlayer->ViewportClient->Viewport);
+		if (SceneView != nullptr) {
+
+			FVector Center = character->GetActorLocation() - direction * 125.f;
+			DrawDebugSphere(GetWorld(), Center, character->GetSimpleCollisionRadius(), 8, FColor::Red, false, 1.F, 1, 3.F);
+
+			if (!SceneView->ViewFrustum.IntersectSphere(Center, character->GetSimpleCollisionRadius())) {
+				isCanceled = true;
 			}
 		}
-		
-		FVector First = _characters[0]->GetActorLocation();
-		FVector Second = _characters[1]->GetActorLocation();
+	}
+}
 
-		FVector barycenter = (First + Second) / 2.F;
-		barycenter += FVector(0,0,45.F);
-		barycenter.Y = _defaultY;
-		
-		OwnerActor->SetActorLocation(barycenter);
+void UCameraDefaultBehavior::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (_characters.Num() >= 2) {
+		CalculateBarycenter();
+
+		OwnerActor->SetActorLocation(_barycenter);
 	}
 }
 

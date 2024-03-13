@@ -22,6 +22,7 @@ class ADiamondProjectPlayerController : public APlayerController
 
 public:
 	ADiamondProjectPlayerController();
+
 	
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
@@ -34,6 +35,17 @@ public:
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
+
+	UPROPERTY()
+	FVector LastDirection;
+
+	UPROPERTY()
+	FVector MovementDirection;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCanFlip = true;
+
+	bool bIsLookingLeft;
 
 protected:
 
