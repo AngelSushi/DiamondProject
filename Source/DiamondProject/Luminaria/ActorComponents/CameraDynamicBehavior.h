@@ -43,7 +43,7 @@ public:
 
 private:
 	UPROPERTY()
-	FVector _offset;
+	float OffsetX;
 
 	UPROPERTY()
 	bool _canExtend;
@@ -53,4 +53,7 @@ private:
 
 	UFUNCTION()
 	void CalculateOffsideFrustumOffset(ADiamondProjectCharacter* character, FVector direction);
+
+	UFUNCTION()
+	float Approach(float Current, float Target, float Incr);
 };
