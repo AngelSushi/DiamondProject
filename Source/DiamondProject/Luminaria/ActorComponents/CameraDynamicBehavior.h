@@ -43,14 +43,20 @@ public:
 
 private:
 	UPROPERTY()
-	FVector _offset;
+	float OffsetX;
 
 	UPROPERTY()
 	bool _canExtend;
+
+	UPROPERTY(EditAnywhere)
+	bool bDebug;
 
 	UPROPERTY()
 	TArray<FExtendData> _extendPositions;
 
 	UFUNCTION()
 	void CalculateOffsideFrustumOffset(ADiamondProjectCharacter* character, FVector direction);
+
+	UFUNCTION()
+	float Approach(float Current, float Target, float Incr);
 };
