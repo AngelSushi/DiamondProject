@@ -9,9 +9,16 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
-				"Engine"
+				"Engine",
+				"CoreUObject",
+				"UnrealEd"
 			]
-		}
+		},
+  		{
+    			"Name": "CustomLuminariaModule",
+				"Type": "Editor",
+    			"LoadingPhase": "PostEngineInit"
+  		}
 	],
 	"Plugins": [
 		{
