@@ -48,6 +48,9 @@ private:
 	UPROPERTY()
 	bool _canExtend;
 
+	UPROPERTY(EditAnywhere)
+	bool bDebug;
+
 	UPROPERTY()
 	TArray<FExtendData> _extendPositions;
 

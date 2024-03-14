@@ -35,9 +35,7 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 			float angle = FVector::DotProduct(ExtendToPlayer, Forward);
 
 			if (angle < 0 && Forward == -direction) {
-				//GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("True"));
 				OffsetX -= 250.F;
-
 				return true;
 			}
 			
@@ -59,9 +57,11 @@ void UCameraDynamicBehavior::TickComponent(float DeltaTime, ELevelTick TickType,
 
 		OwnerActor->SetActorLocation(_barycenter);
 
-		for (auto& extendPosition : _extendPositions) {
-			DrawDebugLine(GetWorld(), extendPosition.position, extendPosition.position + FVector::UpVector * 250.f,FColor::White,false,1.F,1,2.F);
-			DrawDebugLine(GetWorld(), extendPosition.position, extendPosition.position + extendPosition.direction * 150.f, FColor::Green, false, 1.F, 1, 2.F);
+		if (bDebug) {
+			for (auto& extendPosition : _extendPositions) {
+				DrawDebugLine(GetWorld(), extendPosition.position, extendPosition.position + FVector::UpVector * 250.f, FColor::White, false, 1.F, 1, 2.F);
+				DrawDebugLine(GetWorld(), extendPosition.position, extendPosition.position + extendPosition.direction * 150.f, FColor::Green, false, 1.F, 1, 2.F);
+			}
 		}
 	}
 
@@ -79,7 +79,10 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 
 		if (SceneView != nullptr) {
 			FVector Center = character->GetActorLocation() - direction * 200.F - FVector(FMath::Abs(OffsetX - OwnerActor->GetActorLocation().X), 0, 0);
-			DrawDebugSphere(GetWorld(), Center, character->GetSimpleCollisionRadius(), 8, FColor::Red, false, 1.F, 1, 3.F);
+			
+			if (bDebug) {
+				DrawDebugSphere(GetWorld(), Center, character->GetSimpleCollisionRadius(), 8, FColor::Red, false, 1.F, 1, 3.F);
+			}
 
 			if (!SceneView->ViewFrustum.IntersectSphere(Center, character->GetSimpleCollisionRadius()) && _canExtend) {
 
