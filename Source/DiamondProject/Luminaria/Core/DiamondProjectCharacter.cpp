@@ -49,6 +49,8 @@ void ADiamondProjectCharacter::Death()
 {
 	GetMesh()->SetVisibility(false);
 
+		
+
 	FTimerHandle RespawnTimer;
 
 	if (_checkPoint != FVector::Zero()) {
