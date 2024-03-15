@@ -85,9 +85,7 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 			}
 
 			if (!SceneView->ViewFrustum.IntersectSphere(Center, character->GetSimpleCollisionRadius()) && _canExtend) {
-
 				OffsetX += 250.F;
-
 
 				for (auto& extendPosition : _extendPositions) {
 					if (FVector::Distance(extendPosition.position, Center) < 250.F) {

@@ -10,6 +10,7 @@ enum ECameraBehavior : uint8
 	DEFAULT,
 	LEADER,
 	DYNAMIC,
+	GOTO,
 };
 
 UCLASS()
@@ -22,5 +23,8 @@ public:
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TEnumAsByte<ECameraBehavior> CameraBehavior;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TEnumAsByte<ECameraBehavior> LastBehavior;
 	
 };

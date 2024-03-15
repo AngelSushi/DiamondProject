@@ -1,31 +1,23 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "DeathArea.generated.h"
+#include "Components/BoxComponent.h"
+#include "DeathComponent.generated.h"
 
 UCLASS()
-class DIAMONDPROJECT_API ADeathArea : public AActor
-{
+class DIAMONDPROJECT_API UDeathComponent : public UBoxComponent {
 	GENERATED_BODY()
-	
-public:	
-	ADeathArea();
 
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UBoxComponent> BoxCollision;
+protected:
+	virtual void BeginPlay() override;
 
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
 	void RegisterPlayer(ADiamondProjectCharacter* Character);
-
-protected:
-	virtual void BeginPlay() override;
-
+	
 private:
 	UPROPERTY()
 	TArray<ADiamondProjectCharacter*> Characters;
-
 };

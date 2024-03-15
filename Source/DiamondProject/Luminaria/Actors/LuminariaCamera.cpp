@@ -1,6 +1,5 @@
 #include "LuminariaCamera.h"
 
-void ALuminariaCamera::BeginPlay()
-{
+void ALuminariaCamera::BeginPlay() {
 	Super::BeginPlay();
 }

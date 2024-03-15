@@ -31,34 +31,35 @@ ADiamondProjectCharacter::ADiamondProjectCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
-void ADiamondProjectCharacter::BeginPlay()
-{
+void ADiamondProjectCharacter::BeginPlay() {
 	Super::BeginPlay();
 	
 	PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
 	PlayerEventsDispatcher->OnPlayerRegister.Broadcast(this);
+
+	PlayerEventsDispatcher->OnPlayerUpdateCheckpoint.AddDynamic(this, &ADiamondProjectCharacter::OnPlayerUpdateCheckpoint);
+
+	_checkPoint = GetActorLocation();
 }
 
-void ADiamondProjectCharacter::Tick(float DeltaSeconds)
-{
+void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
     Super::Tick(DeltaSeconds);
-	
 }
 
-void ADiamondProjectCharacter::Death()
-{
-	GetMesh()->SetVisibility(false);
-
-		
+void ADiamondProjectCharacter::Death() {
+//	GetMesh()->SetVisibility(false);
 
 	FTimerHandle RespawnTimer;
 
 	if (_checkPoint != FVector::Zero()) {
-		GetWorld()->GetTimerManager().SetTimer(RespawnTimer, [this, &RespawnTimer]() {
+		SetActorLocation(_checkPoint);
+
+		/*GetWorld()->GetTimerManager().SetTimer(RespawnTimer, [this, &RespawnTimer]() {
 			SetActorLocation(_checkPoint);
 			GetMesh()->SetVisibility(true);
 			GetWorld()->GetTimerManager().ClearTimer(RespawnTimer);
 		}, 3.F, false);
+		*/
 	}
 
 	PlayerEventsDispatcher->OnPlayerDeath.Broadcast(this);
@@ -67,4 +68,10 @@ void ADiamondProjectCharacter::Death()
 void ADiamondProjectCharacter::UpdateCheckpoint(ACheckpoint* checkpoint) {
 	_checkPoint = checkpoint->checkPoint->GetComponentLocation();
 	PlayerEventsDispatcher->OnPlayerUpdateCheckpoint.Broadcast(this, checkpoint);
+}
+
+void ADiamondProjectCharacter::OnPlayerUpdateCheckpoint(ADiamondProjectCharacter* Character, ACheckpoint* Checkpoint) {
+	if (Character != this) {
+		_checkPoint = Checkpoint->checkPoint->GetComponentLocation();
+	}
 }
