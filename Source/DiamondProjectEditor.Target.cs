@@ -11,5 +11,7 @@ public class DiamondProjectEditorTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.V4;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_3;
 		ExtraModuleNames.Add("DiamondProject");
+
+		ExtraModuleNames.AddRange(new string[] { "CustomLuminariaModule" });
 	}
 }
