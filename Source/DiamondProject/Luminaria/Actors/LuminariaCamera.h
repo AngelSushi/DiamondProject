@@ -32,7 +32,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	TEnumAsByte<ECameraBehavior> LastBehavior;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	UActorComponent* LastBehaviorComponent;
 
 	UFUNCTION()

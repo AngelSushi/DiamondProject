@@ -15,8 +15,11 @@ void UGoToBehavior::BeginPlay() {
 void UGoToBehavior::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Blue, TEXT("LOG"));
+
+
 	if (!Approach(_barycenter, GoTo, Speed * DeltaTime)) {
-		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Barycenter GO"));
+		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, FString::Printf(TEXT("GoTo %s"), *GoTo.ToString()));
 		OwnerActor->SetActorLocation(_barycenter);
 	}
 	else {

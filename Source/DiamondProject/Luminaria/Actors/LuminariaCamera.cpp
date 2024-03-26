@@ -26,58 +26,6 @@ void ALuminariaCamera::BeginPlay() {
 
 void ALuminariaCamera::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
-
-	/*if (CameraBehavior != LastBehavior) {
-
-		if (LastBehaviorComponent) {
-			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, FString::Printf(TEXT("Removed %s Component"), *LastBehaviorComponent->GetName()));
-			LastBehaviorComponent->DestroyComponent();
-		}
-		
-		switch (CameraBehavior) {
-			case ECameraBehavior::DEFAULT:
-				LastBehaviorComponent = AddComponentByClass(UCameraDefaultBehavior::StaticClass(),false,GetActorTransform(),false);
-				GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, FString::Printf(TEXT("Added %s Component"), *LastBehaviorComponent->GetName()));
-				break;
-			
-			case ECameraBehavior::LEADER:
-				LastBehaviorComponent = AddComponentByClass(UCameraLeaderBehavior::StaticClass(), false, GetActorTransform(), false);
-				GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, FString::Printf(TEXT("Added %s Component"), *LastBehaviorComponent->GetName()));
-				break;
-
-			case ECameraBehavior::DYNAMIC:
-				LastBehaviorComponent = AddComponentByClass(UCameraDynamicBehavior::StaticClass(), false, GetActorTransform(), false);
-				GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, FString::Printf(TEXT("Added %s Component"), *LastBehaviorComponent->GetName()));
-				break;
-
-			case ECameraBehavior::GOTO:
-				LastBehaviorComponent = AddComponentByClass(UGoToBehavior::StaticClass(), false, GetActorTransform(), false);
-				GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, FString::Printf(TEXT("Added %s Component"), *LastBehaviorComponent->GetName()));
-
-				UGoToBehavior* GoToBehaviorComponent = Cast<UGoToBehavior>(LastBehaviorComponent);
-
-				FVector GoTo = FVector::Zero();
-
-				for (ADiamondProjectCharacter* ACharacter : Characters) {
-					GoTo += ACharacter->GetActorLocation();
-				}
-
-				GoTo /= Characters.Num();
-				GoTo.X = StartPosition.X;
-				GoTo.Z = StartPosition.Z;
-
-				GoToBehaviorComponent->GoTo = GoTo;
-				GoToBehaviorComponent->Speed = 1.F;
-				GoToBehaviorComponent->NextBehavior = LastBehavior;
-
-
-				break;
-		}
-	}
-
-
-	LastBehavior = CameraBehavior;
-	*/
 }
 
 void ALuminariaCamera::OnPlayerRegister(ADiamondProjectCharacter* Character) {
@@ -86,10 +34,11 @@ void ALuminariaCamera::OnPlayerRegister(ADiamondProjectCharacter* Character) {
 
 void ALuminariaCamera::AddComponent(TSubclassOf<class UCameraBehavior> Component, TFunction<void(UActorComponent* AddedComponent)> ResultFunc) {
 	if (LastBehaviorComponent) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Orange,FString::Printf(TEXT("Delete Component %s"),);
 		LastBehaviorComponent->DestroyComponent();
 	}
 
-	LastBehaviorComponent = AddComponentByClass(Component, false, GetActorTransform(), false);
+	LastBehaviorComponent = AddComponentByClass(Component, false, GetActorTransform(), true);
 
 	ResultFunc(LastBehaviorComponent);
 }
@@ -125,8 +74,10 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character) {
 			GoTo.X = StartPosition.X;
 			GoTo.Z = StartPosition.Z;
 
+			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Orange, TEXT("Add Component"));
+
 			GoToBehaviorComponent->GoTo = GoTo;
-			GoToBehaviorComponent->Speed = 10.F;
+			GoToBehaviorComponent->Speed = 1000.F;
 			GoToBehaviorComponent->NextBehavior = CurrentBehavior;
 		}
 	});
