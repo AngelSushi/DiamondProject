@@ -9,7 +9,7 @@ class ALuminariaCamera;
 class ADiamondProjectCharacter;
 
 UCLASS( ClassGroup=(Custom),Blueprintable, meta=(BlueprintSpawnableComponent) )
-class DIAMONDPROJECT_API UCameraBehavior : public USceneComponent
+class DIAMONDPROJECT_API UCameraBehavior : public UActorComponent
 {
 	GENERATED_BODY()
 

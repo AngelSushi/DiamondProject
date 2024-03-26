@@ -61,7 +61,7 @@ void ADiamondProjectCharacter::Death() {
 		}, 3.F, false);
 		*/
 	}
-
+	
 	PlayerEventsDispatcher->OnPlayerDeath.Broadcast(this);
 }
 

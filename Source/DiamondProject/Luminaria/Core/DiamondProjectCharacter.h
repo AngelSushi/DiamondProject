@@ -32,6 +32,10 @@ public:
 	UFUNCTION()
 	void OnPlayerUpdateCheckpoint(ADiamondProjectCharacter* Character, ACheckpoint* Checkpoint);
 
+	UFUNCTION()
+	FVector GetCheckpoint() { return _checkPoint; }
+
+
 private:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

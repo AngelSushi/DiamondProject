@@ -48,7 +48,7 @@ void UCameraDefaultBehavior::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if (_characters.Num() >= 2) {
 		CalculateBarycenter();
-
+		
 		OwnerActor->SetActorLocation(_barycenter);
 	}
 }
