@@ -26,12 +26,24 @@ void AElectricityOrb::Tick(float DeltaTime) {
 		if (!_hasBeenSet) {
 			SetActorLocation(orbSender->GetPawn()->GetActorLocation());
 			_hasBeenSet = true;
-		}
+		}	
 
-		FVector direction = orbSender->GetPawn()->GetActorLocation() - orbReceiver->GetPawn()->GetActorLocation();
-		direction.Normalize();
+		FVector SenderPosition = orbSender->GetPawn()->GetActorLocation();
+		FVector ReceiverPosition = orbReceiver->GetPawn()->GetActorLocation();
 
-		SetActorLocation(GetActorLocation() - direction * orbSpeed * DeltaTime);
+		float MaxDistance = FVector::Distance(SenderPosition, ReceiverPosition);
+		float CurrentDistance = FVector::Distance(GetActorLocation(), SenderPosition);
+
+		float DeltaDistance = LastDistance + orbSpeed * DeltaTime;
+
+		Alpha = DeltaDistance / MaxDistance;
+		Alpha = FMath::Clamp(Alpha, 0.F, 1.F);
+		
+		FVector LerpPosition = FMath::Lerp(SenderPosition,ReceiverPosition,Alpha);	
+
+		SetActorLocation(FVector(GetActorLocation().X,LerpPosition.Y,LerpPosition.Z));
+
+		LastDistance = CurrentDistance;
 	}
 }
 

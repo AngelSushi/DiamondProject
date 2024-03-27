@@ -5,7 +5,11 @@
 #include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
 
 
-UCameraDynamicBehavior::UCameraDynamicBehavior() {}
+UCameraDynamicBehavior::UCameraDynamicBehavior() {
+
+	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bStartWithTickEnabled = true;
+}
 
 void UCameraDynamicBehavior::BeginPlay() {
 	Super::BeginPlay();
@@ -50,7 +54,8 @@ void UCameraDynamicBehavior::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	if(_characters.Num() >= 2) {
-		
+		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, TEXT("Tick Component"));
+
 		_barycenter.Y = (_characters[0]->GetActorLocation().Y + _characters[1]->GetActorLocation().Y) / 2;
 		_barycenter.Z = (_characters[0]->GetActorLocation().Z + _characters[1]->GetActorLocation().Z) / 2;
 		_barycenter.X = Approach(_barycenter.X,OffsetX,250 * DeltaTime);
@@ -85,9 +90,7 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 			}
 
 			if (!SceneView->ViewFrustum.IntersectSphere(Center, character->GetSimpleCollisionRadius()) && _canExtend) {
-
 				OffsetX += 250.F;
-
 
 				for (auto& extendPosition : _extendPositions) {
 					if (FVector::Distance(extendPosition.position, Center) < 250.F) {
