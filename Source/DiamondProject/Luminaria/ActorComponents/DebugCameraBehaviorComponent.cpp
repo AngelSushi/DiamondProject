@@ -2,6 +2,8 @@
 #include "DiamondProject/Luminaria/Actors/LuminariaCamera.h"
 
 UDebugCameraBehaviorComponent::UDebugCameraBehaviorComponent() {
+
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void UDebugCameraBehaviorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {

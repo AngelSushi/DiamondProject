@@ -5,7 +5,10 @@
 #include "DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
 #include "SceneView.h"
 
-UCameraDefaultBehavior::UCameraDefaultBehavior(){}
+UCameraDefaultBehavior::UCameraDefaultBehavior(){
+
+	PrimaryComponentTick.bCanEverTick = true;
+}
 
 void UCameraDefaultBehavior::BeginPlay()
 {

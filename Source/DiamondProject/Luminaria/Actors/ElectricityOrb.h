@@ -16,6 +16,10 @@ private:
 	UPROPERTY()
 	bool _hasBeenSet;
 
+	float LastDistance;
+
+	float Alpha;
+
 public:	
 	AElectricityOrb();
 

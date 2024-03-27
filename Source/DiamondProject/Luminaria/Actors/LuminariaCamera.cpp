@@ -34,12 +34,11 @@ void ALuminariaCamera::OnPlayerRegister(ADiamondProjectCharacter* Character) {
 
 void ALuminariaCamera::AddComponent(TSubclassOf<class UCameraBehavior> Component, TFunction<void(UActorComponent* AddedComponent)> ResultFunc) {
 	if (LastBehaviorComponent) {
-		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Orange,FString::Printf(TEXT("Delete Component %s"),);
 		LastBehaviorComponent->DestroyComponent();
 	}
 
-	LastBehaviorComponent = AddComponentByClass(Component, false, GetActorTransform(), true);
-
+	LastBehaviorComponent = AddComponentByClass(Component, false, GetActorTransform(), false);
+	
 	ResultFunc(LastBehaviorComponent);
 }
 
@@ -60,8 +59,7 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character) {
 	CameraBehavior = ECameraBehavior::GOTO;
 
 	FTimerHandle Timer;
-	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, FString::FromInt(CurrentBehavior));
-
+	
 	AddComponent(UGoToBehavior::StaticClass(), [this,CurrentBehavior](UActorComponent* Component) {
 		if (UGoToBehavior* GoToBehaviorComponent = Cast<UGoToBehavior>(Component)) {
 			FVector GoTo = FVector::Zero();
@@ -73,8 +71,6 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character) {
 			GoTo /= Characters.Num();
 			GoTo.X = StartPosition.X;
 			GoTo.Z = StartPosition.Z;
-
-			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Orange, TEXT("Add Component"));
 
 			GoToBehaviorComponent->GoTo = GoTo;
 			GoToBehaviorComponent->Speed = 1000.F;
