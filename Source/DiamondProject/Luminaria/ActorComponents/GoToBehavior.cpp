@@ -8,6 +8,7 @@
 
 UGoToBehavior::UGoToBehavior() {
 	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bStartWithTickEnabled = true;
 }
 
 void UGoToBehavior::BeginPlay() {

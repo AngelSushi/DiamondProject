@@ -8,6 +8,7 @@
 UCameraDynamicBehavior::UCameraDynamicBehavior() {
 
 	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bStartWithTickEnabled = true;
 }
 
 void UCameraDynamicBehavior::BeginPlay() {
