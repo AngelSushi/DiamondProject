@@ -5,7 +5,10 @@
 #include "DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
 #include "SceneView.h"
 
-UCameraDefaultBehavior::UCameraDefaultBehavior(){}
+UCameraDefaultBehavior::UCameraDefaultBehavior(){
+
+	PrimaryComponentTick.bCanEverTick = true;
+}
 
 void UCameraDefaultBehavior::BeginPlay()
 {
@@ -48,7 +51,7 @@ void UCameraDefaultBehavior::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if (_characters.Num() >= 2) {
 		CalculateBarycenter();
-
+		
 		OwnerActor->SetActorLocation(_barycenter);
 	}
 }

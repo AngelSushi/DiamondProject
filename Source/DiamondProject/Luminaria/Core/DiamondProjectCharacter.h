@@ -1,5 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -30,6 +28,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateCheckpoint(ACheckpoint* checkpoint);
+
+	UFUNCTION()
+	void OnPlayerUpdateCheckpoint(ADiamondProjectCharacter* Character, ACheckpoint* Checkpoint);
+
+	UFUNCTION()
+	FVector GetCheckpoint() { return _checkPoint; }
+
 
 private:
 	/** Top down camera */
