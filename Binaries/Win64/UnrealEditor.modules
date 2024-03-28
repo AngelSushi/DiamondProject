@@ -1,0 +1,8 @@
+{
+	"BuildId": "27405482",
+	"Modules": 
+	{
+		"CustomLuminariaModule": "UnrealEditor-CustomLuminariaModule.dll",
+		"DiamondProject": "UnrealEditor-DiamondProject.dll"
+	}
+}
