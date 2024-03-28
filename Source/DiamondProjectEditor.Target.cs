@@ -12,6 +12,6 @@ public class DiamondProjectEditorTarget : TargetRules
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_3;
 		ExtraModuleNames.Add("DiamondProject");
 
-		ExtraModuleNames.AddRange(new string[] { "CustomLuminariaModule" });
+		//ExtraModuleNames.AddRange(new string[] { "CustomLuminariaModule" });
 	}
 }
