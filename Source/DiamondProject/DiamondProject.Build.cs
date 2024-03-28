@@ -12,7 +12,5 @@ public class DiamondProject : ModuleRules
 	        "InputCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput",
 	        "Slate", "EngineSettings", "ApplicationCore","SlateCore","UMG","ProceduralMeshComponent"
         });
-
-        PrivateDependencyModuleNames.AddRange(new string[] {"UnrealEd", "ComponentVisualizers" });
     }
 }

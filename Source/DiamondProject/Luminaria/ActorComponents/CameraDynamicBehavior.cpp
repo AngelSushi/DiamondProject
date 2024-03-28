@@ -54,7 +54,6 @@ void UCameraDynamicBehavior::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	if(_characters.Num() >= 2) {
-		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, TEXT("Tick Component"));
 
 		_barycenter.Y = (_characters[0]->GetActorLocation().Y + _characters[1]->GetActorLocation().Y) / 2;
 		_barycenter.Z = (_characters[0]->GetActorLocation().Z + _characters[1]->GetActorLocation().Z) / 2;

@@ -20,8 +20,6 @@ void UGoToBehavior::BeginPlay() {
 void UGoToBehavior::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, TEXT("Tick Component GoTo"));
-
 	if (!Approach(_barycenter, GoTo, Speed * DeltaTime)) {
 		OwnerActor->SetActorLocation(_barycenter);
 	}
