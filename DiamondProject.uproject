@@ -10,15 +10,9 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine",
-				"CoreUObject",
-				"UnrealEd"
+				"CoreUObject"
 			]
-		},
-  		{
-    			"Name": "CustomLuminariaModule",
-				"Type": "Editor",
-    			"LoadingPhase": "PostEngineInit"
-  		}
+		}
 	],
 	"Plugins": [
 		{
@@ -28,5 +22,8 @@
 				"Editor"
 			]
 		}
+	],
+	"TargetPlatforms": [
+		"Windows"
 	]
 }
