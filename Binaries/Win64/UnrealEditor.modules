@@ -3,6 +3,6 @@
 	"Modules": 
 	{
 		"CustomLuminariaModule": "UnrealEditor-CustomLuminariaModule.dll",
-		"DiamondProject": "UnrealEditor-DiamondProject-3166.dll"
+		"DiamondProject": "UnrealEditor-DiamondProject.dll"
 	}
 }
