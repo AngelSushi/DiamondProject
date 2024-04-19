@@ -35,7 +35,7 @@ void ADiamondProjectCharacter::BeginPlay() {
 	Super::BeginPlay();
 	
 	PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
-	PlayerEventsDispatcher->OnPlayerRegister.Broadcast(this);
+	PlayerEventsDispatcher->RegisterPlayer(this);
 
 	PlayerEventsDispatcher->OnPlayerUpdateCheckpoint.AddDynamic(this, &ADiamondProjectCharacter::OnPlayerUpdateCheckpoint);
 
