@@ -22,10 +22,10 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UBoxComponent> boxCollision;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TArray<AMecanismActivator*> MecanismActivators;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TArray<AMecanismRewardActor*> MecanismResults;
 
 	UFUNCTION()

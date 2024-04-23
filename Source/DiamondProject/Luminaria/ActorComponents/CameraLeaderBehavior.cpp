@@ -4,8 +4,11 @@
 #include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 
-UCameraLeaderBehavior::UCameraLeaderBehavior()
-{}
+
+UCameraLeaderBehavior::UCameraLeaderBehavior() {
+
+	PrimaryComponentTick.bCanEverTick = true;
+}
 
 void UCameraLeaderBehavior::BeginPlay()
 {

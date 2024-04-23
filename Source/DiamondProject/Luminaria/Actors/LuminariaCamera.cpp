@@ -1,6 +1,82 @@
 #include "LuminariaCamera.h"
+#include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
+#include "DiamondProject/Luminaria/ActorComponents/GoToBehavior.h"
+#include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 
-void ALuminariaCamera::BeginPlay()
-{
+#include "DiamondProject/Luminaria/ActorComponents/CameraDefaultBehavior.h"
+#include "DiamondProject/Luminaria/ActorComponents/CameraLeaderBehavior.h"
+#include "DiamondProject/Luminaria/ActorComponents/CameraDynamicBehavior.h"
+#include "DiamondProject/Luminaria/ActorComponents/GoToBehavior.h"
+
+ALuminariaCamera::ALuminariaCamera() {
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+void ALuminariaCamera::BeginPlay() {
 	Super::BeginPlay();
+
+	UPlayerEventsDispatcher* EventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
+	EventsDispatcher->OnPlayerRegister.AddDynamic(this, &ALuminariaCamera::OnPlayerRegister);
+	EventsDispatcher->OnPlayerDeath.AddDynamic(this, &ALuminariaCamera::OnPlayerDeath);
+
+	StartPosition = GetActorLocation();
+
+	LastBehavior = CameraBehavior;
+}
+
+// Utiliser Lerp et InverseLerp pour faire le zoomMax et la distanceMax du lien
+
+void ALuminariaCamera::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+}
+
+void ALuminariaCamera::OnPlayerRegister(ADiamondProjectCharacter* Character) {
+	Characters.Add(Character);
+}
+
+void ALuminariaCamera::AddComponent(TSubclassOf<class UCameraBehavior> Component, TFunction<void(UActorComponent* AddedComponent)> ResultFunc) {
+	if (LastBehaviorComponent) {
+		LastBehaviorComponent->DestroyComponent();
+	}
+
+	LastBehaviorComponent = AddComponentByClass(Component, false, GetActorTransform(), false);
+	
+	ResultFunc(LastBehaviorComponent);
+}
+
+
+void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character) {
+	ECameraBehavior CurrentBehavior = CameraBehavior;
+
+	if (CurrentBehavior == ECameraBehavior::DEFAULT) {
+		return;
+	}
+
+	if (bHasDead) {
+		return;
+	}
+	
+	bHasDead = true;
+
+	CameraBehavior = ECameraBehavior::GOTO;
+
+	FTimerHandle Timer;
+	
+	AddComponent(UGoToBehavior::StaticClass(), [this,CurrentBehavior](UActorComponent* Component) {
+		if (UGoToBehavior* GoToBehaviorComponent = Cast<UGoToBehavior>(Component)) {
+			FVector GoTo = FVector::Zero();
+
+			for (ADiamondProjectCharacter* ACharacter : Characters) {
+				GoTo += ACharacter->GetActorLocation();
+			}
+
+			GoTo /= Characters.Num();
+			GoTo.X = StartPosition.X;
+			GoTo.Z = StartPosition.Z;
+
+			GoToBehaviorComponent->GoTo = GoTo;
+			GoToBehaviorComponent->Speed = 1000.F;
+			GoToBehaviorComponent->NextBehavior = CurrentBehavior;
+		}
+	});
 }

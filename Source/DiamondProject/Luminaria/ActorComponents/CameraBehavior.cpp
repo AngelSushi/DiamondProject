@@ -39,17 +39,7 @@ void UCameraBehavior::CalculateBarycenter() {
 	FVector Second = _characters[1]->GetActorLocation();
 
 	float divider = 2.F;
-
-	if (!_characters[0]->GetMesh()->IsVisible()) {
-		First = FVector::Zero();
-		divider -= 1.F;
-	}
-
-	if (!_characters[1]->GetMesh()->IsVisible()) {
-		Second = FVector::Zero();
-		divider -= 1.F;
-	}
-
+		
 	_barycenter = (First + Second) / divider;
 
 	_barycenter += FVector(0, 0, 45.F);
