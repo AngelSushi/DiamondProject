@@ -21,11 +21,13 @@ void UGoToBehavior::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	if (!Approach(_barycenter, GoTo, Speed * DeltaTime)) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Try to Approach"));
 		OwnerActor->SetActorLocation(_barycenter);
 	}
 	else {
 		OwnerActor->SetActorLocation(GoTo);
 		OwnerActor->CameraBehavior = NextBehavior;
+		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Finish Approach"));
 
 		switch (NextBehavior) {
 			case ECameraBehavior::DEFAULT:

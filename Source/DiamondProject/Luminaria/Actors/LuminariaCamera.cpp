@@ -24,6 +24,8 @@ void ALuminariaCamera::BeginPlay() {
 	LastBehavior = CameraBehavior;
 }
 
+// Utiliser Lerp et InverseLerp pour faire le zoomMax et la distanceMax du lien
+
 void ALuminariaCamera::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 }
