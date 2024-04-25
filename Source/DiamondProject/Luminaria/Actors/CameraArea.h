@@ -19,11 +19,18 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UBoxComponent> BoxCollision;
 
+	UPROPERTY(EditAnywhere)
+	uint16 ZoomMin;
+
+	UPROPERTY(EditAnywhere)
+	uint16 ZoomMax;
+
+	UPROPERTY(VisibleAnywhere)
+	FVector2D MinPosition;
+
 	UPROPERTY(VisibleAnywhere)
 	FVector2D MaxPosition;
 
-	UPROPERTY(VisibleAnywhere)
-	FVector2D MinPosition;	
 
 protected:
 	virtual void BeginPlay() override;

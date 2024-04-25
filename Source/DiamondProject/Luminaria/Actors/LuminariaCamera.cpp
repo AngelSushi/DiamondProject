@@ -1,12 +1,12 @@
 #include "LuminariaCamera.h"
 #include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
-#include "DiamondProject/Luminaria/ActorComponents/GoToBehavior.h"
+#include "DiamondProject/Luminaria/CameraBehaviors/GoToBehavior.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 
-#include "DiamondProject/Luminaria/ActorComponents/CameraDefaultBehavior.h"
-#include "DiamondProject/Luminaria/ActorComponents/CameraLeaderBehavior.h"
-#include "DiamondProject/Luminaria/ActorComponents/CameraDynamicBehavior.h"
-#include "DiamondProject/Luminaria/ActorComponents/GoToBehavior.h"
+#include "DiamondProject/Luminaria/CameraBehaviors/CameraDefaultBehavior.h"
+#include "DiamondProject/Luminaria/CameraBehaviors/CameraLeaderBehavior.h"
+#include "DiamondProject/Luminaria/CameraBehaviors/CameraDynamicBehavior.h"
+#include "DiamondProject/Luminaria/CameraBehaviors/GoToBehavior.h"
 
 ALuminariaCamera::ALuminariaCamera() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -21,32 +21,80 @@ void ALuminariaCamera::BeginPlay() {
 
 	StartPosition = GetActorLocation();
 
-	LastBehavior = CameraBehavior;
+	InitBehavior();
+}
+
+void ALuminariaCamera::InitBehavior() {
+	switch (BehaviorState) {
+		case ECameraBehavior::DEFAULT:
+			SwitchBehavior(UCameraDefaultBehavior::StaticClass());
+			break;
+
+		case ECameraBehavior::DYNAMIC:
+			SwitchBehavior(UCameraDynamicBehavior::StaticClass());
+			break;
+
+		case ECameraBehavior::GOTO:
+			SwitchBehavior(UGoToBehavior::StaticClass());
+			break;
+
+		case ECameraBehavior::LEADER:
+			SwitchBehavior(UCameraLeaderBehavior::StaticClass());
+			break;
+	}
 }
 
 // Utiliser Lerp et InverseLerp pour faire le zoomMax et la distanceMax du lien
 
 void ALuminariaCamera::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+
+	if (CameraBehavior) {
+		CameraBehavior->TickBehavior(DeltaTime);
+	}
 }
 
 void ALuminariaCamera::OnPlayerRegister(ADiamondProjectCharacter* Character) {
 	Characters.Add(Character);
 }
 
-void ALuminariaCamera::AddComponent(TSubclassOf<class UCameraBehavior> Component, TFunction<void(UActorComponent* AddedComponent)> ResultFunc) {
-	if (LastBehaviorComponent) {
-		LastBehaviorComponent->DestroyComponent();
+void ALuminariaCamera::SwitchBehavior(TSubclassOf<class UCameraBehavior> Behavior, TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc /*= [](UCameraBehavior* CameraBehavior) {}*/) {
+
+	if (CameraBehavior && CameraBehavior->GetClass() == Behavior) {
+		UE_LOG(LogTemp, Error, TEXT("The camera has already this behavior."));
+		return;
 	}
 
-	LastBehaviorComponent = AddComponentByClass(Component, false, GetActorTransform(), false);
-	
-	ResultFunc(LastBehaviorComponent);
+	//CameraBehavior = NewObject<UCameraBehavior>(Behavior); Doesn't work with child functions
+
+	switch (BehaviorState) {
+		case ECameraBehavior::DEFAULT:
+			DefaultBehavior = NewObject<UCameraDefaultBehavior>(Behavior);
+			CameraBehavior = DefaultBehavior;
+			break;
+
+		case ECameraBehavior::DYNAMIC:
+			DynamicBehavior = NewObject<UCameraDynamicBehavior>(Behavior);
+			CameraBehavior = DynamicBehavior;
+			break;
+
+		case ECameraBehavior::GOTO:
+			GoToBehavior = NewObject<UGoToBehavior>(Behavior);
+			CameraBehavior = GoToBehavior;
+			break;
+
+		case ECameraBehavior::LEADER:
+			LeaderBehavior = NewObject<UCameraLeaderBehavior>(Behavior);
+			CameraBehavior = LeaderBehavior;
+			break;
+	}
+
+	CameraBehavior->BeginBehavior(this);
+	ResultFunc(CameraBehavior);
 }
 
-
 void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character) {
-	ECameraBehavior CurrentBehavior = CameraBehavior;
+	ECameraBehavior CurrentBehavior = BehaviorState;
 
 	if (CurrentBehavior == ECameraBehavior::DEFAULT) {
 		return;
@@ -58,11 +106,11 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character) {
 	
 	bHasDead = true;
 
-	CameraBehavior = ECameraBehavior::GOTO;
+	BehaviorState = ECameraBehavior::GOTO;
 
 	FTimerHandle Timer;
 	
-	AddComponent(UGoToBehavior::StaticClass(), [this,CurrentBehavior](UActorComponent* Component) {
+	SwitchBehavior(UGoToBehavior::StaticClass(), [this,CurrentBehavior](UCameraBehavior* Component) {
 		if (UGoToBehavior* GoToBehaviorComponent = Cast<UGoToBehavior>(Component)) {
 			FVector GoTo = FVector::Zero();
 

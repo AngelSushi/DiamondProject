@@ -57,7 +57,7 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	{
 		if (bCanFlip == true) 
 		{
-			GetPawn()->SetActorRotation(FRotator(0, 90, 0), ETeleportType::None);
+			GetPawn()->SetActorRotation(FRotator(0, -90, 0), ETeleportType::None);
 
 		}
 
@@ -70,7 +70,7 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	{
 		if (bCanFlip == true)
 		{
-			GetPawn()->SetActorRotation(FRotator(0, -90, 0), ETeleportType::None);
+			GetPawn()->SetActorRotation(FRotator(0, 90, 0), ETeleportType::None);
 
 		}
 		/*if (bIsLookingLeft == true)

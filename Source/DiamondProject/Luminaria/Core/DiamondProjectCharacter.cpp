@@ -10,18 +10,18 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "DiamondProject/Luminaria/Actors/Checkpoint.h"
+#include "DiamondProject/Luminaria/Actors/CameraArea.h"
+#include "Kismet/GameplayStatics.h"
+#include "DiamondProject/Luminaria/Actors/LuminariaCamera.h"
 
-ADiamondProjectCharacter::ADiamondProjectCharacter()
-{
-	// Set size for player capsule
+ADiamondProjectCharacter::ADiamondProjectCharacter(){
+	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
-	// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Rotate character to moving direction
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
@@ -40,6 +40,10 @@ void ADiamondProjectCharacter::BeginPlay() {
 	PlayerEventsDispatcher->OnPlayerUpdateCheckpoint.AddDynamic(this, &ADiamondProjectCharacter::OnPlayerUpdateCheckpoint);
 
 	_checkPoint = GetActorLocation();
+
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ADiamondProjectCharacter::OnBeginOverlap);
+
+	MainCamera = Cast<ALuminariaCamera>(UGameplayStatics::GetActorOfClass(GetWorld(), ALuminariaCamera::StaticClass()));
 }
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
@@ -47,19 +51,10 @@ void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
 }
 
 void ADiamondProjectCharacter::Death() {
-//	GetMesh()->SetVisibility(false);
-
 	FTimerHandle RespawnTimer;
 
 	if (_checkPoint != FVector::Zero()) {
 		SetActorLocation(_checkPoint);
-
-		/*GetWorld()->GetTimerManager().SetTimer(RespawnTimer, [this, &RespawnTimer]() {
-			SetActorLocation(_checkPoint);
-			GetMesh()->SetVisibility(true);
-			GetWorld()->GetTimerManager().ClearTimer(RespawnTimer);
-		}, 3.F, false);
-		*/
 	}
 	
 	PlayerEventsDispatcher->OnPlayerDeath.Broadcast(this);
@@ -73,5 +68,11 @@ void ADiamondProjectCharacter::UpdateCheckpoint(ACheckpoint* checkpoint) {
 void ADiamondProjectCharacter::OnPlayerUpdateCheckpoint(ADiamondProjectCharacter* Character, ACheckpoint* Checkpoint) {
 	if (Character != this) {
 		_checkPoint = Checkpoint->checkPoint->GetComponentLocation();
+	}
+}
+
+void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	if (ACameraArea* HitArea = Cast<ACameraArea>(OtherActor)) {
+		MainCamera->CurrentArea = HitArea;
 	}
 }
