@@ -12,15 +12,16 @@ struct  DIAMONDPROJECT_API FExtendData {
 	GENERATED_BODY()
 
 public:
-	FVector position;
-	FVector direction;
-	uint8 id;
+	FVector Position;
+	FVector Direction;
+	uint8 Id;
+	float Offset;
 
-	FExtendData() : position(FVector::ZeroVector), direction(FVector::ZeroVector), id(0) {}
-	FExtendData(const FVector& Position, const FVector& Direction,const int Id): position(Position), direction(Direction),id(Id) {}
+	FExtendData() : Position(FVector::ZeroVector), Direction(FVector::ZeroVector), Id(0), Offset(0) {}
+	FExtendData(const FVector& Position, const FVector& Direction,const int Id,const float Offset): Position(Position), Direction(Direction),Id(Id),Offset(Offset) {}
 	
 	bool operator==(const FExtendData& other) const {
-		return position == other.position && direction == other.direction && id == other.id;
+		return Position == other.Position && Direction == other.Direction && Id == other.Id && Offset == other.Offset;
 	}
 
 };
@@ -36,9 +37,6 @@ public:
 	
 	virtual void TickBehavior(float DeltaTime) override;
 
-protected:
-	void CameraBlock() override;
-
 private:
 	UPROPERTY()
 	float OffsetX;
@@ -48,7 +46,4 @@ private:
 
 	UFUNCTION()
 	void CalculateOffsideFrustumOffset(ADiamondProjectCharacter* character, FVector direction);
-
-	UFUNCTION()
-	float Approach(float Current, float Target, float Incr);
 };

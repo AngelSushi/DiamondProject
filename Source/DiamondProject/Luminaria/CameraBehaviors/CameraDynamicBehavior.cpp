@@ -2,17 +2,16 @@
 
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 #include "DiamondProject/Luminaria/Actors/LuminariaCamera.h"
-#include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
+#include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
 #include "DiamondProject/Luminaria/Actors/CameraArea.h"
+#include "DiamondProject/Luminaria/CameraBehaviors/HeightCameraBehavior.h"
 
 void UCameraDynamicBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	Super::BeginBehavior(Owner);
 	
-	PlayerEventsDispatcher->OnPlayerMove.AddDynamic(this, &UCameraDynamicBehavior::OnPlayerMove);
+	PlayerManager->OnPlayerMove.AddDynamic(this, &UCameraDynamicBehavior::OnPlayerMove);
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, TEXT("Begin Behavior Dynamic"));
-
-	OffsetX = _defaultY;
+	OffsetX = DefaultY;
 	_barycenter.X = OffsetX;
 }
 
@@ -24,14 +23,14 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 
 	if (_extendPositions.Num() > 0) {
 		_extendPositions.RemoveAll([this, &character, &direction](const FExtendData& extendData) {
-			FVector ExtendToPlayer = extendData.position - character->GetActorLocation();
-			FVector Forward = extendData.direction;
+			FVector ExtendToPlayer = extendData.Position - character->GetActorLocation();
+			FVector Forward = extendData.Direction;
 
 			float angle = FVector::DotProduct(ExtendToPlayer, Forward);
-			float Distance = FVector::Distance(extendData.position, character->GetActorLocation());
+			float Distance = FVector::Distance(extendData.Position, character->GetActorLocation());
 
-			if (angle < 0 && Forward == -direction && Distance < 250.F) {
-				OffsetX += 250.F;
+			if (angle < 0 && Forward == -direction && Distance < 100.F) {
+				OffsetX += FMath::Abs(extendData.Offset);
 				return true;
 			}
 			
@@ -45,33 +44,35 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 	Super::TickBehavior(DeltaTime);
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, TEXT("Tick Behavior Dynamic"));
-
-	if(PlayerEventsDispatcher->Characters.Num() >= 2) {
+	if(PlayerManager->Characters.Num() >= 2) {
 
 		if (!bBlock) {
-			_barycenter.Y = (PlayerEventsDispatcher->Characters[0]->GetActorLocation().Y + PlayerEventsDispatcher->Characters[1]->GetActorLocation().Y) / 2;
-			_barycenter.Z = (PlayerEventsDispatcher->Characters[0]->GetActorLocation().Z + PlayerEventsDispatcher->Characters[1]->GetActorLocation().Z) / 2;
-			_barycenter.X = Approach(_barycenter.X, OffsetX, 250 * DeltaTime);
+			float ToApproachY = (PlayerManager->Characters[0]->GetActorLocation().Y + PlayerManager->Characters[1]->GetActorLocation().Y) / 2;
+
+			if (_barycenter.Y == 0.F) {
+				_barycenter.Y = ToApproachY;
+			}
+
+			_barycenter.Y = Approach(_barycenter.Y, ToApproachY,350 * DeltaTime);
+			_barycenter.Z = DefaultZ;
+			_barycenter.X = Approach(_barycenter.X, OffsetX, 350 * DeltaTime);
+
+
+			DefaultZ = OwnerActor->GetActorLocation().Z;
+		}
+		else {
+
 		}
 
-		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, FString::Printf(TEXT("Barycenter %s"), *_barycenter.ToString()));
 		OwnerActor->SetActorLocation(_barycenter);
 
 		if (OwnerActor->bDebugCamera) {
 			for (auto& extendPosition : _extendPositions) {
-				DrawDebugLine(GetWorld(), extendPosition.position, extendPosition.position + FVector::UpVector * 250.f, FColor::White, false, 1.F, 1, 2.F);
-				DrawDebugLine(GetWorld(), extendPosition.position, extendPosition.position + extendPosition.direction * 150.f, FColor::Green, false, 1.F, 1, 2.F);
+				DrawDebugLine(OwnerActor->GetWorld(), extendPosition.Position, extendPosition.Position + FVector::UpVector * 250.f, FColor::White, false, 1.F, 1, 2.F);
+				DrawDebugLine(OwnerActor->GetWorld(), extendPosition.Position, extendPosition.Position + extendPosition.Direction * 150.f, FColor::Green, false, 1.F, 1, 2.F);
 			}
 		}
 	}
-}
-
-void UCameraDynamicBehavior::CameraBlock() {
-	Super::CameraBlock();
-
-	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, TEXT("Camera Block"));
-	OffsetX = _barycenter.X;
 }
 
 void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharacter* character,FVector direction) {
@@ -93,34 +94,40 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 			FVector PlayerCenter = character->GetActorLocation();
 
 			if (OwnerActor->bDebugCamera) {
-				DrawDebugSphere(GetWorld(), Center, character->GetSimpleCollisionRadius(), 8, FColor::Green, false, 1.F, 1, 3.F);
-				DrawDebugSphere(GetWorld(), PlayerCenter, character->GetSimpleCollisionRadius(), 8, FColor::Red, false, 1.F, 1, 3.F);
+				DrawDebugSphere(OwnerActor->GetWorld(), Center, character->GetSimpleCollisionRadius(), 8, FColor::Green, false, 1.F, 1, 3.F);
+				DrawDebugSphere(OwnerActor->GetWorld(), PlayerCenter, character->GetSimpleCollisionRadius(), 8, FColor::Red, false, 1.F, 1, 3.F);
 			}
 
-			if (!SceneView->ViewFrustum.IntersectSphere(Center, character->GetSimpleCollisionRadius()) && SceneView->ViewFrustum.IntersectSphere(PlayerCenter, character->GetSimpleCollisionRadius())) {
+			if (!SceneView->ViewFrustum.IntersectSphere(Center, character->GetSimpleCollisionRadius())   && SceneView->ViewFrustum.IntersectSphere(PlayerCenter, character->GetSimpleCollisionRadius())) {
+
+				Center.Y = character->GetActorLocation().Y;
+
 				for (auto& extendPosition : _extendPositions) {
-					if (FVector::Distance(extendPosition.position, Center) < 250.F) {
+					if (FVector::Distance(extendPosition.Position,Center) < 250.F) {
 						return;
 					}
 				}
 
-				OffsetX -= 250.F;
-				Center.Y = character->GetActorLocation().Y;
-				_extendPositions.Add(FExtendData(Center, direction,_extendPositions.Num()));
+				float DistanceToLeftBorder = FMath::Abs(character->GetActorLocation().Y - OwnerActor->CurrentArea->MinPosition.X);
+				float DistanceToRightBorder = FMath::Abs(OwnerActor->CurrentArea->MaxPosition.X - character->GetActorLocation().Y);
+				float Offset = 0.F;
+
+				if (DistanceToLeftBorder <= 250.F) {
+					Offset = DistanceToLeftBorder;
+				}
+				else if (DistanceToRightBorder <= 250.F) {
+					Offset = DistanceToRightBorder;
+				}
+				else {
+					Offset = 250.F;
+				}
+
+				OffsetX -= Offset;
+
+				_extendPositions.Add(FExtendData(Center, direction, _extendPositions.Num(),Offset));
 			}
 		}
 	}
-}
-
-float UCameraDynamicBehavior::Approach(float Current, float Target, float Incr) {
-	if (Current < Target) {
-		return FMath::Min(Current + Incr, Target);
-	}
-	else if (Current > Target) {
-		return FMath::Max(Current - Incr, Target);
-	}
-	else
-		return Target;
 }
 
 

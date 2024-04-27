@@ -57,6 +57,9 @@ public:
 	UPROPERTY()
 	TObjectPtr<class UCameraLeaderBehavior> LeaderBehavior;
 
+	UPROPERTY()
+	TObjectPtr<class UHeightCameraBehavior> HeightBehavior;
+
 	/* State Machine Functions */
 
 	void SwitchBehavior(TSubclassOf<class UCameraBehavior> Component,TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc = [](UCameraBehavior* CameraBehavior) {});

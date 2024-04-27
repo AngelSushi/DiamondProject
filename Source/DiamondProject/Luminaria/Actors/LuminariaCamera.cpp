@@ -1,5 +1,5 @@
 #include "LuminariaCamera.h"
-#include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
+#include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
 #include "DiamondProject/Luminaria/CameraBehaviors/GoToBehavior.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 
@@ -7,6 +7,9 @@
 #include "DiamondProject/Luminaria/CameraBehaviors/CameraLeaderBehavior.h"
 #include "DiamondProject/Luminaria/CameraBehaviors/CameraDynamicBehavior.h"
 #include "DiamondProject/Luminaria/CameraBehaviors/GoToBehavior.h"
+#include "DiamondProject/Luminaria/CameraBehaviors/HeightCameraBehavior.h"
+
+#include "DiamondProject/Luminaria/Actors/CameraArea.h"
 
 ALuminariaCamera::ALuminariaCamera() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -15,9 +18,9 @@ ALuminariaCamera::ALuminariaCamera() {
 void ALuminariaCamera::BeginPlay() {
 	Super::BeginPlay();
 
-	UPlayerEventsDispatcher* EventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
-	EventsDispatcher->OnPlayerRegister.AddDynamic(this, &ALuminariaCamera::OnPlayerRegister);
-	EventsDispatcher->OnPlayerDeath.AddDynamic(this, &ALuminariaCamera::OnPlayerDeath);
+	UPlayerManager* PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
+	PlayerManager->OnPlayerRegister.AddDynamic(this, &ALuminariaCamera::OnPlayerRegister);
+	PlayerManager->OnPlayerDeath.AddDynamic(this, &ALuminariaCamera::OnPlayerDeath);
 
 	StartPosition = GetActorLocation();
 
@@ -51,6 +54,10 @@ void ALuminariaCamera::Tick(float DeltaTime) {
 
 	if (CameraBehavior) {
 		CameraBehavior->TickBehavior(DeltaTime);
+	
+		if (HeightBehavior) {
+			HeightBehavior->TickBehavior(DeltaTime);
+		}
 	}
 }
 
@@ -75,6 +82,7 @@ void ALuminariaCamera::SwitchBehavior(TSubclassOf<class UCameraBehavior> Behavio
 
 		case ECameraBehavior::DYNAMIC:
 			DynamicBehavior = NewObject<UCameraDynamicBehavior>(Behavior);
+			HeightBehavior = NewObject<UHeightCameraBehavior>(Behavior);
 			CameraBehavior = DynamicBehavior;
 			break;
 
@@ -90,6 +98,11 @@ void ALuminariaCamera::SwitchBehavior(TSubclassOf<class UCameraBehavior> Behavio
 	}
 
 	CameraBehavior->BeginBehavior(this);
+
+	if (HeightBehavior) {
+		HeightBehavior->BeginBehavior(this);
+	}
+
 	ResultFunc(CameraBehavior);
 }
 

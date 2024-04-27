@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
-#include "PlayerEventsDispatcher.generated.h"
+#include "PlayerManager.generated.h"
 
 class ADiamondProjectCharacter;
 class ACheckpoint;
@@ -11,10 +11,10 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPlayerMove,ADiamondProjectChar
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerRegister,ADiamondProjectCharacter*,Character);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerDeath,ADiamondProjectCharacter*,Character);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerUpdateCheckpoint, ADiamondProjectCharacter*, Character, ACheckpoint*, Checkpoint);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerLandOnGround, ADiamondProjectCharacter*, Character);
 
 UCLASS()	
-class DIAMONDPROJECT_API UPlayerEventsDispatcher : public UWorldSubsystem
-{
+class DIAMONDPROJECT_API UPlayerManager : public UWorldSubsystem {
 	GENERATED_BODY()
 
 public:
@@ -31,8 +31,14 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	FOnPlayerUpdateCheckpoint OnPlayerUpdateCheckpoint;
 
+	UPROPERTY(VisibleAnywhere)
+	FOnPlayerLandOnGround OnPlayerLandOnGround;
+
 	UFUNCTION()
 	void RegisterPlayer(ADiamondProjectCharacter* Character);
+
+	UFUNCTION()
+	ADiamondProjectCharacter* GetOtherPlayer(ADiamondProjectCharacter* Character);
 
 	UPROPERTY()
 	TArray<ADiamondProjectCharacter*> Characters;

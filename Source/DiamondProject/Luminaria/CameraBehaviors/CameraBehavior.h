@@ -40,16 +40,19 @@ public:
 
 protected:
 	UPROPERTY()
-	float _defaultY;
+	float DefaultY;
 
 	UPROPERTY()
-	TObjectPtr<class UPlayerEventsDispatcher> PlayerEventsDispatcher;
+	float DefaultZ;
+
+	UPROPERTY()
+	TObjectPtr<class UPlayerManager> PlayerManager;
 
 	UPROPERTY()
 	bool bBlock;
 
 	UFUNCTION()
-	virtual void CameraBlock();
+	float Approach(float Current, float Target, float Incr);
 
 private:
 	UFUNCTION()

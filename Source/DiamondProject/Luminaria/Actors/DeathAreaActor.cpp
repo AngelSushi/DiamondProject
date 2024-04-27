@@ -1,7 +1,6 @@
 #include "DiamondProject/Luminaria/Actors/DeathAreaActor.h"
 #include "Components/BoxComponent.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
-#include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
 #include "DiamondProject/Luminaria/ActorComponents/DeathComponent.h"
 
 ADeathAreaActor::ADeathAreaActor() {

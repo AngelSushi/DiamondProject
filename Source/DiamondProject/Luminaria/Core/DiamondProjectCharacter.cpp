@@ -2,7 +2,7 @@
 
 #include "DiamondProjectCharacter.h"
 
-#include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
+#include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -34,10 +34,10 @@ ADiamondProjectCharacter::ADiamondProjectCharacter(){
 void ADiamondProjectCharacter::BeginPlay() {
 	Super::BeginPlay();
 	
-	PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
-	PlayerEventsDispatcher->RegisterPlayer(this);
+	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
+	PlayerManager->RegisterPlayer(this);
 
-	PlayerEventsDispatcher->OnPlayerUpdateCheckpoint.AddDynamic(this, &ADiamondProjectCharacter::OnPlayerUpdateCheckpoint);
+	PlayerManager->OnPlayerUpdateCheckpoint.AddDynamic(this, &ADiamondProjectCharacter::OnPlayerUpdateCheckpoint);
 
 	_checkPoint = GetActorLocation();
 
@@ -48,6 +48,32 @@ void ADiamondProjectCharacter::BeginPlay() {
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
     Super::Tick(DeltaSeconds);
+
+	// Raycast pour détecter s'il est sur le ground ou pas 
+
+	check(GetWorld());
+	TArray<FHitResult> HitResults;
+
+	FVector Start = GetActorLocation() + FVector::DownVector * GetSimpleCollisionRadius() / 2 * 3.5F;
+	FVector End = Start + FVector::DownVector * 50.F;
+
+	DrawDebugSphere(GetWorld(), Start, 10, 25, FColor::Orange);
+	DrawDebugLine(GetWorld(), Start, End, FColor::Orange);
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+	Params.AddIgnoredActor(MainCamera->CurrentArea);
+
+	GetWorld()->LineTraceMultiByChannel(HitResults, Start, End, ECollisionChannel::ECC_Visibility,Params);
+
+	bIsOnGround = HitResults.Num() > 0;
+
+	if (bIsOnGround && !bIsOnGroundLastTick) {
+		GroundActor = HitResults[0].GetActor();
+		PlayerManager->OnPlayerLandOnGround.Broadcast(this);
+	}
+
+	bIsOnGroundLastTick = bIsOnGround;
 }
 
 void ADiamondProjectCharacter::Death() {
@@ -57,12 +83,12 @@ void ADiamondProjectCharacter::Death() {
 		SetActorLocation(_checkPoint);
 	}
 	
-	PlayerEventsDispatcher->OnPlayerDeath.Broadcast(this);
+	PlayerManager->OnPlayerDeath.Broadcast(this);
 }
 
 void ADiamondProjectCharacter::UpdateCheckpoint(ACheckpoint* checkpoint) {
 	_checkPoint = checkpoint->checkPoint->GetComponentLocation();
-	PlayerEventsDispatcher->OnPlayerUpdateCheckpoint.Broadcast(this, checkpoint);
+	PlayerManager->OnPlayerUpdateCheckpoint.Broadcast(this, checkpoint);
 }
 
 void ADiamondProjectCharacter::OnPlayerUpdateCheckpoint(ADiamondProjectCharacter* Character, ACheckpoint* Checkpoint) {

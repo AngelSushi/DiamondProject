@@ -7,7 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
-#include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
+#include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
 #include "Engine/LocalPlayer.h"
 
 
@@ -29,7 +29,7 @@ void ADiamondProjectPlayerController::BeginPlay()
 		Subsystem->AddMappingContext(PlayerMappingContext, 0);
 	}
 
-	PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
+	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
 }
 
 
@@ -102,7 +102,7 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 
 	
 	bool isCanceled = false;
-	PlayerEventsDispatcher->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()), MovementDirection, isCanceled);
+	PlayerManager->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()), MovementDirection, isCanceled);
 
 	if (isCanceled) {
 		return;

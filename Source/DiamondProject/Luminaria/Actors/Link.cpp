@@ -1,5 +1,5 @@
 #include "DiamondProject/Luminaria/Actors/Link.h"
-#include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
+#include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 
 #include "Kismet/KismetMathLibrary.h"
@@ -16,8 +16,8 @@ ALink::ALink() {
 void ALink::BeginPlay() {
 	Super::BeginPlay();
 
-	UPlayerEventsDispatcher* PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
-	PlayerEventsDispatcher->OnPlayerRegister.AddDynamic(this, &ALink::RegisterPlayer);
+	UPlayerManager* PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
+	PlayerManager->OnPlayerRegister.AddDynamic(this, &ALink::RegisterPlayer);
 }
 
 void ALink::RegisterPlayer(ADiamondProjectCharacter* character) {

@@ -2,42 +2,43 @@
 #include "CameraBehavior.h"
 #include "DiamondProject/Luminaria/Actors/LuminariaCamera.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
-#include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
+#include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
 #include "DiamondProject/Luminaria/Actors/CameraArea.h"
 
 void UCameraBehavior::BeginBehavior(ALuminariaCamera* Owner) {
-	PlayerEventsDispatcher = Owner->GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
+	PlayerManager = Owner->GetWorld()->GetSubsystem<UPlayerManager>();
 
 	OwnerActor = Owner;
 
-	_defaultY = OwnerActor->GetActorLocation().X;
+	DefaultY = OwnerActor->GetActorLocation().X;
+	DefaultZ = OwnerActor->GetActorLocation().Z;
 }
 
 void UCameraBehavior::TickBehavior(float DeltaTime) {
+	if (!OwnerActor->CurrentArea) {
+		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, TEXT("No Area Found"));
+		return;
+	}
 
 	FVector SphereCenter = OwnerActor->CurrentArea->GetActorLocation();
 	SphereCenter.Y = OwnerActor->CurrentArea->MinPosition.X;
-
+	
 	if (OwnerActor->bDebugCamera) {
-		DrawDebugSphere(GetWorld(), SphereCenter, 30.f, 8, FColor::Yellow, false, 1.F, 1, 3.F);
+		DrawDebugSphere(OwnerActor->GetWorld(), SphereCenter, 30.f, 8, FColor::Yellow, false, 1.F, 1, 3.F);
 	}
 
 	// WARNING : When both are true --> what happened ? 
-	for (ADiamondProjectCharacter* Character : PlayerEventsDispatcher->Characters) {
+	for (ADiamondProjectCharacter* Character : PlayerManager->Characters) {
 
 		FVector Forward = Character->GetActorForwardVector();
-		FVector BehindPlayerPos = Character->GetActorLocation() - Forward * Character->GetSimpleCollisionRadius() * 5.f;
+		FVector BehindPlayerPos = Character->GetActorLocation() - Forward * Character->GetSimpleCollisionRadius() * 10.f;
 
-		DrawDebugSphere(GetWorld(), BehindPlayerPos, 30.F, 8, FColor::Magenta, false, 1.F, 1, 3.F);
+		DrawDebugSphere(OwnerActor->GetWorld(), BehindPlayerPos, 30.F, 8, FColor::Magenta, false, 1.F, 1, 3.F);
 
 		// Check For Left Corner Of Area	
 		
 		if (FMath::IsNearlyEqual(Forward.X, 0.f) && FMath::IsNearlyEqual(Forward.Y, -1.f) && FMath::IsNearlyEqual(Forward.Z, 0.f)) { // If Player Goes To Left
 			if (IsInFrustum(Character,SphereCenter)) { // Check if Left Border Of Area Is In Frustum 
-				if (!bBlock) {
-					CameraBlock();
-				}
-
 				bBlock = true;
 			}
 		}
@@ -47,14 +48,28 @@ void UCameraBehavior::TickBehavior(float DeltaTime) {
 					bBlock = false;
 				}
 			}
+		}	
+
+		SphereCenter.Y = OwnerActor->CurrentArea->MaxPosition.X;
+
+		if (FMath::IsNearlyEqual(Forward.X, 0.f) && FMath::IsNearlyEqual(Forward.Y, 1.f) && FMath::IsNearlyEqual(Forward.Z, 0.f)) { // If Player Goes To Left
+			if (IsInFrustum(Character, SphereCenter)) { // Check if Left Border Of Area Is In Frustum 
+				bBlock = true;
+			}
 		}
-	}
+		else if (FMath::IsNearlyEqual(Forward.X, 0.f) && FMath::IsNearlyEqual(Forward.Y, -1.f) && FMath::IsNearlyEqual(Forward.Z, 0.f)) { // If Player Goes To Right
+			if (IsInFrustum(Character, SphereCenter) && bBlock) { // Check If Current Border Is Already In Frustrum and If Camera Is Block  
+				if (BehindPlayerPos.Y <= OwnerActor->CurrentArea->MaxPosition.X) {
+					bBlock = false;
+				}
+			}
+		}
+	}	
 }
 
 void UCameraBehavior::OnPlayerMove(ADiamondProjectCharacter* Character, FVector Direction, bool& IsCanceled) {
 }
 
-void UCameraBehavior::CameraBlock() {}
 
 bool UCameraBehavior::IsInFrustum(ADiamondProjectCharacter* Character,FVector Position) {
 	ULocalPlayer* LocalPlayer = Character->GetWorld()->GetFirstLocalPlayerFromController();
@@ -88,6 +103,17 @@ void UCameraBehavior::CalculateBarycenter() {
 	_barycenter = (First + Second) / divider;
 
 	_barycenter += FVector(0, 0, 45.F);
-	_barycenter.X = _defaultY;
+	_barycenter.X = DefaultY;
+}
+
+float UCameraBehavior::Approach(float Current, float Target, float Incr) {
+	if (Current < Target) {
+		return FMath::Min(Current + Incr, Target);
+	}
+	else if (Current > Target) {
+		return FMath::Max(Current - Incr, Target);
+	}
+	else
+		return Target;
 }
 

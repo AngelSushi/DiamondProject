@@ -1,15 +1,15 @@
 #include "CameraLeaderBehavior.h"
 
 #include "DiamondProject/Luminaria/Actors/LuminariaCamera.h"
-#include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
+#include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 
 void UCameraLeaderBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	Super::BeginBehavior(Owner);
 	GEngine->AddOnScreenDebugMessage(-1,15.F,FColor::Yellow,TEXT("Add Leader Behavior"));
 	
-	PlayerEventsDispatcher->OnPlayerRegister.AddDynamic(this,&UCameraLeaderBehavior::RegisterPlayer);
-	PlayerEventsDispatcher->OnPlayerDeath.AddDynamic(this, &UCameraLeaderBehavior::OnPlayerDeath);
+	PlayerManager->OnPlayerRegister.AddDynamic(this,&UCameraLeaderBehavior::RegisterPlayer);
+	PlayerManager->OnPlayerDeath.AddDynamic(this, &UCameraLeaderBehavior::OnPlayerDeath);
 }
 
 void UCameraLeaderBehavior::RegisterPlayer(ADiamondProjectCharacter* Character) {

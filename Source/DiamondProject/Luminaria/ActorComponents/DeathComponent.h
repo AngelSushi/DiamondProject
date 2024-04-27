@@ -4,7 +4,7 @@
 #include "Components/BoxComponent.h"
 #include "DeathComponent.generated.h"
 
-class UPlayerEventsDispatcher;
+class UPlayerManager;
 
 UCLASS()
 class DIAMONDPROJECT_API UDeathComponent : public UBoxComponent {
@@ -24,5 +24,5 @@ private:
 	TArray<ADiamondProjectCharacter*> Characters;
 
 	UPROPERTY()
-	UPlayerEventsDispatcher* PlayerEventsDispatcher;
+	UPlayerManager* PlayerManager;
 };

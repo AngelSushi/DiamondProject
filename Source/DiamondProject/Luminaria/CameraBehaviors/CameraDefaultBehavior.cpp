@@ -1,6 +1,6 @@
 #include "DiamondProject/Luminaria/CameraBehaviors/CameraDefaultBehavior.h"
 #include "DiamondProject/Luminaria/Actors/LuminariaCamera.h"
-#include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
+#include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
 #include "SceneView.h"
@@ -9,8 +9,8 @@ void UCameraDefaultBehavior::BeginBehavior(ALuminariaCamera* Owner)
 {
 	Super::BeginBehavior(Owner);
 
-	PlayerEventsDispatcher->OnPlayerRegister.AddDynamic(this,&UCameraDefaultBehavior::RegisterPlayer);
-	PlayerEventsDispatcher->OnPlayerMove.AddDynamic(this,&UCameraDefaultBehavior::OnPlayerMove);
+	PlayerManager->OnPlayerRegister.AddDynamic(this,&UCameraDefaultBehavior::RegisterPlayer);
+	PlayerManager->OnPlayerMove.AddDynamic(this,&UCameraDefaultBehavior::OnPlayerMove);
 	
 }
 
