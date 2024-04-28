@@ -3,6 +3,7 @@
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 
 #include "Kismet/KismetMathLibrary.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 ALink::ALink() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -16,8 +17,9 @@ ALink::ALink() {
 void ALink::BeginPlay() {
 	Super::BeginPlay();
 
-	UPlayerManager* PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
+	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
 	PlayerManager->OnPlayerRegister.AddDynamic(this, &ALink::RegisterPlayer);
+	PlayerManager->OnPlayerMove.AddDynamic(this, &ALink::OnPlayerMove);
 }
 
 void ALink::RegisterPlayer(ADiamondProjectCharacter* character) {
@@ -30,6 +32,8 @@ void ALink::Tick(float DeltaTime) {
 	if (_characters.Num() == 2) {
 		CalculateBarycenter();
 		float distance = FVector::Distance(_characters[0]->GetActorLocation(), _characters[1]->GetActorLocation());
+		distance = FMath::Clamp(distance, 0, DistanceMax);
+
 		SetActorLocation(_barycenter);
 		SetActorScale3D(FVector(distance / 100,0.2f,0.1f));
 
@@ -56,4 +60,21 @@ void ALink::CalculateBarycenter() {
 	}
 
 	_barycenter = (First + Second) / divider;
+}
+
+void ALink::OnPlayerMove(ADiamondProjectCharacter* Character, FVector Direction, bool& IsCanceled) {
+	if (FMath::IsNearlyEqual(GetActorScale3D().X, DistanceMax / 100, 1.F)) {
+		
+		FVector NextPosition = Character->GetActorLocation() + Direction * Character->GetCharacterMovement()->GetMaxSpeed();
+		AActor* OtherPlayer = PlayerManager->GetOtherPlayer(Character);
+
+		float NewDistance = FVector::Distance(NextPosition, OtherPlayer->GetActorLocation());
+
+		if (NewDistance >= DistanceMax) {
+			IsCanceled = true;
+		}
+		else {
+			IsCanceled = false;
+		}
+	}
 }

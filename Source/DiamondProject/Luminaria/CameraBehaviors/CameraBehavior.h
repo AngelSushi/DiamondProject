@@ -40,7 +40,7 @@ public:
 
 protected:
 	UPROPERTY()
-	float DefaultY;
+	float DefaultX;
 
 	UPROPERTY()
 	float DefaultZ;

@@ -14,6 +14,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "DiamondProject/Luminaria/Actors/LuminariaCamera.h"
 
+#include "DiamondProject/Luminaria/CameraBehaviors/CameraBehavior.h"
+#include "DiamondProject/Luminaria/CameraBehaviors/GoToBehavior.h"
+
 ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -44,6 +47,8 @@ void ADiamondProjectCharacter::BeginPlay() {
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ADiamondProjectCharacter::OnBeginOverlap);
 
 	MainCamera = Cast<ALuminariaCamera>(UGameplayStatics::GetActorOfClass(GetWorld(), ALuminariaCamera::StaticClass()));
+
+	LastHitArea = MainCamera->CurrentArea;
 }
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
@@ -99,6 +104,40 @@ void ADiamondProjectCharacter::OnPlayerUpdateCheckpoint(ADiamondProjectCharacter
 
 void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	if (ACameraArea* HitArea = Cast<ACameraArea>(OtherActor)) {
-		MainCamera->CurrentArea = HitArea;
+		if (HitArea->AreaBehavior != LastHitArea->AreaBehavior) {
+			MainCamera->CurrentArea = HitArea;
+
+			ECameraBehavior TargetBehavior = HitArea->AreaBehavior;
+
+			if (TargetBehavior == ECameraBehavior::DEFAULT) {
+				TargetBehavior = ECameraBehavior::GOTO;
+			}
+
+			if (HitArea->PlayerNeeded == 2) {
+				ADiamondProjectCharacter* OtherPlayer = PlayerManager->GetOtherPlayer(this);
+
+				if (OtherPlayer->LastHitArea == HitArea) {
+					// Faire le switch
+					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea](UCameraBehavior* Behavior) {
+						if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
+							GoTo->NextBehavior = ECameraBehavior::DEFAULT;
+							GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
+							GoTo->Speed = 500.F;
+						}
+					});
+				}
+			}
+			else {
+				MainCamera->SwitchBehavior(TargetBehavior, [&HitArea](UCameraBehavior* Behavior) {
+					if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
+						GoTo->NextBehavior = ECameraBehavior::DEFAULT;
+						GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
+						GoTo->Speed = 500.F;
+					}
+				});
+			}
+
+			LastHitArea = HitArea;
+		}
 	}
 }

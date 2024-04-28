@@ -26,6 +26,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
+	float HeightMin;
+
+	UPROPERTY(EditAnywhere)
+	float HeightMax;
+
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class ACameraArea> CurrentArea;
 
 	UPROPERTY(EditAnywhere)
@@ -62,7 +68,7 @@ public:
 
 	/* State Machine Functions */
 
-	void SwitchBehavior(TSubclassOf<class UCameraBehavior> Component,TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc = [](UCameraBehavior* CameraBehavior) {});
+	void SwitchBehavior(ECameraBehavior SwitchBehavior,TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc = [](UCameraBehavior* CameraBehavior) {});
 
 	void InitBehavior();
 

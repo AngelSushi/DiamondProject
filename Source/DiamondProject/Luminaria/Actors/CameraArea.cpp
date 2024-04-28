@@ -12,7 +12,8 @@ ACameraArea::ACameraArea() {
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collision"));
 	BoxCollision->SetupAttachment(RootComponent);
 
-	
+	GoTo = CreateDefaultSubobject<USceneComponent>(TEXT("GoTo"));
+	GoTo->SetupAttachment(RootComponent);
 }
 
 void ACameraArea::BeginPlay() {

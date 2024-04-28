@@ -11,7 +11,7 @@ void UCameraDynamicBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	
 	PlayerManager->OnPlayerMove.AddDynamic(this, &UCameraDynamicBehavior::OnPlayerMove);
 
-	OffsetX = DefaultY;
+	OffsetX = DefaultX;
 	_barycenter.X = OffsetX;
 }
 
@@ -57,11 +57,9 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 			_barycenter.Z = DefaultZ;
 			_barycenter.X = Approach(_barycenter.X, OffsetX, 350 * DeltaTime);
 
+			_barycenter.X = FMath::Clamp(_barycenter.X, DefaultX, DefaultX + OwnerActor->CurrentArea->ZoomMax);
 
 			DefaultZ = OwnerActor->GetActorLocation().Z;
-		}
-		else {
-
 		}
 
 		OwnerActor->SetActorLocation(_barycenter);

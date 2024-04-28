@@ -28,23 +28,7 @@ void ALuminariaCamera::BeginPlay() {
 }
 
 void ALuminariaCamera::InitBehavior() {
-	switch (BehaviorState) {
-		case ECameraBehavior::DEFAULT:
-			SwitchBehavior(UCameraDefaultBehavior::StaticClass());
-			break;
-
-		case ECameraBehavior::DYNAMIC:
-			SwitchBehavior(UCameraDynamicBehavior::StaticClass());
-			break;
-
-		case ECameraBehavior::GOTO:
-			SwitchBehavior(UGoToBehavior::StaticClass());
-			break;
-
-		case ECameraBehavior::LEADER:
-			SwitchBehavior(UCameraLeaderBehavior::StaticClass());
-			break;
-	}
+	SwitchBehavior(BehaviorState);
 }
 
 // Utiliser Lerp et InverseLerp pour faire le zoomMax et la distanceMax du lien
@@ -65,34 +49,34 @@ void ALuminariaCamera::OnPlayerRegister(ADiamondProjectCharacter* Character) {
 	Characters.Add(Character);
 }
 
-void ALuminariaCamera::SwitchBehavior(TSubclassOf<class UCameraBehavior> Behavior, TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc /*= [](UCameraBehavior* CameraBehavior) {}*/) {
+void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc /*= [](UCameraBehavior* CameraBehavior) {}*/) {
 
-	if (CameraBehavior && CameraBehavior->GetClass() == Behavior) {
+	if (CameraBehavior && BehaviorState == SwitchBehavior) {
 		UE_LOG(LogTemp, Error, TEXT("The camera has already this behavior."));
 		return;
 	}
 
 	//CameraBehavior = NewObject<UCameraBehavior>(Behavior); Doesn't work with child functions
 
-	switch (BehaviorState) {
+	switch (SwitchBehavior) {
 		case ECameraBehavior::DEFAULT:
-			DefaultBehavior = NewObject<UCameraDefaultBehavior>(Behavior);
+			DefaultBehavior = NewObject<UCameraDefaultBehavior>();
 			CameraBehavior = DefaultBehavior;
 			break;
 
 		case ECameraBehavior::DYNAMIC:
-			DynamicBehavior = NewObject<UCameraDynamicBehavior>(Behavior);
-			HeightBehavior = NewObject<UHeightCameraBehavior>(Behavior);
+			DynamicBehavior = NewObject<UCameraDynamicBehavior>();
+			HeightBehavior = NewObject<UHeightCameraBehavior>();
 			CameraBehavior = DynamicBehavior;
 			break;
 
 		case ECameraBehavior::GOTO:
-			GoToBehavior = NewObject<UGoToBehavior>(Behavior);
+			GoToBehavior = NewObject<UGoToBehavior>();
 			CameraBehavior = GoToBehavior;
 			break;
 
 		case ECameraBehavior::LEADER:
-			LeaderBehavior = NewObject<UCameraLeaderBehavior>(Behavior);
+			LeaderBehavior = NewObject<UCameraLeaderBehavior>();
 			CameraBehavior = LeaderBehavior;
 			break;
 	}
@@ -123,7 +107,7 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character) {
 
 	FTimerHandle Timer;
 	
-	SwitchBehavior(UGoToBehavior::StaticClass(), [this,CurrentBehavior](UCameraBehavior* Component) {
+	SwitchBehavior(BehaviorState, [this,CurrentBehavior](UCameraBehavior* Component) {
 		if (UGoToBehavior* GoToBehaviorComponent = Cast<UGoToBehavior>(Component)) {
 			FVector GoTo = FVector::Zero();
 

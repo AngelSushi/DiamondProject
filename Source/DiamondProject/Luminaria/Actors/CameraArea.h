@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../../../DiamondProject/Luminaria/Actors/LuminariaCamera.h"
 #include "CameraArea.generated.h"
 
 class UBoxComponent;
@@ -17,10 +18,16 @@ public:
 	TObjectPtr<class USceneComponent> Root;
 
 	UPROPERTY(EditAnywhere)
+	TObjectPtr<class USceneComponent> GoTo;
+
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UBoxComponent> BoxCollision;
 
 	UPROPERTY(EditAnywhere)
-	uint16 ZoomMin;
+	TEnumAsByte<ECameraBehavior> AreaBehavior;
+
+	UPROPERTY(EditAnywhere)
+	uint8 PlayerNeeded;
 
 	UPROPERTY(EditAnywhere)
 	uint16 ZoomMax;

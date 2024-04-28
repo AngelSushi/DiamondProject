@@ -10,7 +10,7 @@ void UCameraBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 
 	OwnerActor = Owner;
 
-	DefaultY = OwnerActor->GetActorLocation().X;
+	DefaultX = OwnerActor->GetActorLocation().X;
 	DefaultZ = OwnerActor->GetActorLocation().Z;
 }
 
@@ -103,7 +103,7 @@ void UCameraBehavior::CalculateBarycenter() {
 	_barycenter = (First + Second) / divider;
 
 	_barycenter += FVector(0, 0, 45.F);
-	_barycenter.X = DefaultY;
+	_barycenter.X = DefaultX;
 }
 
 float UCameraBehavior::Approach(float Current, float Target, float Incr) {
