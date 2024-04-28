@@ -19,7 +19,10 @@ public:
 private:
 
 	UPROPERTY()
-	FVector LinePosition;
+	FVector LinePositionTop;
+
+	UPROPERTY()
+	FVector LinePositionBot;
 
 	UFUNCTION()
 	void OnPlayerLandOnGround(ADiamondProjectCharacter* Character);
@@ -31,8 +34,8 @@ private:
 	float OffsetZ;	
 
 	UPROPERTY()
-	TObjectPtr<class AActor> LastHitGroundActor;
-
-	UPROPERTY()
 	bool bChangeLimit;
+
+	UFUNCTION()
+	float CalculateOffset(ADiamondProjectCharacter* Character,ADiamondProjectCharacter* Other,FVector Start);
 };
