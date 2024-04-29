@@ -45,10 +45,10 @@ public:
 	bool bIsOnGroundLastTick;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUserWidget> MapWidgetClass;
+	TSubclassOf<class UMapWidget> MapWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<class UUserWidget> MapWidget;
+	TObjectPtr<class UMapWidget> MapWidget;
 
 
 private:

@@ -23,9 +23,6 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<class UBoxComponent> BoxCollision;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	TObjectPtr<class UStaticMeshComponent> MapPlane;
-
 	UPROPERTY(EditAnywhere)
 	TEnumAsByte<ECameraBehavior> AreaBehavior;
 

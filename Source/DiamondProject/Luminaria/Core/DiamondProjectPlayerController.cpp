@@ -11,6 +11,7 @@
 #include "DiamondProject/Luminaria/SubSystems/MapManager.h"
 #include "Engine/LocalPlayer.h"
 #include "Blueprint/UserWidget.h"
+#include "DiamondProject/Luminaria/UMG/MapWidget.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -128,19 +129,17 @@ void ADiamondProjectPlayerController::StopJump() {
 void ADiamondProjectPlayerController::OpenMap() {
 	UMapManager* MapManager = GetWorld()->GetSubsystem<UMapManager>();
 	ADiamondProjectCharacter* LeaderMapCharacter = Cast<ADiamondProjectCharacter>(GetCharacter());
-	
-	if (!bIsMapOpen) {
 
+	if (!bIsMapOpen) {
 		if (LeaderMapCharacter->MapWidgetClass) {
-			LeaderMapCharacter->MapWidget = CreateWidget<UUserWidget>(GetWorld(), LeaderMapCharacter->MapWidgetClass);
+			LeaderMapCharacter->MapWidget = CreateWidget<UMapWidget>(GetWorld(), LeaderMapCharacter->MapWidgetClass);
 			LeaderMapCharacter->MapWidget->AddToViewport();
-			MapManager->OnOpenMap.Broadcast(LeaderMapCharacter);
+			MapManager->OpenMap(LeaderMapCharacter);
 		}
-		
 	}
 	else {
 		if (LeaderMapCharacter->MapWidget) {
-			MapManager->OnCloseMap.Broadcast(LeaderMapCharacter);
+			MapManager->CloseMap(LeaderMapCharacter);
 		}
 	}
 

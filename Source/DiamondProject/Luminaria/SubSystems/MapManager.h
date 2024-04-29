@@ -20,14 +20,16 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	FOnCloseMap OnCloseMap;
 
+	UFUNCTION()
+	void OpenMap(ADiamondProjectCharacter* Character);
+
+	UFUNCTION()
+	void CloseMap(ADiamondProjectCharacter* Character);
+
 private:
 	void CreateMap();
 
-	UFUNCTION()
-	void OnOpenMapFunc(ADiamondProjectCharacter* Character);
-
-	UFUNCTION()
-	void OnCloseMapFunc(ADiamondProjectCharacter* Character);
+	void CreateRoom(TArray<FColor>& PixelData, FVector2D Start, FVector2D End);
 
 	UPROPERTY()
 	UTexture2D* MapTexture;
