@@ -10,7 +10,7 @@
 /** Forward declaration to improve compiling times */
 class UNiagaraSystem;
 class UInputMappingContext;
-class UPlayerEventsDispatcher;
+class UPlayerManager;
 class UInputAction;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -68,7 +68,7 @@ private:
 	bool isUsingDepthMovement;
 
 	UPROPERTY()
-	UPlayerEventsDispatcher* PlayerEventsDispatcher;
+	UPlayerManager* PlayerManager;
 
 };
 

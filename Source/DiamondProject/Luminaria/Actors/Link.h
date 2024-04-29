@@ -21,8 +21,18 @@ private:
 	UFUNCTION()
 	void CalculateBarycenter();
 
+	UFUNCTION()
+	void OnPlayerMove(ADiamondProjectCharacter* Character, FVector Direction, bool& IsCanceled);
+
 	UPROPERTY()
 	FVector _barycenter;
+
+	UPROPERTY(EditAnywhere)
+	float DistanceMax;
+
+	UPROPERTY()
+	UPlayerManager* PlayerManager;
+
 public:	
 	ALink();
 
