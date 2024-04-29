@@ -8,8 +8,9 @@
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
+#include "DiamondProject/Luminaria/SubSystems/MapManager.h"
 #include "Engine/LocalPlayer.h"
-
+#include "Blueprint/UserWidget.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -42,6 +43,8 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 
 		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this,&ADiamondProjectPlayerController::Jump);
 		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&ADiamondProjectPlayerController::StopJump);
+	
+		EnhancedInputComponent->BindAction(OpenMapAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::OpenMap);
 	}
 	else
 	{
@@ -79,8 +82,6 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 		}*/
 
 	}
-
-
 	
 	// find out which way is forward
 	const FRotator Rotation =GetControlRotation();
@@ -98,8 +99,6 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	else if (ForwardDirection.Y != 0) {
 		MovementDirection = FVector(MovementVector.X,0.F, 0.F);
 	}
-
-
 	
 	bool isCanceled = false;
 	PlayerManager->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()), MovementDirection, isCanceled);
@@ -108,24 +107,42 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 		return;
 	}
 
-	if(isUsingDepthMovement)
-	{
+	if(isUsingDepthMovement) {
 		GetCharacter()->AddMovementInput(ForwardDirection, MovementVector.Y);
 		GetCharacter()->AddMovementInput(RightDirection, MovementVector.X);	
 	}
-	else
-	{
+	else {
 		GetCharacter()->AddMovementInput(ForwardDirection, MovementVector.X);
 	}
 
 }
 
-void ADiamondProjectPlayerController::Jump()
-{
+void ADiamondProjectPlayerController::Jump() {
 	GetCharacter()->Jump();
 }
 
-void ADiamondProjectPlayerController::StopJump()
-{
+void ADiamondProjectPlayerController::StopJump() {
 	GetCharacter()->StopJumping();
+}
+
+void ADiamondProjectPlayerController::OpenMap() {
+	UMapManager* MapManager = GetWorld()->GetSubsystem<UMapManager>();
+	ADiamondProjectCharacter* LeaderMapCharacter = Cast<ADiamondProjectCharacter>(GetCharacter());
+	
+	if (!bIsMapOpen) {
+
+		if (LeaderMapCharacter->MapWidgetClass) {
+			LeaderMapCharacter->MapWidget = CreateWidget<UUserWidget>(GetWorld(), LeaderMapCharacter->MapWidgetClass);
+			LeaderMapCharacter->MapWidget->AddToViewport();
+			MapManager->OnOpenMap.Broadcast(LeaderMapCharacter);
+		}
+		
+	}
+	else {
+		if (LeaderMapCharacter->MapWidget) {
+			MapManager->OnCloseMap.Broadcast(LeaderMapCharacter);
+		}
+	}
+
+	bIsMapOpen = !bIsMapOpen;
 }
