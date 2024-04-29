@@ -14,8 +14,7 @@ enum ECameraBehavior : uint8
 };
 
 UCLASS()
-class DIAMONDPROJECT_API ALuminariaCamera : public ACameraActor
-{
+class DIAMONDPROJECT_API ALuminariaCamera : public ACameraActor {
 	GENERATED_BODY()
 
 public:
@@ -25,23 +24,53 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
-	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	TEnumAsByte<ECameraBehavior> CameraBehavior;
 
-	UPROPERTY(BlueprintReadWrite)
-	TEnumAsByte<ECameraBehavior> LastBehavior;
+	UPROPERTY(EditAnywhere)
+	float HeightMin;
 
-	UPROPERTY(BlueprintReadWrite)
-	UActorComponent* LastBehaviorComponent;
+	UPROPERTY(EditAnywhere)
+	float HeightMax;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class ACameraArea> CurrentArea;
+
+	UPROPERTY(EditAnywhere)
+	bool bDebugCamera;
 
 	UFUNCTION()
 	void OnPlayerDeath(ADiamondProjectCharacter* Character);
-	
+
 	UFUNCTION()
 	void OnPlayerRegister(ADiamondProjectCharacter* Character);
 
-	void AddComponent(TSubclassOf<class UCameraBehavior> Component,TFunction<void(UActorComponent* AddedComponent)> ResultFunc);
+	/* State Machine Variable */
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TEnumAsByte<ECameraBehavior> BehaviorState;
+
+	UPROPERTY()
+	TObjectPtr<class UCameraBehavior> CameraBehavior;
+
+	UPROPERTY()
+	TObjectPtr<class UCameraDynamicBehavior> DynamicBehavior;
+
+	UPROPERTY()
+	TObjectPtr<class UCameraDefaultBehavior> DefaultBehavior;
+
+	UPROPERTY()
+	TObjectPtr<class UGoToBehavior> GoToBehavior;
+
+	UPROPERTY()
+	TObjectPtr<class UCameraLeaderBehavior> LeaderBehavior;
+
+	UPROPERTY()
+	TObjectPtr<class UHeightCameraBehavior> HeightBehavior;
+
+	/* State Machine Functions */
+
+	void SwitchBehavior(ECameraBehavior SwitchBehavior,TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc = [](UCameraBehavior* CameraBehavior) {});
+
+	void InitBehavior();
 
 private:
 	UPROPERTY()
