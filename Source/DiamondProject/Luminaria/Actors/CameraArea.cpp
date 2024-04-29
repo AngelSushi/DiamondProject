@@ -14,6 +14,9 @@ ACameraArea::ACameraArea() {
 
 	GoTo = CreateDefaultSubobject<USceneComponent>(TEXT("GoTo"));
 	GoTo->SetupAttachment(RootComponent);
+
+	MapPlane = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Map Plane"));
+	MapPlane->SetupAttachment(RootComponent);
 }
 
 void ACameraArea::BeginPlay() {
