@@ -31,12 +31,14 @@ protected:
 	TArray<ADiamondProjectCharacter*> _characters;
 
 	UPROPERTY()
-	FVector _barycenter;
-
+	FVector Barycenter;
 public:	
 
 	UFUNCTION()
 	virtual void OnPlayerMove(ADiamondProjectCharacter* character, FVector direction, bool& isCanceled);
+
+	UFUNCTION()
+	void SetBarycenter(FVector NewBarycenter) { Barycenter = NewBarycenter; }
 
 protected:
 	UPROPERTY()

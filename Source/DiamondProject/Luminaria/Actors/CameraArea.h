@@ -30,6 +30,9 @@ public:
 	uint8 PlayerNeeded;
 
 	UPROPERTY(EditAnywhere)
+	uint16 ZoomMin;
+
+	UPROPERTY(EditAnywhere)
 	uint16 ZoomMax;
 
 	UPROPERTY(VisibleAnywhere)

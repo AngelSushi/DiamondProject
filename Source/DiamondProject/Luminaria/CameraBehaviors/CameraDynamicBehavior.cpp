@@ -12,7 +12,7 @@ void UCameraDynamicBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	PlayerManager->OnPlayerMove.AddDynamic(this, &UCameraDynamicBehavior::OnPlayerMove);
 
 	OffsetX = DefaultX;
-	_barycenter.X = OffsetX;
+	Barycenter.X = OffsetX;
 }
 
 
@@ -49,20 +49,18 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 		if (!bBlock) {
 			float ToApproachY = (PlayerManager->Characters[0]->GetActorLocation().Y + PlayerManager->Characters[1]->GetActorLocation().Y) / 2;
 
-			if (_barycenter.Y == 0.F) {
-				_barycenter.Y = ToApproachY;
+			if (Barycenter.Y == 0.F) {
+				Barycenter.Y = ToApproachY;
 			}
 
-			_barycenter.Y = Approach(_barycenter.Y, ToApproachY,350 * DeltaTime);
-			_barycenter.Z = DefaultZ;
-			_barycenter.X = Approach(_barycenter.X, OffsetX, 350 * DeltaTime);
+			Barycenter.Y = Approach(Barycenter.Y, ToApproachY,350 * DeltaTime);
+			Barycenter.Z = DefaultZ;
+			Barycenter.X = Approach(Barycenter.X, OffsetX, 350 * DeltaTime);
 
-			_barycenter.X = FMath::Clamp(_barycenter.X, DefaultX, DefaultX + OwnerActor->CurrentArea->ZoomMax);
-
-			DefaultZ = OwnerActor->GetActorLocation().Z;
+			Barycenter.X = FMath::Clamp(Barycenter.X, OwnerActor->CurrentArea->ZoomMin,OwnerActor->CurrentArea->ZoomMax);
 		}
 
-		OwnerActor->SetActorLocation(_barycenter);
+		OwnerActor->SetActorLocation(Barycenter);
 
 		if (OwnerActor->bDebugCamera) {
 			for (auto& extendPosition : _extendPositions) {

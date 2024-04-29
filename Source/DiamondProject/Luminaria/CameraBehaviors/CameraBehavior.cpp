@@ -11,7 +11,9 @@ void UCameraBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	OwnerActor = Owner;
 
 	DefaultX = OwnerActor->GetActorLocation().X;
-	DefaultZ = OwnerActor->GetActorLocation().Z;
+	//DefaultZ = PlayerManager->Characters.Num() > 0 ? PlayerManager->Characters[0]->GetGroundActor()->GetActorLocation().Z : OwnerActor->GetActorLocation().Z; // Ou au ground 
+	DefaultZ = OwnerActor->CurrentArea ? OwnerActor->CurrentArea->ZoomMin : OwnerActor->GetActorLocation().Z;
+
 }
 
 void UCameraBehavior::TickBehavior(float DeltaTime) {
@@ -100,10 +102,10 @@ void UCameraBehavior::CalculateBarycenter() {
 
 	float divider = 2.F;
 		
-	_barycenter = (First + Second) / divider;
+	Barycenter = (First + Second) / divider;
 
-	_barycenter += FVector(0, 0, 45.F);
-	_barycenter.X = DefaultX;
+	Barycenter += FVector(0, 0, 45.F);
+	Barycenter.X = DefaultX;
 }
 
 float UCameraBehavior::Approach(float Current, float Target, float Incr) {

@@ -10,14 +10,14 @@
 void UGoToBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	Super::BeginBehavior(Owner);
 
-	_barycenter = OwnerActor->GetActorLocation();
+	Barycenter = OwnerActor->GetActorLocation();
 }
 
 void UGoToBehavior::TickBehavior(float DeltaTime) {
 	Super::TickBehavior(DeltaTime);
 
-	if (!Approach(_barycenter, GoTo, Speed * DeltaTime)) {
-		OwnerActor->SetActorLocation(_barycenter);
+	if (!Approach(Barycenter, GoTo, Speed * DeltaTime)) {
+		OwnerActor->SetActorLocation(Barycenter);
 	}
 	else {
 		OwnerActor->SetActorLocation(GoTo);

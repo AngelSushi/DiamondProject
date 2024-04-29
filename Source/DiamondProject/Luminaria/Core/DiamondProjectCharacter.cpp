@@ -17,6 +17,8 @@
 #include "DiamondProject/Luminaria/CameraBehaviors/CameraBehavior.h"
 #include "DiamondProject/Luminaria/CameraBehaviors/GoToBehavior.h"
 
+#include "DiamondProject/Luminaria/CameraBehaviors/CameraDynamicBehavior.h"
+
 ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -113,26 +115,42 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 				TargetBehavior = ECameraBehavior::GOTO;
 			}
 
-			if (HitArea->PlayerNeeded == 2) {
-				ADiamondProjectCharacter* OtherPlayer = PlayerManager->GetOtherPlayer(this);
+			ADiamondProjectCharacter* OtherPlayer = PlayerManager->GetOtherPlayer(this);
 
+			if (HitArea->PlayerNeeded == 2) {	
 				if (OtherPlayer->LastHitArea == HitArea) {
 					// Faire le switch
-					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea](UCameraBehavior* Behavior) {
+					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea,&OtherPlayer,this](UCameraBehavior* Behavior) {
 						if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
 							GoTo->NextBehavior = ECameraBehavior::DEFAULT;
 							GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
 							GoTo->Speed = 500.F;
 						}
+
+						if (UCameraDynamicBehavior* DynamicBehavior = Cast<UCameraDynamicBehavior>(Behavior)) {
+							FVector Barycenter = (GetActorLocation() - OtherPlayer->GetActorLocation()) / 2;
+							Barycenter.X = HitArea->ZoomMin;
+
+							DynamicBehavior->SetBarycenter(Barycenter);
+							//
+						}
 					});
 				}
 			}
 			else {
-				MainCamera->SwitchBehavior(TargetBehavior, [&HitArea](UCameraBehavior* Behavior) {
+				MainCamera->SwitchBehavior(TargetBehavior, [&HitArea,&OtherPlayer,this](UCameraBehavior* Behavior) {
 					if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
 						GoTo->NextBehavior = ECameraBehavior::DEFAULT;
 						GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
 						GoTo->Speed = 500.F;
+					}
+
+					if (UCameraDynamicBehavior* DynamicBehavior = Cast<UCameraDynamicBehavior>(Behavior)) {
+						FVector Barycenter = (GetActorLocation() - OtherPlayer->GetActorLocation()) / 2;
+						Barycenter.X = HitArea->ZoomMin;
+
+						DynamicBehavior->SetBarycenter(Barycenter);
+						//
 					}
 				});
 			}
