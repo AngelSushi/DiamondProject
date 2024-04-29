@@ -30,4 +30,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	FOnPlayerUpdateCheckpoint OnPlayerUpdateCheckpoint;
+
+	UFUNCTION()
+	void RegisterPlayer(ADiamondProjectCharacter* Character);
+
+	UPROPERTY()
+	TArray<ADiamondProjectCharacter*> Characters;
 };

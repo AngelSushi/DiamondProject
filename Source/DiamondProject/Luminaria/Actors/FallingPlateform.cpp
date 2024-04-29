@@ -25,7 +25,7 @@ AFallingPlateform::AFallingPlateform()
 void AFallingPlateform::BeginPlay()
 {
 	Super::BeginPlay();
-
+	numPlayersInside = 0;
 	InitialLocation = GetActorLocation();
 	
 }
@@ -78,8 +78,13 @@ void AFallingPlateform::OnCharacterOverlapBegin(class UPrimitiveComponent* Overl
 	ADiamondProjectCharacter* Character = Cast<ADiamondProjectCharacter>(OtherActor);
 	if (Character)
 	{
-		bCharacterOnPlatform = true;
-		TimeSinceCharacterOnPlatform = 0.0f;
+		numPlayersInside++;
+		if (!bCharacterOnPlatform)
+		{
+			bCharacterOnPlatform = true;
+			TimeSinceCharacterOnPlatform = 0.0f;
+		}
+		
 	}
 }
 
@@ -88,7 +93,11 @@ void AFallingPlateform::OnCharacterOverlapEnd(class UPrimitiveComponent* Overlap
 	ADiamondProjectCharacter* Character = Cast<ADiamondProjectCharacter>(OtherActor);
 	if (Character)
 	{
-		bCharacterOnPlatform = false;
+		numPlayersInside--;
+		if (numPlayersInside <= 0)
+		{
+			bCharacterOnPlatform = false;
+		}
 	}
 }
 

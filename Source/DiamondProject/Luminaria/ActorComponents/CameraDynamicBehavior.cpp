@@ -14,8 +14,7 @@ UCameraDynamicBehavior::UCameraDynamicBehavior() {
 void UCameraDynamicBehavior::BeginPlay() {
 	Super::BeginPlay();
 	
-	UPlayerEventsDispatcher* PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
-	PlayerEventsDispatcher->OnPlayerRegister.AddDynamic(this,&UCameraDynamicBehavior::OnRegisterPlayer);
+	PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
 	PlayerEventsDispatcher->OnPlayerMove.AddDynamic(this, &UCameraDynamicBehavior::OnPlayerMove);
 
 	_canExtend = true;
@@ -24,9 +23,6 @@ void UCameraDynamicBehavior::BeginPlay() {
 	_barycenter.X = OffsetX;
 }
 
-void UCameraDynamicBehavior::OnRegisterPlayer(ADiamondProjectCharacter* player) {
-	_characters.Add(player);
-}
 
 void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, FVector direction, bool& isCanceled) {
 	CalculateOffsideFrustumOffset(character, direction);
@@ -53,10 +49,10 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 void UCameraDynamicBehavior::TickComponent(float DeltaTime, ELevelTick TickType,FActorComponentTickFunction* ThisTickFunction) {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if(_characters.Num() >= 2) {
-
-		_barycenter.Y = (_characters[0]->GetActorLocation().Y + _characters[1]->GetActorLocation().Y) / 2;
-		_barycenter.Z = (_characters[0]->GetActorLocation().Z + _characters[1]->GetActorLocation().Z) / 2;
+	if(PlayerEventsDispatcher->Characters.Num() >= 2) {
+		
+		_barycenter.Y = (PlayerEventsDispatcher->Characters[0]->GetActorLocation().Y + PlayerEventsDispatcher->Characters[1]->GetActorLocation().Y) / 2;
+		_barycenter.Z = (PlayerEventsDispatcher->Characters[0]->GetActorLocation().Z + PlayerEventsDispatcher->Characters[1]->GetActorLocation().Z) / 2;
 		_barycenter.X = Approach(_barycenter.X,OffsetX,250 * DeltaTime);
 
 		OwnerActor->SetActorLocation(_barycenter);

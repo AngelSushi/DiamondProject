@@ -4,6 +4,7 @@
 #include "DiamondProject/Luminaria/ActorComponents/CameraBehavior.h"
 #include "CameraDynamicBehavior.generated.h"
 
+class UPlayerEventsDispatcher;
 
 USTRUCT()
 struct  DIAMONDPROJECT_API FExtendData {
@@ -34,9 +35,6 @@ public:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	void OnRegisterPlayer(ADiamondProjectCharacter* player);
-
-	UFUNCTION()
 	void OnPlayerMove(ADiamondProjectCharacter* character, FVector direction, bool& isCanceled);
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -59,4 +57,7 @@ private:
 
 	UFUNCTION()
 	float Approach(float Current, float Target, float Incr);
+
+	UPROPERTY()
+	UPlayerEventsDispatcher* PlayerEventsDispatcher;
 };
