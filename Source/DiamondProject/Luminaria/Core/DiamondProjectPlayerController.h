@@ -36,6 +36,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* OpenMapAction;
+
 	UPROPERTY()
 	FVector LastDirection;
 
@@ -64,8 +67,14 @@ private:
 	UFUNCTION()
 	void StopJump();
 
+	UFUNCTION()
+	void OpenMap();
+
 	UPROPERTY(EditAnywhere)
 	bool isUsingDepthMovement;
+
+	UPROPERTY()
+	bool bIsMapOpen;
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;

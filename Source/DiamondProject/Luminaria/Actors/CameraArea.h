@@ -20,7 +20,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USceneComponent> GoTo;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<class UBoxComponent> BoxCollision;
 
 	UPROPERTY(EditAnywhere)

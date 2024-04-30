@@ -44,6 +44,12 @@ public:
 	UPROPERTY()
 	bool bIsOnGroundLastTick;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UMapWidget> MapWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<class UMapWidget> MapWidget;
+
 
 private:
 	/** Top down camera */
