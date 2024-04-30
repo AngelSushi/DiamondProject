@@ -10,7 +10,7 @@
 /** Forward declaration to improve compiling times */
 class UNiagaraSystem;
 class UInputMappingContext;
-class UPlayerEventsDispatcher;
+class UPlayerManager;
 class UInputAction;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -35,6 +35,9 @@ public:
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* OpenMapAction;
 
 	UPROPERTY()
 	FVector LastDirection;
@@ -64,11 +67,17 @@ private:
 	UFUNCTION()
 	void StopJump();
 
+	UFUNCTION()
+	void OpenMap();
+
 	UPROPERTY(EditAnywhere)
 	bool isUsingDepthMovement;
 
 	UPROPERTY()
-	UPlayerEventsDispatcher* PlayerEventsDispatcher;
+	bool bIsMapOpen;
+
+	UPROPERTY()
+	UPlayerManager* PlayerManager;
 
 };
 

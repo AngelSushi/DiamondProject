@@ -7,9 +7,11 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
-#include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
+#include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
+#include "DiamondProject/Luminaria/SubSystems/MapManager.h"
 #include "Engine/LocalPlayer.h"
-
+#include "Blueprint/UserWidget.h"
+#include "DiamondProject/Luminaria/UMG/MapWidget.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -29,7 +31,7 @@ void ADiamondProjectPlayerController::BeginPlay()
 		Subsystem->AddMappingContext(PlayerMappingContext, 0);
 	}
 
-	PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
+	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
 }
 
 
@@ -42,6 +44,8 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 
 		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this,&ADiamondProjectPlayerController::Jump);
 		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&ADiamondProjectPlayerController::StopJump);
+	
+		EnhancedInputComponent->BindAction(OpenMapAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::OpenMap);
 	}
 	else
 	{
@@ -57,7 +61,7 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	{
 		if (bCanFlip == true) 
 		{
-			GetPawn()->SetActorRotation(FRotator(0, 90, 0), ETeleportType::None);
+			GetPawn()->SetActorRotation(FRotator(0, -90, 0), ETeleportType::None);
 
 		}
 
@@ -70,7 +74,7 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	{
 		if (bCanFlip == true)
 		{
-			GetPawn()->SetActorRotation(FRotator(0, -90, 0), ETeleportType::None);
+			GetPawn()->SetActorRotation(FRotator(0, 90, 0), ETeleportType::None);
 
 		}
 		/*if (bIsLookingLeft == true)
@@ -79,8 +83,6 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 		}*/
 
 	}
-
-
 	
 	// find out which way is forward
 	const FRotator Rotation =GetControlRotation();
@@ -98,34 +100,48 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	else if (ForwardDirection.Y != 0) {
 		MovementDirection = FVector(MovementVector.X,0.F, 0.F);
 	}
-
-
 	
 	bool isCanceled = false;
-	PlayerEventsDispatcher->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()), MovementDirection, isCanceled);
+	PlayerManager->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()), MovementDirection, isCanceled);
 
 	if (isCanceled) {
 		return;
 	}
 
-	if(isUsingDepthMovement)
-	{
+	if(isUsingDepthMovement) {
 		GetCharacter()->AddMovementInput(ForwardDirection, MovementVector.Y);
 		GetCharacter()->AddMovementInput(RightDirection, MovementVector.X);	
 	}
-	else
-	{
+	else {
 		GetCharacter()->AddMovementInput(ForwardDirection, MovementVector.X);
 	}
 
 }
 
-void ADiamondProjectPlayerController::Jump()
-{
+void ADiamondProjectPlayerController::Jump() {
 	GetCharacter()->Jump();
 }
 
-void ADiamondProjectPlayerController::StopJump()
-{
+void ADiamondProjectPlayerController::StopJump() {
 	GetCharacter()->StopJumping();
+}
+
+void ADiamondProjectPlayerController::OpenMap() {
+	UMapManager* MapManager = GetWorld()->GetSubsystem<UMapManager>();
+	ADiamondProjectCharacter* LeaderMapCharacter = Cast<ADiamondProjectCharacter>(GetCharacter());
+
+	if (!bIsMapOpen) {
+		if (LeaderMapCharacter->MapWidgetClass) {
+			LeaderMapCharacter->MapWidget = CreateWidget<UMapWidget>(GetWorld(), LeaderMapCharacter->MapWidgetClass);
+			LeaderMapCharacter->MapWidget->AddToViewport();
+			MapManager->OpenMap(LeaderMapCharacter);
+		}
+	}
+	else {
+		if (LeaderMapCharacter->MapWidget) {
+			MapManager->CloseMap(LeaderMapCharacter);
+		}
+	}
+
+	bIsMapOpen = !bIsMapOpen;
 }

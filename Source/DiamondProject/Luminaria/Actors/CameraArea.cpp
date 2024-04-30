@@ -1,6 +1,9 @@
 #include "DiamondProject/Luminaria/Actors/CameraArea.h"
 #include "Components/BoxComponent.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/PlayerStart.h"
+
 ACameraArea::ACameraArea() {
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -8,14 +11,21 @@ ACameraArea::ACameraArea() {
 
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collision"));
 	BoxCollision->SetupAttachment(RootComponent);
+
+	GoTo = CreateDefaultSubobject<USceneComponent>(TEXT("GoTo"));
+	GoTo->SetupAttachment(RootComponent);
 }
 
 void ACameraArea::BeginPlay() {
 	Super::BeginPlay();
 	
 	FVector BoxExtent = BoxCollision->GetScaledBoxExtent();
-	MinPosition = FVector2D(GetActorLocation().X - BoxExtent.X, GetActorLocation().Z - BoxExtent.Z);
-	MaxPosition = FVector2D(GetActorLocation().X + BoxExtent.X, GetActorLocation().Z + BoxExtent.Z);
+
+	if (APlayerStart* PlayerStart = Cast<APlayerStart>(UGameplayStatics::GetActorOfClass(GetWorld(), APlayerStart::StaticClass()))) {
+		MinPosition = FVector2D(GetActorLocation().Y - BoxExtent.Y, GetActorLocation().Z - BoxExtent.Z)  - FVector2D(1, 0) * 70.F ;
+		MaxPosition = FVector2D(GetActorLocation().Y + BoxExtent.Y, GetActorLocation().Z + BoxExtent.Z)  + FVector2D(1, 0) * 70.F ;
+	}
+
 
 }
 
