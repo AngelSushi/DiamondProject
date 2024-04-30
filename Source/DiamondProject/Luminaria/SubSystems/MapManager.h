@@ -39,8 +39,12 @@ private:
 
 	UFUNCTION()
 	ACameraArea* Raycast(const ACameraArea* From,FVector Start,FVector End);
-
+	
+	UFUNCTION()
 	ACameraArea* GetFirstRoom();
+
+	UFUNCTION()
+	FVector2D GetDrawSize(FVector RoomBoxSize);
 
 	UPROPERTY()
 	UTexture2D* MapTexture;
