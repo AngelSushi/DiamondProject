@@ -7,11 +7,9 @@
 #include "DiamondProject/Luminaria/UMG/MapWidget.h"
 
 #include "Kismet/GameplayStatics.h"
-#include "DiamondProject/Luminaria/Actors/CameraArea.h"
+#include "DiamondProject/Luminaria/Actors/CameraArea.h"	
 
 void UMapManager::Initialize(FSubsystemCollectionBase& Collection) {
-	GEngine->AddOnScreenDebugMessage(-1, 100.F, FColor::Black, TEXT("Initialize Map Manager"));
-	//CreateMap();
 }
 
 void UMapManager::CreateMap() {
@@ -37,8 +35,8 @@ void UMapManager::CreateMap() {
 	// Ref d'une salle normal : x = 1000;y  = 650 soit un ratio de 1,54
 	// Ref d'une salle normal en pixel : x = 38; y = 25  (sur du 512x512)
 
-	DrawRoom(PixelData, FVector2D(300 - 38, 1024 - 25), FVector2D(300 + 38, 1024 + 25), FVector2D(2048, 2048),FColor::Red);
-	DetectOtherRooms(PixelData, FirstRoom, FVector2D(300 + 38, 1024 - 25));
+	DrawRoom(PixelData,FirstRoom, FVector2D(262,999), FVector2D(338, 1049), MapTextureSize,FColor::Red);
+	DetectOtherRooms(PixelData, FirstRoom, FVector2D(338,999));
 	
 	FMemory::Memcpy(RawImageData, PixelData.GetData(), PixelData.Num() * sizeof(FColor));
 
@@ -46,8 +44,52 @@ void UMapManager::CreateMap() {
 	MapTexture->UpdateResource();
 }
 
-TArray<uint16> UMapManager::DrawRoom(TArray<FColor>& PixelData, FVector2D Start, FVector2D End,FVector2D TexSize,FColor RoomColor) {
-	TArray<uint16> RoomPixelData;
+void UMapManager::DetectOtherRooms(TArray<FColor>& PixelData, ACameraArea* From, FVector2D EndFrom) {
+	ACameraArea* RightRoom = nullptr;
+	ACameraArea* UpRoom = nullptr;
+	ACameraArea* DownRoom = nullptr;
+
+	check(GetWorld());
+
+	FVector Start = From->GetActorLocation();
+
+	FVector End = Start + FVector::RightVector * 50000.F;
+	RightRoom = Raycast(From,Start, End);
+
+	End = Start + FVector::UpVector * 50000.F;
+	UpRoom = Raycast(From, Start, End);
+
+	End = Start + FVector::DownVector * 50000.F;
+	DownRoom = Raycast(From, Start, End);
+
+	if (RightRoom && !DrawnRooms.Contains(RightRoom)) {
+		FVector2D StartDraw = EndFrom + FVector2D(2, 0);
+		FVector2D EndDraw = StartDraw + FVector2D(38 * 2, 25 * 2);
+
+		DrawRoom(PixelData,From,StartDraw, EndDraw, MapTextureSize,FColor::Red);
+		DetectOtherRooms(PixelData, RightRoom, FVector2D(EndDraw.X,StartDraw.Y));
+	}
+	
+	if (UpRoom && !DrawnRooms.Contains(UpRoom)) {
+		FVector2D StartDraw = EndFrom - FVector2D(38 * 2,25 * 2) - FVector2D(0,2);
+		FVector2D EndDraw = StartDraw + FVector2D(38 * 2, 25 * 2);
+
+		DrawRoom(PixelData,From,StartDraw, EndDraw, MapTextureSize, FColor::Red);
+		DetectOtherRooms(PixelData, UpRoom, FVector2D(EndDraw.X, StartDraw.Y));
+	}
+
+	if (DownRoom && !DrawnRooms.Contains(DownRoom)) {
+		FVector2D StartDraw = EndFrom + FVector2D(-38 * 2,25 * 2) + FVector2D(0,2);
+		FVector2D EndDraw = StartDraw  + FVector2D(38 * 2, 25 * 2);
+
+		DrawRoom(PixelData,From,StartDraw,EndDraw,MapTextureSize,FColor::Red);
+		DetectOtherRooms(PixelData,DownRoom,FVector2D(EndDraw.X,StartDraw.Y));
+	}
+}
+
+
+void UMapManager::DrawRoom(TArray<FColor>& PixelData, ACameraArea* From, FVector2D Start, FVector2D End, FVector2D TexSize, FColor RoomColor) {
+	TArray<int32> RoomPixelsData;
 
 	for (int h = Start.Y; h < End.Y; h++) {
 		for (int w = Start.X; w < End.X; w++) {
@@ -71,83 +113,30 @@ TArray<uint16> UMapManager::DrawRoom(TArray<FColor>& PixelData, FVector2D Start,
 			}
 
 			PixelData[w + h * TexSize.X] = RoomColor;
-			RoomPixelData.Push(w + h * TexSize.X);
+			RoomPixelsData.Push(w + h * TexSize.X);
 		}
 	}
 
-	return RoomPixelData;
+	DrawnRooms.Add(From);
+
+	// AJoutez unevariable dans cameraarea pour avoir la liste des pixels
 }
 
-void UMapManager::DetectOtherRooms(TArray<FColor>& PixelData, ACameraArea* From, FVector2D EndFrom) {
-	ACameraArea* LeftRoom = nullptr;
-	ACameraArea* UpRoom = nullptr;
-	ACameraArea* DownRoom = nullptr;
-
-	check(GetWorld());
-
-	FVector Start = From->GetActorLocation();
-	FVector End = Start + FVector::RightVector * 50000.F;
-
+ACameraArea* UMapManager::Raycast(const ACameraArea* From,FVector Start, FVector End) {
 	TArray<FHitResult> HitResults;
-	FCollisionQueryParams Params;
 
+	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(From);
 
-	GetWorld()->LineTraceMultiByChannel(HitResults, Start, End, ECC_Visibility, Params);
+	GetWorld()->LineTraceMultiByChannel(HitResults, Start, End, ECC_Visibility,Params);
 
 	for (FHitResult Result : HitResults) {
 		if (ACameraArea* Room = Cast<ACameraArea>(Result.GetActor())) {
-			LeftRoom = Room;
-			break;
+			return Room;
 		}
 	}
 
-	End = Start + FVector::UpVector * 50000.F;
-
-	GetWorld()->LineTraceMultiByChannel(HitResults, Start, End, ECC_Visibility, Params);
-
-	for (FHitResult Result : HitResults) {
-		if (ACameraArea* Room = Cast<ACameraArea>(Result.GetActor())) {
-			UpRoom = Room;
-			break;
-		}
-	}
-
-	End = Start + FVector::DownVector * 50000.F;
-
-	GetWorld()->LineTraceMultiByChannel(HitResults, Start, End, ECC_Visibility, Params);
-
-	for (FHitResult Result : HitResults) {
-		if (ACameraArea* Room = Cast<ACameraArea>(Result.GetActor())) {
-			DownRoom = Room;
-			break;
-		}
-	}
-
-
-	if (LeftRoom) {
-		FVector2D StartDraw = EndFrom + FVector2D(2, 0);
-		FVector2D EndDraw = StartDraw + FVector2D(38 * 2, 25 * 2);
-
-		//DrawRoom(PixelData, StartDraw, EndDraw, MapTextureSize,FColor::Red);
-		DetectOtherRooms(PixelData, LeftRoom, FVector2D(EndDraw.X,StartDraw.Y));
-	}
-	
-	if (UpRoom) {
-		FVector2D StartDraw = EndFrom - FVector2D(38 * 2, 25 * 2);
-		FVector2D EndDraw = EndFrom;
-
-		DrawRoom(PixelData, StartDraw, EndDraw, MapTextureSize, FColor::Yellow);
-		//DetectOtherRooms(PixelData, LeftRoom, FVector2D(EndDraw.X, StartDraw.Y));
-	}
-
-	if (DownRoom) {
-		FVector2D StartDraw = EndFrom + FVector2D(38 * 2, 25 * 2) + FVector2D(0,-2);
-		FVector2D EndDraw = EndFrom + FVector2D(0, -2);
-		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Magenta, TEXT("Find Down Room"));
-		DrawRoom(PixelData, StartDraw, EndDraw, MapTextureSize, FColor::Magenta);
-		//DetectOtherRooms(PixelData, LeftRoom, FVector2D(EndDraw.X, StartDraw.Y));
-	}
+	return nullptr;
 }
 
 ACameraArea* UMapManager::GetFirstRoom() {

@@ -4,11 +4,10 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "MapManager.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnOpenMap,ADiamondProjectCharacter*,Character);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCloseMap, ADiamondProjectCharacter*, Character);
-
 class ACameraArea;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnOpenMap,ADiamondProjectCharacter*,Character);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCloseMap, ADiamondProjectCharacter*, Character);
 UCLASS()
 class DIAMONDPROJECT_API UMapManager : public UWorldSubsystem {
 	GENERATED_BODY()
@@ -33,15 +32,21 @@ private:
 	void CreateMap();
 
 	UFUNCTION()
-	TArray<uint16> DrawRoom(TArray<FColor>& PixelData, FVector2D Start, FVector2D End,FVector2D TexSize,FColor RoomColor);
+	void DrawRoom(TArray<FColor>& PixelData,ACameraArea* From, FVector2D Start, FVector2D End,FVector2D TexSize,FColor RoomColor);
 	
 	UFUNCTION()
 	void DetectOtherRooms(TArray<FColor>& PixelData, ACameraArea* From,FVector2D EndFrom);
+
+	UFUNCTION()
+	ACameraArea* Raycast(const ACameraArea* From,FVector Start,FVector End);
 
 	ACameraArea* GetFirstRoom();
 
 	UPROPERTY()
 	UTexture2D* MapTexture;
+
+	UPROPERTY()
+	TArray<ACameraArea*> DrawnRooms;
 
 	FVector2D MapTextureSize;
 };
