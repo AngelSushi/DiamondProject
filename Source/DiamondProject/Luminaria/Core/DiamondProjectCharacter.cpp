@@ -19,6 +19,8 @@
 
 #include "DiamondProject/Luminaria/CameraBehaviors/CameraDynamicBehavior.h"
 
+#include "DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
+
 ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -159,3 +161,11 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 		}
 	}
 }
+
+void ADiamondProjectCharacter::OnLandOnGround(ADiamondProjectCharacter* Character) {
+	if (ADiamondProjectPlayerController* PlayerController = Cast<ADiamondProjectPlayerController>(GetController())) {
+		PlayerController->bIsJumping = false;
+	}
+}
+
+
