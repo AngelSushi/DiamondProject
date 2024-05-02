@@ -15,8 +15,7 @@
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
-ADiamondProjectPlayerController::ADiamondProjectPlayerController()
-{
+ADiamondProjectPlayerController::ADiamondProjectPlayerController() {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
 }
@@ -46,6 +45,13 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&ADiamondProjectPlayerController::StopJump);
 	
 		EnhancedInputComponent->BindAction(OpenMapAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::OpenMap);
+	
+		EnhancedInputComponent->BindAction(PushAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Push);
+		EnhancedInputComponent->BindAction(PushAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::StopPush);
+
+		EnhancedInputComponent->BindAction(PullAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Pull);
+		EnhancedInputComponent->BindAction(PullAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::StopPull);
+
 	}
 	else
 	{
@@ -144,4 +150,20 @@ void ADiamondProjectPlayerController::OpenMap() {
 	}
 
 	bIsMapOpen = !bIsMapOpen;
+}
+
+void ADiamondProjectPlayerController::Push() {
+	bIsPushing = true;
+}
+
+void ADiamondProjectPlayerController::StopPush() {
+	bIsPulling = false;
+}
+
+void ADiamondProjectPlayerController::Pull() {
+	bIsPulling = true;
+}
+
+void ADiamondProjectPlayerController::StopPull() {
+	bIsPulling = false;
 }
