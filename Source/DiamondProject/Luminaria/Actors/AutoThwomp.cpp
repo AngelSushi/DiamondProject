@@ -23,6 +23,7 @@ void AAutoThwomp::BeginPlay()
 {
 	Super::BeginPlay();
     StaticMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &AAutoThwomp::OnMeshBeginOverlap);
+    StaticMeshComponent->OnComponentEndOverlap.AddDynamic(this, &AAutoThwomp::OnMeshEndOverlap);
     InitialLocation = GetActorLocation();
 }
 
@@ -46,20 +47,38 @@ void AAutoThwomp::Tick(float DeltaTime)
 
 }
 
-
-void AAutoThwomp::OnMeshBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AAutoThwomp::ChangeDirection() 
 {
     if (!Up)
     {
         Up = true;
         Down = false;
+        UE_LOG(LogTemp, Error, TEXT("je suis dans le up false, je descend chef "));
+
     }
-    if (Up)
+    else if (Up)
     {
         Down = true;
         Up = false;
+        UE_LOG(LogTemp, Error, TEXT("je suis dans le up true, je suis snsé monter"));
+
     }
+
 }
 
 
+void AAutoThwomp::OnMeshBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+    if (!isFunctionAlreadyCalled) 
+    {
+        ChangeDirection();
+        isFunctionAlreadyCalled = true;
+        
+    }
+}
+
+void AAutoThwomp::OnMeshEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+    isFunctionAlreadyCalled = false;
+}
 

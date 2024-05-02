@@ -34,6 +34,9 @@ private:
     UPROPERTY(VisibleAnywhere)
     bool Down = true;
 
+    UPROPERTY(VisibleAnywhere)
+    bool isFunctionAlreadyCalled = false;
+
     FVector InitialLocation;
 
     UPROPERTY(EditAnywhere)
@@ -50,6 +53,14 @@ private:
         bool bFromSweep,
         const FHitResult& SweepResult);
 
-    
+    UFUNCTION()
+    void OnMeshEndOverlap(UPrimitiveComponent* OverlappedComponent,
+        AActor* OtherActor,
+        UPrimitiveComponent* OtherComp,
+        int32 OtherBodyIndex);
+
+
+    UFUNCTION()
+    void ChangeDirection();
 
 };
