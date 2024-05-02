@@ -90,7 +90,7 @@ void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<
 	ResultFunc(CameraBehavior);
 }
 
-void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character) {
+void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathCause DeathCause) {
 	ECameraBehavior CurrentBehavior = BehaviorState;
 
 	if (CurrentBehavior == ECameraBehavior::DEFAULT) {
