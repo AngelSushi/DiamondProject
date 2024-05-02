@@ -41,6 +41,9 @@ public:
 	UFUNCTION()
 	ADiamondProjectCharacter* GetOtherPlayer(ADiamondProjectCharacter* Character);
 
-	UPROPERTY()
+	UFUNCTION()
+	TArray<ADiamondProjectCharacter*> GetAllCharactersRef() { return Characters; }
+
+	UPROPERTY() // PASSER SA EN PRIVE
 	TArray<ADiamondProjectCharacter*> Characters;
 };

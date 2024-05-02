@@ -3,7 +3,9 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerStart.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
+#include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
 ACameraArea::ACameraArea() {
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -16,6 +18,15 @@ ACameraArea::ACameraArea() {
 	GoTo->SetupAttachment(RootComponent);
 }
 
+void ACameraArea::TickArea(float DeltaTime) {
+
+	for (ADiamondProjectCharacter* Character : PlayerManager->Characters) {
+		if (Character->GetCharacterMovement()->GetMaxSpeed() != PlayerSpeed) {
+			Character->GetCharacterMovement()->MaxWalkSpeed = PlayerSpeed;
+		}
+	}
+}
+
 void ACameraArea::BeginPlay() {
 	Super::BeginPlay();
 	
@@ -26,7 +37,7 @@ void ACameraArea::BeginPlay() {
 		MaxPosition = FVector2D(GetActorLocation().Y + BoxExtent.Y, GetActorLocation().Z + BoxExtent.Z)  + FVector2D(1, 0) * 70.F ;
 	}
 
-
+	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
 }
 
 
