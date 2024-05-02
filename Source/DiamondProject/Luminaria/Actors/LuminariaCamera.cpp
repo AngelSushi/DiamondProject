@@ -36,6 +36,10 @@ void ALuminariaCamera::InitBehavior() {
 void ALuminariaCamera::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
+	if (CurrentArea) {
+		CurrentArea->TickArea(DeltaTime);
+	}
+
 	if (CameraBehavior) {
 		CameraBehavior->TickBehavior(DeltaTime);
 	
@@ -90,7 +94,7 @@ void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<
 	ResultFunc(CameraBehavior);
 }
 
-void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character) {
+void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathCause DeathCause) {
 	ECameraBehavior CurrentBehavior = BehaviorState;
 
 	if (CurrentBehavior == ECameraBehavior::DEFAULT) {

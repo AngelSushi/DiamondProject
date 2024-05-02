@@ -20,7 +20,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USceneComponent> GoTo;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<class UBoxComponent> BoxCollision;
 
 	UPROPERTY(EditAnywhere)
@@ -35,14 +35,22 @@ public:
 	UPROPERTY(EditAnywhere)
 	uint16 ZoomMax;
 
+	UPROPERTY(EditAnywhere)
+	float PlayerSpeed = 600.F;
+
 	UPROPERTY(VisibleAnywhere)
 	FVector2D MinPosition;
 
 	UPROPERTY(VisibleAnywhere)
 	FVector2D MaxPosition;
 
+	UFUNCTION()
+	void TickArea(float DeltaTime);
 
 protected:
 	virtual void BeginPlay() override;
 
+private:
+	UPROPERTY()
+	UPlayerManager* PlayerManager;
 };

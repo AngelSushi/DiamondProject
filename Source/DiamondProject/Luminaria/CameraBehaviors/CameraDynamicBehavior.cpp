@@ -57,7 +57,9 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 			Barycenter.Z = DefaultZ;
 			Barycenter.X = Approach(Barycenter.X, OffsetX, 350 * DeltaTime);
 
-			Barycenter.X = FMath::Clamp(Barycenter.X, OwnerActor->CurrentArea->ZoomMin,OwnerActor->CurrentArea->ZoomMax);
+			if (OwnerActor->CurrentArea) {
+				Barycenter.X = FMath::Clamp(Barycenter.X, OwnerActor->CurrentArea->ZoomMin, OwnerActor->CurrentArea->ZoomMax);
+			}
 		}
 
 		OwnerActor->SetActorLocation(Barycenter);
@@ -74,7 +76,7 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharacter* character,FVector direction) {
 	ULocalPlayer* LocalPlayer = character->GetWorld()->GetFirstLocalPlayerFromController();
 
-	if (bBlock) {
+	if (bBlock || !OwnerActor->CurrentArea) {
 		return;
 	}
 

@@ -1,6 +1,7 @@
 #include "DiamondProject/Luminaria/Actors/Link.h"
 #include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
+#include "DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
 
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -11,8 +12,6 @@ ALink::ALink() {
 	_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = _mesh;
 }
-
-
 
 void ALink::BeginPlay() {
 	Super::BeginPlay();
@@ -69,9 +68,16 @@ void ALink::OnPlayerMove(ADiamondProjectCharacter* Character, FVector Direction,
 		AActor* OtherPlayer = PlayerManager->GetOtherPlayer(Character);
 
 		float NewDistance = FVector::Distance(NextPosition, OtherPlayer->GetActorLocation());
-
+	
 		if (NewDistance >= DistanceMax) {
 			IsCanceled = true;
+
+			if (ADiamondProjectPlayerController* PlayerController = Cast<ADiamondProjectPlayerController>(Character->GetController())) {
+				if (PlayerController->bIsJumping) {			
+					Character->GetCharacterMovement()->GravityScale = 15.0F;
+					PlayerController->bIsJumping = false;
+				}
+			}
 		}
 		else {
 			IsCanceled = false;

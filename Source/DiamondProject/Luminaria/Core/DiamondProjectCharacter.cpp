@@ -19,6 +19,8 @@
 
 #include "DiamondProject/Luminaria/CameraBehaviors/CameraDynamicBehavior.h"
 
+#include "DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
+
 ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -26,7 +28,7 @@ ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-
+	
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Rotate character to moving direction
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
@@ -83,14 +85,14 @@ void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
 	bIsOnGroundLastTick = bIsOnGround;
 }
 
-void ADiamondProjectCharacter::Death() {
+void ADiamondProjectCharacter::Death(EDeathCause DeathCause) {
 	FTimerHandle RespawnTimer;
 
 	if (_checkPoint != FVector::Zero()) {
 		SetActorLocation(_checkPoint);
 	}
 	
-	PlayerManager->OnPlayerDeath.Broadcast(this);
+	PlayerManager->OnPlayerDeath.Broadcast(this,DeathCause);
 }
 
 void ADiamondProjectCharacter::UpdateCheckpoint(ACheckpoint* checkpoint) {
@@ -159,3 +161,11 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 		}
 	}
 }
+
+void ADiamondProjectCharacter::OnLandOnGround(ADiamondProjectCharacter* Character) {
+	if (ADiamondProjectPlayerController* PlayerController = Cast<ADiamondProjectPlayerController>(GetController())) {
+		PlayerController->bIsJumping = false;
+	}
+}
+
+

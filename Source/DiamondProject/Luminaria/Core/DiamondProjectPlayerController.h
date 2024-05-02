@@ -36,6 +36,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* OpenMapAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* PushAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* PullAction;
+
+
 	UPROPERTY()
 	FVector LastDirection;
 
@@ -47,11 +57,20 @@ public:
 
 	bool bIsLookingLeft;
 
+	UPROPERTY()
+	bool bIsJumping;
+
 protected:
 
 	virtual void SetupInputComponent() override;
 	
 	virtual void BeginPlay();
+	
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsPushing;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsPulling;
 
 private:
 
@@ -64,8 +83,26 @@ private:
 	UFUNCTION()
 	void StopJump();
 
+	UFUNCTION()
+	void OpenMap();
+
+	UFUNCTION()
+	void Push();
+
+	UFUNCTION()
+	void StopPush();
+
+	UFUNCTION()
+	void Pull();
+
+	UFUNCTION()
+	void StopPull();
+
 	UPROPERTY(EditAnywhere)
 	bool isUsingDepthMovement;
+
+	UPROPERTY()
+	bool bIsMapOpen;
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;

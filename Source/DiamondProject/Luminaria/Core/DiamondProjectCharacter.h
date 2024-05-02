@@ -6,6 +6,14 @@
 
 class UPlayerManager;
 
+UENUM(BlueprintType)
+enum EDeathCause {
+	NONE,
+	SPIKE,
+	ABSORBER,
+	OTHER
+};
+
 UCLASS(Blueprintable)
 class ADiamondProjectCharacter : public ACharacter
 {
@@ -24,7 +32,7 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
 	UFUNCTION(BlueprintCallable)
-	void Death();
+	void Death(EDeathCause DeathCause);
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateCheckpoint(ACheckpoint* checkpoint);
@@ -43,6 +51,12 @@ public:
 
 	UPROPERTY()
 	bool bIsOnGroundLastTick;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UMapWidget> MapWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<class UMapWidget> MapWidget;
 
 
 private:
@@ -72,5 +86,7 @@ private:
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+	void OnLandOnGround(ADiamondProjectCharacter* Character);
 };
 
