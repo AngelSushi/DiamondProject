@@ -62,6 +62,7 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
+	// Check si la distance est bonne
 
 	if (MovementDirection.Y < 0)
 	{
