@@ -109,22 +109,23 @@ void ADiamondProjectCharacter::OnPlayerUpdateCheckpoint(ADiamondProjectCharacter
 void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	if (ACameraArea* HitArea = Cast<ACameraArea>(OtherActor)) {
 		HitArea->SetVisited(true);
+		
 
-		if (HitArea->AreaBehavior != LastHitArea->AreaBehavior) {
-			MainCamera->CurrentArea = HitArea;
+		ECameraBehavior TargetBehavior = HitArea->AreaBehavior;
 
-			ECameraBehavior TargetBehavior = HitArea->AreaBehavior;
+		if (TargetBehavior == ECameraBehavior::DEFAULT) {
+			TargetBehavior = ECameraBehavior::GOTO;
+		}
 
-			if (TargetBehavior == ECameraBehavior::DEFAULT) {
-				TargetBehavior = ECameraBehavior::GOTO;
-			}
+		ADiamondProjectCharacter* OtherPlayer = PlayerManager->GetOtherPlayer(this);
 
-			ADiamondProjectCharacter* OtherPlayer = PlayerManager->GetOtherPlayer(this);
+		if (HitArea->PlayerNeeded == 2) {	
+			if (OtherPlayer->LastHitArea == HitArea) {
+				// Faire le switch
+				MainCamera->CurrentArea = HitArea;
 
-			if (HitArea->PlayerNeeded == 2) {	
-				if (OtherPlayer->LastHitArea == HitArea) {
-					// Faire le switch
-					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea,&OtherPlayer,this](UCameraBehavior* Behavior) {
+				if (TargetBehavior != LastHitArea->AreaBehavior) {
+					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this](UCameraBehavior* Behavior) {
 						if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
 							GoTo->NextBehavior = ECameraBehavior::DEFAULT;
 							GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
@@ -138,11 +139,15 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 							DynamicBehavior->SetBarycenter(Barycenter);
 							//
 						}
-					});
+						});
 				}
 			}
-			else {
-				MainCamera->SwitchBehavior(TargetBehavior, [&HitArea,&OtherPlayer,this](UCameraBehavior* Behavior) {
+		}
+		else {
+			MainCamera->CurrentArea = HitArea;
+
+			if (TargetBehavior != LastHitArea->AreaBehavior) {
+				MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this](UCameraBehavior* Behavior) {
 					if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
 						GoTo->NextBehavior = ECameraBehavior::DEFAULT;
 						GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
@@ -156,12 +161,13 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 						DynamicBehavior->SetBarycenter(Barycenter);
 						//
 					}
-				});
+					});
 			}
-
-			LastHitArea = HitArea;
 		}
+
+		LastHitArea = HitArea;
 	}
+	
 }
 
 void ADiamondProjectCharacter::OnLandOnGround(ADiamondProjectCharacter* Character) {
