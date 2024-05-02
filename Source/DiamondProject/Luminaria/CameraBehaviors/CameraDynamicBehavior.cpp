@@ -76,7 +76,7 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharacter* character,FVector direction) {
 	ULocalPlayer* LocalPlayer = character->GetWorld()->GetFirstLocalPlayerFromController();
 
-	if (bBlock) {
+	if (bBlock || !OwnerActor->CurrentArea) {
 		return;
 	}
 

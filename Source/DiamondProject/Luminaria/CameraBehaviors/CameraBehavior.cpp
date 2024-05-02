@@ -18,7 +18,7 @@ void UCameraBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 
 void UCameraBehavior::TickBehavior(float DeltaTime) {
 	if (!OwnerActor->CurrentArea) {
-		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, TEXT("No Area Found"));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, TEXT("No Area Found"));
 		return;
 	}
 
