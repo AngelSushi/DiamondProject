@@ -19,6 +19,8 @@
 
 #include "DiamondProject/Luminaria/CameraBehaviors/CameraDynamicBehavior.h"
 
+#include "DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
+
 ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -83,14 +85,14 @@ void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
 	bIsOnGroundLastTick = bIsOnGround;
 }
 
-void ADiamondProjectCharacter::Death() {
+void ADiamondProjectCharacter::Death(EDeathCause DeathCause) {
 	FTimerHandle RespawnTimer;
 
 	if (_checkPoint != FVector::Zero()) {
 		SetActorLocation(_checkPoint);
 	}
 	
-	PlayerManager->OnPlayerDeath.Broadcast(this);
+	PlayerManager->OnPlayerDeath.Broadcast(this,DeathCause);
 }
 
 void ADiamondProjectCharacter::UpdateCheckpoint(ACheckpoint* checkpoint) {
@@ -106,6 +108,8 @@ void ADiamondProjectCharacter::OnPlayerUpdateCheckpoint(ADiamondProjectCharacter
 
 void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	if (ACameraArea* HitArea = Cast<ACameraArea>(OtherActor)) {
+		HitArea->SetVisited(true);
+
 		if (HitArea->AreaBehavior != LastHitArea->AreaBehavior) {
 			MainCamera->CurrentArea = HitArea;
 
@@ -159,3 +163,11 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 		}
 	}
 }
+
+void ADiamondProjectCharacter::OnLandOnGround(ADiamondProjectCharacter* Character) {
+	if (ADiamondProjectPlayerController* PlayerController = Cast<ADiamondProjectPlayerController>(GetController())) {
+		PlayerController->bIsJumping = false;
+	}
+}
+
+

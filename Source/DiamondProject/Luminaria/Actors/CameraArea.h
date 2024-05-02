@@ -35,14 +35,29 @@ public:
 	UPROPERTY(EditAnywhere)
 	uint16 ZoomMax;
 
+	UPROPERTY(EditAnywhere)
+	float PlayerSpeed = 600.F;
+
 	UPROPERTY(VisibleAnywhere)
 	FVector2D MinPosition;
 
 	UPROPERTY(VisibleAnywhere)
 	FVector2D MaxPosition;
 
+	UFUNCTION()
+	bool HasVisited() { return bHasVisited; }
+	UFUNCTION()
+	void TickArea(float DeltaTime);
 
+	UFUNCTION()
+	void SetVisited(bool HasVisited) { bHasVisited = HasVisited; }
 protected:
 	virtual void BeginPlay() override;
 
+private:
+	UPROPERTY(VisibleAnywhere)
+	bool bHasVisited;
+private:
+	UPROPERTY()
+	UPlayerManager* PlayerManager;
 };

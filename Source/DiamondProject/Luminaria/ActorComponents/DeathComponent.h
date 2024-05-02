@@ -25,4 +25,7 @@ private:
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;
+
+	UPROPERTY(EditAnywhere)
+	TEnumAsByte<EDeathCause> DeathCause;
 };
