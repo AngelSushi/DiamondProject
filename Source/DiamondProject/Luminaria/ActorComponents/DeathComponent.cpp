@@ -1,12 +1,12 @@
 #include "DiamondProject/Luminaria/ActorComponents/DeathComponent.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
-#include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
+#include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
 
 void UDeathComponent::BeginPlay() {
 	OnComponentBeginOverlap.AddDynamic(this, &UDeathComponent::OnBeginOverlap);
 
-	PlayerEventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
-	PlayerEventsDispatcher->OnPlayerRegister.AddDynamic(this, &UDeathComponent::RegisterPlayer);
+	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
+	PlayerManager->OnPlayerRegister.AddDynamic(this, &UDeathComponent::RegisterPlayer);
 }
 
 void UDeathComponent::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {

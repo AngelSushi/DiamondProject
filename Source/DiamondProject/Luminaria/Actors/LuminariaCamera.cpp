@@ -1,12 +1,15 @@
 #include "LuminariaCamera.h"
-#include "DiamondProject/Luminaria/SubSystems/PlayerEventsDispatcher.h"
-#include "DiamondProject/Luminaria/ActorComponents/GoToBehavior.h"
+#include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
+#include "DiamondProject/Luminaria/CameraBehaviors/GoToBehavior.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 
-#include "DiamondProject/Luminaria/ActorComponents/CameraDefaultBehavior.h"
-#include "DiamondProject/Luminaria/ActorComponents/CameraLeaderBehavior.h"
-#include "DiamondProject/Luminaria/ActorComponents/CameraDynamicBehavior.h"
-#include "DiamondProject/Luminaria/ActorComponents/GoToBehavior.h"
+#include "DiamondProject/Luminaria/CameraBehaviors/CameraDefaultBehavior.h"
+#include "DiamondProject/Luminaria/CameraBehaviors/CameraLeaderBehavior.h"
+#include "DiamondProject/Luminaria/CameraBehaviors/CameraDynamicBehavior.h"
+#include "DiamondProject/Luminaria/CameraBehaviors/GoToBehavior.h"
+#include "DiamondProject/Luminaria/CameraBehaviors/HeightCameraBehavior.h"
+
+#include "DiamondProject/Luminaria/Actors/CameraArea.h"
 
 ALuminariaCamera::ALuminariaCamera() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -15,36 +18,80 @@ ALuminariaCamera::ALuminariaCamera() {
 void ALuminariaCamera::BeginPlay() {
 	Super::BeginPlay();
 
-	UPlayerEventsDispatcher* EventsDispatcher = GetWorld()->GetSubsystem<UPlayerEventsDispatcher>();
-	EventsDispatcher->OnPlayerRegister.AddDynamic(this, &ALuminariaCamera::OnPlayerRegister);
-	EventsDispatcher->OnPlayerDeath.AddDynamic(this, &ALuminariaCamera::OnPlayerDeath);
+	UPlayerManager* PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
+	PlayerManager->OnPlayerRegister.AddDynamic(this, &ALuminariaCamera::OnPlayerRegister);
+	PlayerManager->OnPlayerDeath.AddDynamic(this, &ALuminariaCamera::OnPlayerDeath);
 
 	StartPosition = GetActorLocation();
 
-	LastBehavior = CameraBehavior;
+	InitBehavior();
 }
+
+void ALuminariaCamera::InitBehavior() {
+	SwitchBehavior(BehaviorState);
+}
+
+// Utiliser Lerp et InverseLerp pour faire le zoomMax et la distanceMax du lien
 
 void ALuminariaCamera::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+
+	if (CameraBehavior) {
+		CameraBehavior->TickBehavior(DeltaTime);
+	
+		if (HeightBehavior) {
+			HeightBehavior->TickBehavior(DeltaTime);
+		}
+	}
 }
 
 void ALuminariaCamera::OnPlayerRegister(ADiamondProjectCharacter* Character) {
 	Characters.Add(Character);
 }
 
-void ALuminariaCamera::AddComponent(TSubclassOf<class UCameraBehavior> Component, TFunction<void(UActorComponent* AddedComponent)> ResultFunc) {
-	if (LastBehaviorComponent) {
-		LastBehaviorComponent->DestroyComponent();
+void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc /*= [](UCameraBehavior* CameraBehavior) {}*/) {
+
+	if (CameraBehavior && BehaviorState == SwitchBehavior) {
+		UE_LOG(LogTemp, Error, TEXT("The camera has already this behavior."));
+		return;
 	}
 
-	LastBehaviorComponent = AddComponentByClass(Component, false, GetActorTransform(), false);
-	
-	ResultFunc(LastBehaviorComponent);
+	//CameraBehavior = NewObject<UCameraBehavior>(Behavior); Doesn't work with child functions
+
+	switch (SwitchBehavior) {
+		case ECameraBehavior::DEFAULT:
+			DefaultBehavior = NewObject<UCameraDefaultBehavior>();
+			CameraBehavior = DefaultBehavior;
+			break;
+
+		case ECameraBehavior::DYNAMIC:
+			DynamicBehavior = NewObject<UCameraDynamicBehavior>();
+			HeightBehavior = NewObject<UHeightCameraBehavior>();
+			CameraBehavior = DynamicBehavior;
+			break;
+
+		case ECameraBehavior::GOTO:
+			GoToBehavior = NewObject<UGoToBehavior>();
+			CameraBehavior = GoToBehavior;
+			break;
+
+		case ECameraBehavior::LEADER:
+			LeaderBehavior = NewObject<UCameraLeaderBehavior>();
+			CameraBehavior = LeaderBehavior;
+			break;
+	}
+
+	CameraBehavior->BeginBehavior(this);
+
+	if (HeightBehavior) {
+		HeightBehavior->BeginBehavior(this);
+	}
+
+	ResultFunc(CameraBehavior);
 }
 
-
 void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character) {
-	ECameraBehavior CurrentBehavior = CameraBehavior;
+	ECameraBehavior CurrentBehavior = BehaviorState;
 
 	if (CurrentBehavior == ECameraBehavior::DEFAULT) {
 		return;
@@ -56,11 +103,11 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character) {
 	
 	bHasDead = true;
 
-	CameraBehavior = ECameraBehavior::GOTO;
+	BehaviorState = ECameraBehavior::GOTO;
 
 	FTimerHandle Timer;
 	
-	AddComponent(UGoToBehavior::StaticClass(), [this,CurrentBehavior](UActorComponent* Component) {
+	SwitchBehavior(BehaviorState, [this,CurrentBehavior](UCameraBehavior* Component) {
 		if (UGoToBehavior* GoToBehaviorComponent = Cast<UGoToBehavior>(Component)) {
 			FVector GoTo = FVector::Zero();
 

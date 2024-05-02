@@ -10,7 +10,7 @@
 /** Forward declaration to improve compiling times */
 class UNiagaraSystem;
 class UInputMappingContext;
-class UPlayerEventsDispatcher;
+class UPlayerManager;
 class UInputAction;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -36,6 +36,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* OpenMapAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* PushAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* PullAction;
+
+
 	UPROPERTY()
 	FVector LastDirection;
 
@@ -52,6 +62,12 @@ protected:
 	virtual void SetupInputComponent() override;
 	
 	virtual void BeginPlay();
+	
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsPushing;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsPulling;
 
 private:
 
@@ -64,11 +80,29 @@ private:
 	UFUNCTION()
 	void StopJump();
 
+	UFUNCTION()
+	void OpenMap();
+
+	UFUNCTION()
+	void Push();
+
+	UFUNCTION()
+	void StopPush();
+
+	UFUNCTION()
+	void Pull();
+
+	UFUNCTION()
+	void StopPull();
+
 	UPROPERTY(EditAnywhere)
 	bool isUsingDepthMovement;
 
 	UPROPERTY()
-	UPlayerEventsDispatcher* PlayerEventsDispatcher;
+	bool bIsMapOpen;
+
+	UPROPERTY()
+	UPlayerManager* PlayerManager;
 
 };
 

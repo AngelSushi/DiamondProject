@@ -4,7 +4,7 @@
 #include "GameFramework/Character.h"
 #include "DiamondProjectCharacter.generated.h"
 
-class UPlayerEventsDispatcher;
+class UPlayerManager;
 
 UCLASS(Blueprintable)
 class ADiamondProjectCharacter : public ACharacter
@@ -35,6 +35,21 @@ public:
 	UFUNCTION()
 	FVector GetCheckpoint() { return _checkPoint; }
 
+	UFUNCTION()
+	AActor* GetGroundActor() { return GroundActor; }
+
+	UPROPERTY()
+	bool bIsOnGround;
+
+	UPROPERTY()
+	bool bIsOnGroundLastTick;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UMapWidget> MapWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<class UMapWidget> MapWidget;
+
 
 private:
 	/** Top down camera */
@@ -46,9 +61,22 @@ private:
 	class USpringArmComponent* CameraBoom;
 
 	UPROPERTY()
-	UPlayerEventsDispatcher* PlayerEventsDispatcher;
+	UPlayerManager* PlayerManager;
 	
 	UPROPERTY()
 	FVector _checkPoint;
+
+	UPROPERTY()
+	TObjectPtr<class ALuminariaCamera> MainCamera;
+
+	UPROPERTY()
+	TObjectPtr<class AActor> GroundActor;
+
+	UPROPERTY()
+	TObjectPtr<class ACameraArea> LastHitArea;
+
+	UFUNCTION()
+	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 };
 
