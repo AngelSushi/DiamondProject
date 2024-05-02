@@ -35,8 +35,9 @@ void UCameraBehavior::TickBehavior(float DeltaTime) {
 		FVector Forward = Character->GetActorForwardVector();
 		FVector BehindPlayerPos = Character->GetActorLocation() - Forward * Character->GetSimpleCollisionRadius() * 10.f;
 
-		DrawDebugSphere(OwnerActor->GetWorld(), BehindPlayerPos, 30.F, 8, FColor::Magenta, false, 1.F, 1, 3.F);
-
+		if (OwnerActor && OwnerActor->bDebugCamera) {
+			DrawDebugSphere(OwnerActor->GetWorld(), BehindPlayerPos, 30.F, 8, FColor::Magenta, false, 1.F, 1, 3.F);
+		}
 		// Check For Left Corner Of Area	
 		
 		if (FMath::IsNearlyEqual(Forward.X, 0.f) && FMath::IsNearlyEqual(Forward.Y, -1.f) && FMath::IsNearlyEqual(Forward.Z, 0.f)) { // If Player Goes To Left

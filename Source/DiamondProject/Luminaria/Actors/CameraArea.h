@@ -45,11 +45,18 @@ public:
 	FVector2D MaxPosition;
 
 	UFUNCTION()
+	bool HasVisited() { return bHasVisited; }
+	UFUNCTION()
 	void TickArea(float DeltaTime);
 
+	UFUNCTION()
+	void SetVisited(bool HasVisited) { bHasVisited = HasVisited; }
 protected:
 	virtual void BeginPlay() override;
 
+private:
+	UPROPERTY(VisibleAnywhere)
+	bool bHasVisited;
 private:
 	UPROPERTY()
 	UPlayerManager* PlayerManager;
