@@ -25,7 +25,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	FOnPlayerRegister OnPlayerRegister;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintAssignable)
 	FOnPlayerDeath OnPlayerDeath;
 
 	UPROPERTY(VisibleAnywhere)
