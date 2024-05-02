@@ -14,7 +14,7 @@ void UDeathComponent::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, A
 		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Death"));
 
 		for (ADiamondProjectCharacter* C : Characters) {
-			C->Death();
+			C->Death((EDeathCause) DeathCause.GetValue());
 		}
 	}
 

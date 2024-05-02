@@ -6,6 +6,14 @@
 
 class UPlayerManager;
 
+UENUM(BlueprintType)
+enum EDeathCause {
+	NONE,
+	SPIKE,
+	ABSORBER,
+	OTHER
+};
+
 UCLASS(Blueprintable)
 class ADiamondProjectCharacter : public ACharacter
 {
@@ -24,7 +32,7 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
 	UFUNCTION(BlueprintCallable)
-	void Death();
+	void Death(EDeathCause DeathCause);
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateCheckpoint(ACheckpoint* checkpoint);
