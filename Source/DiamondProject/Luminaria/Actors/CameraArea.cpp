@@ -26,7 +26,7 @@ void ACameraArea::BeginPlay() {
 		MaxPosition = FVector2D(GetActorLocation().Y + BoxExtent.Y, GetActorLocation().Z + BoxExtent.Z)  + FVector2D(1, 0) * 70.F ;
 	}
 
-
+	bHasVisited = false;
 }
 
 

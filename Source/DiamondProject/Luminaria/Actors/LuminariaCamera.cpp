@@ -25,6 +25,11 @@ void ALuminariaCamera::BeginPlay() {
 	StartPosition = GetActorLocation();
 
 	InitBehavior();
+
+	if (CurrentArea) {
+		CurrentArea->SetVisited(true);
+	}
+
 }
 
 void ALuminariaCamera::InitBehavior() {
