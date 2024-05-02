@@ -1,4 +1,5 @@
 #include "PlayerManager.h"
+#include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 
 void UPlayerManager::RegisterPlayer(ADiamondProjectCharacter* Character) {
 	Characters.Add(Character);
