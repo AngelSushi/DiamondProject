@@ -16,6 +16,14 @@ ACameraArea::ACameraArea() {
 	GoTo->SetupAttachment(RootComponent);
 }
 
+void ACameraArea::TickArea(float DeltaTime) {
+	for (ADiamondProjectCharacter* Character : PlayerManager->Characters) {
+		if (Character->GetCharacterMovement()->MaxWalkSpeed != PlayerSpeed) {
+			Character->GetCharacterMovement()->MaxWalkSpeed = PlayerSpeed;
+		}
+	}
+}
+
 void ACameraArea::BeginPlay() {
 	Super::BeginPlay();
 	
