@@ -33,7 +33,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	FOnPlayerRespawn OnPlayerRespawn;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere,BlueprintAssignable)
 	FOnPlayerUpdateCheckpoint OnPlayerUpdateCheckpoint;
 
 	UPROPERTY(VisibleAnywhere)
