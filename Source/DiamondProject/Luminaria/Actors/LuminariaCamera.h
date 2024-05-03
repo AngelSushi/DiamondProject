@@ -34,11 +34,16 @@ public:
 	UPROPERTY(EditAnywhere)
 	float HeightMax;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere) // Mettre prié
 	TObjectPtr<class ACameraArea> CurrentArea;
 
 	UPROPERTY(EditAnywhere)
 	bool bDebugCamera;
+
+	UFUNCTION(BlueprintCallable)
+	ACameraArea* GetCurrentArea() { return CurrentArea; }
+
+
 
 	UFUNCTION()
 	void OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathCause DeathCause);

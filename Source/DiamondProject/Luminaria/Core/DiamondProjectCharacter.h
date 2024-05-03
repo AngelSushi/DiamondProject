@@ -49,6 +49,9 @@ public:
 	UFUNCTION()
 	AActor* GetGroundActor() { return GroundActor; }
 
+	UFUNCTION(BlueprintCallable)
+	ALuminariaCamera* GetMainCamera() { return MainCamera; }
+
 	UPROPERTY()
 	bool bIsOnGround;
 
