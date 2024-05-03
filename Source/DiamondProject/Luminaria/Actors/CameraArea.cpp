@@ -19,12 +19,8 @@ ACameraArea::ACameraArea() {
 }
 
 void ACameraArea::TickArea(float DeltaTime) {
-
-	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Orange, FString::Printf(TEXT("Tick From %s"), *GetActorNameOrLabel()));
-
 	for (ADiamondProjectCharacter* Character : PlayerManager->Characters) {
 		if (Character->GetCharacterMovement()->MaxWalkSpeed != PlayerSpeed) {
-			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Change Max Walk Speed"));
 			Character->GetCharacterMovement()->MaxWalkSpeed = PlayerSpeed;
 		}
 	}

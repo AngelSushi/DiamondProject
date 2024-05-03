@@ -34,7 +34,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	float HeightMax;
 
-	UPROPERTY(EditAnywhere) // Mettre prié
+	UPROPERTY(EditAnywhere) // Mettre privé
 	TObjectPtr<class ACameraArea> CurrentArea;
 
 	UPROPERTY(EditAnywhere)

@@ -45,7 +45,7 @@ public:
 	UFUNCTION()
 	ADiamondProjectCharacter* GetOtherPlayer(ADiamondProjectCharacter* Character);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	TArray<ADiamondProjectCharacter*> GetAllCharactersRef() { return Characters; }
 
 	UPROPERTY() // PASSER SA EN PRIVE
