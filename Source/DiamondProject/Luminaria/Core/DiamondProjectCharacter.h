@@ -35,6 +35,9 @@ public:
 	void Death(EDeathCause DeathCause);
 
 	UFUNCTION(BlueprintCallable)
+	void Respawn(EDeathCause DeathCause);
+
+	UFUNCTION(BlueprintCallable)
 	void UpdateCheckpoint(ACheckpoint* checkpoint);
 
 	UFUNCTION()
