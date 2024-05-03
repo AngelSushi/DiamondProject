@@ -35,7 +35,7 @@ void UCameraLeaderBehavior::TickBehavior(float DeltaTime) {
 	}
 }
 
-void UCameraLeaderBehavior::OnPlayerDeath(ADiamondProjectCharacter* deathPlayer) {
+void UCameraLeaderBehavior::OnPlayerDeath(ADiamondProjectCharacter* deathPlayer,EDeathCause DeathCause) {
 	_leader = *_characters.FindByPredicate([&deathPlayer](const ADiamondProjectCharacter* player) {
 		return deathPlayer != player;
 	});

@@ -57,11 +57,14 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+
+	
 }
 
 void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
+	// Check si la distance est bonne
 
 	if (MovementDirection.Y < 0)
 	{
@@ -126,6 +129,7 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 
 void ADiamondProjectPlayerController::Jump() {
 	GetCharacter()->Jump();
+	bIsJumping = true;
 }
 
 void ADiamondProjectPlayerController::StopJump() {
