@@ -57,6 +57,9 @@ public:
 
 	bool bIsLookingLeft;
 
+	UPROPERTY()
+	bool bIsJumping;
+
 protected:
 
 	virtual void SetupInputComponent() override;
