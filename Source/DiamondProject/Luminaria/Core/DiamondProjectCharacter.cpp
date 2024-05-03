@@ -85,14 +85,16 @@ void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
 	bIsOnGroundLastTick = bIsOnGround;
 }
 
-void ADiamondProjectCharacter::Death(EDeathCause DeathCause) {
-	FTimerHandle RespawnTimer;
+void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que fait la mort ya ptetre de le faire en respawn
+	PlayerManager->OnPlayerDeath.Broadcast(this,DeathCause);
+}
 
+void ADiamondProjectCharacter::Respawn(EDeathCause DeathCause) {
 	if (_checkPoint != FVector::Zero()) {
 		SetActorLocation(_checkPoint);
 	}
-	
-	PlayerManager->OnPlayerDeath.Broadcast(this,DeathCause);
+
+	PlayerManager->OnPlayerRespawn.Broadcast(this, DeathCause, _checkPoint);
 }
 
 void ADiamondProjectCharacter::UpdateCheckpoint(ACheckpoint* checkpoint) {
