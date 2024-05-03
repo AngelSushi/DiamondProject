@@ -53,7 +53,10 @@ void UMapManager::DetectOtherRooms(TArray<FColor>& PixelData, ACameraArea* From,
 
 	FVector Start = From->GetActorLocation();
 
-	FVector End = Start + FVector::RightVector * 50000.F;
+	float DistanceY = From->BoxCollision->GetScaledBoxExtent().Y + 50.F;
+	float DistanceZ = From->BoxCollision->GetScaledBoxExtent().Z + 50.F;
+
+	FVector End = Start + FVector::RightVector * DistanceY; // Pas mettre 50000 mais la distance de la zoomArea
 	RightRoom = Raycast(From,Start, End);
 
 	End = Start + FVector::UpVector * 50000.F;
@@ -62,29 +65,46 @@ void UMapManager::DetectOtherRooms(TArray<FColor>& PixelData, ACameraArea* From,
 	End = Start + FVector::DownVector * 50000.F;
 	DownRoom = Raycast(From, Start, End);
 
-	if (RightRoom && !DrawnRooms.Contains(RightRoom)) {
+	if (RightRoom && !DrawnRooms.Contains(RightRoom) && RightRoom->HasVisited()) { 
 		FVector2D StartDraw = EndFrom + FVector2D(2, 0);
 		FVector2D DrawSize = GetDrawSize(RightRoom->BoxCollision->GetUnscaledBoxExtent());
-		FVector2D EndDraw = StartDraw + /*FVector2D(38 * 2, 25 * 2) */ DrawSize * 2;
+		FVector2D EndDraw = FVector2D((int)(StartDraw + DrawSize * 2).X, (int)(StartDraw + DrawSize * 2).Y);
 
 		DrawRoom(PixelData,From,StartDraw, EndDraw, MapTextureSize,FColor::Red);
 		DetectOtherRooms(PixelData, RightRoom, FVector2D(EndDraw.X,StartDraw.Y));
 	}
-	
-	if (UpRoom && !DrawnRooms.Contains(UpRoom)) {
-		FVector2D StartDraw = EndFrom - FVector2D(38 * 2,25 * 2) - FVector2D(0,2);
-		FVector2D EndDraw = StartDraw + FVector2D(38 * 2, 25 * 2);
+	else if(!RightRoom) { // If there is no RightRoom Detect
+		Start = Start + FVector::RightVector * DistanceY;
+		End = Start + FVector::UpVector * DistanceZ;
 
-		//DrawRoom(PixelData,From,StartDraw, EndDraw, MapTextureSize, FColor::Red);
-		//DetectOtherRooms(PixelData, UpRoom, FVector2D(EndDraw.X, StartDraw.Y));
+		RightRoom = Raycast(From, Start, End);
+
+		if (RightRoom && !DrawnRooms.Contains(RightRoom) && RightRoom->HasVisited()) { // We check if there is smaller area in right direction 
+			FVector2D StartDraw = EndFrom + FVector2D(2, 0);
+			FVector2D DrawSize = GetDrawSize(RightRoom->BoxCollision->GetScaledBoxExtent());
+			FVector2D EndDraw = FVector2D((int) (StartDraw + DrawSize * 2).X,(int) (StartDraw + DrawSize * 2).Y);
+
+			DrawRoom(PixelData,From,StartDraw, EndDraw, MapTextureSize,FColor::Yellow);
+			DetectOtherRooms(PixelData, RightRoom, FVector2D(EndDraw.X, StartDraw.Y));
+		}
+	}
+	
+	if (UpRoom && !DrawnRooms.Contains(UpRoom) && UpRoom->HasVisited()) {
+		FVector2D DrawSize = FVector2D((int)GetDrawSize(UpRoom->BoxCollision->GetScaledBoxExtent()).X,(int)GetDrawSize(UpRoom->BoxCollision->GetScaledBoxExtent()).Y);
+		FVector2D StartDraw = EndFrom - FVector2D(DrawSize.X * 2,DrawSize.Y * 2) - FVector2D(0,2);
+		FVector2D EndDraw = StartDraw + FVector2D(DrawSize.X * 2,DrawSize.Y * 2);
+
+		DrawRoom(PixelData,From,StartDraw, EndDraw, MapTextureSize, FColor::Red);
+		DetectOtherRooms(PixelData, UpRoom, FVector2D(EndDraw.X, StartDraw.Y));
 	}
 
-	if (DownRoom && !DrawnRooms.Contains(DownRoom)) {
-		FVector2D StartDraw = EndFrom + FVector2D(-38 * 2,25 * 2) + FVector2D(0,2);
-		FVector2D EndDraw = StartDraw  + FVector2D(38 * 2, 25 * 2);
+	if (DownRoom && !DrawnRooms.Contains(DownRoom) && DownRoom->HasVisited()) {
+		FVector2D DrawSize = FVector2D((int)GetDrawSize(DownRoom->BoxCollision->GetScaledBoxExtent()).X, (int)GetDrawSize(DownRoom->BoxCollision->GetScaledBoxExtent()).Y);
+		FVector2D StartDraw = EndFrom + FVector2D(-DrawSize.X * 2,DrawSize.Y * 2) + FVector2D(0,2);
+		FVector2D EndDraw = StartDraw  + FVector2D(DrawSize.X * 2, DrawSize.Y * 2);
 
-		//DrawRoom(PixelData,From,StartDraw,EndDraw,MapTextureSize,FColor::Red);
-		//DetectOtherRooms(PixelData,DownRoom,FVector2D(EndDraw.X,StartDraw.Y));
+		DrawRoom(PixelData,From,StartDraw,EndDraw,MapTextureSize,FColor::Red);
+		DetectOtherRooms(PixelData,DownRoom,FVector2D(EndDraw.X,StartDraw.Y));
 	}
 }
 
@@ -186,4 +206,9 @@ void UMapManager::OpenMap(ADiamondProjectCharacter* Character) {
 }
 
 void UMapManager::CloseMap(ADiamondProjectCharacter* Character) {
+	if (Character->MapWidget) {
+		Character->MapWidget->RemoveFromViewport();
+
+		OnCloseMap.Broadcast(Character);
+	}
 }
