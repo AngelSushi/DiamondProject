@@ -21,6 +21,8 @@
 
 #include "DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
 
+#include "Components/PointLightComponent.h"
+
 ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -35,6 +37,9 @@ ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 	//GetCharacterMovement()->bNotifyApex = true;
 	
+	Light = CreateDefaultSubobject<UPointLightComponent>(TEXT("Energy"));
+	Light->SetupAttachment(RootComponent);
+
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }

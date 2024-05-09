@@ -87,6 +87,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetHasAugmentedHeight(bool HasAugmentedHeight) { bHasAugmentedHeight = HasAugmentedHeight; }
 
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	FVector2D GetMoveValue() { return MoveValue; }
+
+
 protected:
 
 	virtual void SetupInputComponent() override;
@@ -137,6 +141,9 @@ private:
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;
+
+	UPROPERTY()
+	FVector2D MoveValue;
 
 	/* Jump Variables */
 	UPROPERTY()

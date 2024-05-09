@@ -36,6 +36,9 @@ public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UPointLightComponent* Light;
+
 	UPROPERTY()
 	bool bIsOnGround;
 
@@ -129,6 +132,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
+
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;
