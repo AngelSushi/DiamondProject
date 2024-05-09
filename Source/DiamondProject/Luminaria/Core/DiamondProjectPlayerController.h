@@ -66,6 +66,27 @@ public:
 	UPROPERTY() // Mettre privé
 	bool bIsJumping;
 
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	bool IsJumpPressed() { return bIsJumpPressed; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	float GetFallGravityScale() { return FallGravityScale; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	bool IsFalling() { return bIsFalling; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsFalling(bool IsFalling) { bIsFalling = IsFalling; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	float GetJumpOffsetPressed() { return JumpOffsetPressed; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	bool HasAugmentedHeight() { return bHasAugmentedHeight; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetHasAugmentedHeight(bool HasAugmentedHeight) { bHasAugmentedHeight = HasAugmentedHeight; }
+
 protected:
 
 	virtual void SetupInputComponent() override;
@@ -117,6 +138,21 @@ private:
 	UPROPERTY()
 	UPlayerManager* PlayerManager;
 
+	/* Jump Variables */
+	UPROPERTY()
+	bool bIsJumpPressed;
+
+	UPROPERTY(EditAnywhere)
+	float FallGravityScale = 1.0F;
+
+	UPROPERTY(EditAnywhere)
+	float JumpOffsetPressed = 0.5F;
+
+	UPROPERTY()
+	bool bHasAugmentedHeight;
+
+	UPROPERTY()
+	bool bIsFalling;
 };
 
 

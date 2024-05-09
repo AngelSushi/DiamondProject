@@ -130,10 +130,12 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 void ADiamondProjectPlayerController::Jump() {
 	GetCharacter()->Jump();
 	bIsJumping = true;
+	bIsJumpPressed = true;
 }
 
 void ADiamondProjectPlayerController::StopJump() {
 	GetCharacter()->StopJumping();
+	bIsJumpPressed = false;
 }
 
 void ADiamondProjectPlayerController::OpenMap() {
