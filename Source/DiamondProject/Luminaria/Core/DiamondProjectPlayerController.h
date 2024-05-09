@@ -57,7 +57,13 @@ public:
 
 	bool bIsLookingLeft;
 
-	UPROPERTY()
+	UFUNCTION()
+	bool IsJumping() { return bIsJumping; }
+
+	UFUNCTION()
+	void SetJumping(bool Jumping) { bIsJumping = Jumping; }
+
+	UPROPERTY() // Mettre privé
 	bool bIsJumping;
 
 protected:
@@ -73,6 +79,10 @@ protected:
 	bool bIsPulling;
 
 private:
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	ADiamondProjectCharacter* GetPlayer() { return Cast<ADiamondProjectCharacter>(GetCharacter()); }
+
 
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
