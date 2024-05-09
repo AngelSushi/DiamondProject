@@ -5,6 +5,7 @@
 #include "DiamondProjectCharacter.generated.h"
 
 class UPlayerManager;
+class ADiamondProjectPlayerController;
 
 UENUM(BlueprintType)
 enum EDeathCause {
@@ -25,6 +26,10 @@ public:
 	virtual void BeginPlay() override;
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
+
+	virtual void Landed(const FHitResult& Hit) override;
 
 	/** Returns TopDownCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
@@ -52,11 +57,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	ALuminariaCamera* GetMainCamera() { return MainCamera; }
 
-	UPROPERTY()
-	bool bIsOnGround;
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	bool IsGrounded() { return bIsOnGround; }
 
 	UPROPERTY()
-	bool bIsOnGroundLastTick;
+	bool bIsOnGround;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UMapWidget> MapWidgetClass;
@@ -94,5 +99,8 @@ private:
 
 	UFUNCTION()
 	void OnLandOnGround(ADiamondProjectCharacter* Character);
+
+	UFUNCTION(BlueprintCallable)
+	ADiamondProjectPlayerController* GetLuminariaController() { return Cast<ADiamondProjectPlayerController>(GetController()); }
 };
 
