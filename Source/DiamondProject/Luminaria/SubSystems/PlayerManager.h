@@ -38,7 +38,7 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintAssignable)
 	FOnPlayerUpdateCheckpoint OnPlayerUpdateCheckpoint;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere,BlueprintAssignable)
 	FOnPlayerLandOnGround OnPlayerLandOnGround;
 
 	UFUNCTION()

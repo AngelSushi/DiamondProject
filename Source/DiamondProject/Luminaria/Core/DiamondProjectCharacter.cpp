@@ -81,6 +81,7 @@ void ADiamondProjectCharacter::OnMovementModeChanged(EMovementMode PrevMovementM
 
 void ADiamondProjectCharacter::Landed(const FHitResult& Hit) {
 	bIsOnGround = true;
+	PlayerManager->OnPlayerLandOnGround.Broadcast(this);
 
 	if (GetLuminariaController()->IsJumping()) {
 		GetLuminariaController()->SetJumping(false);

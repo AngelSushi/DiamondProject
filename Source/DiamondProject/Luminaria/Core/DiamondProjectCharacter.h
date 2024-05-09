@@ -57,11 +57,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	ALuminariaCamera* GetMainCamera() { return MainCamera; }
 
-	UPROPERTY()
-	bool bIsOnGround;
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	bool IsGrounded() { return bIsOnGround; }
 
 	UPROPERTY()
-	bool bIsOnGroundLastTick;
+	bool bIsOnGround;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UMapWidget> MapWidgetClass;
