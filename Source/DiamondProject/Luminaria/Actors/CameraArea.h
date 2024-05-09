@@ -35,6 +35,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	uint16 ZoomMax;
 
+	UPROPERTY(EditAnywhere)
+	float PlayerSpeed = 600.F;
+
 	UPROPERTY(VisibleAnywhere)
 	FVector2D MinPosition;
 
@@ -44,6 +47,12 @@ public:
 	UFUNCTION()
 	bool HasVisited() { return bHasVisited; }
 
+	UFUNCTION(BlueprintCallable)
+	bool CanGrow() { return bCanGrow; }
+
+	UFUNCTION(BlueprintCallable)
+	void TickArea(float DeltaTime);
+
 	UFUNCTION()
 	void SetVisited(bool HasVisited) { bHasVisited = HasVisited; }
 protected:
@@ -52,4 +61,10 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere)
 	bool bHasVisited;
+
+	UPROPERTY(EditAnywhere)
+	bool bCanGrow;
+
+	UPROPERTY()
+	UPlayerManager* PlayerManager;
 };

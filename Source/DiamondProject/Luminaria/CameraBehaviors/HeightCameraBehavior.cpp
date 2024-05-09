@@ -49,6 +49,10 @@ void UHeightCameraBehavior::OnPlayerLandOnGround(ADiamondProjectCharacter* Chara
 	if (Character->GetActorLocation().Z >= LinePositionTop.Z) {
 		ADiamondProjectCharacter* OtherCharacter = PlayerManager->GetOtherPlayer(Character);
 
+		if (!OtherCharacter) {
+			return;
+		}
+
 		FVector CharacterPosition = Character->GetActorLocation();
 		FVector OtherCharacterPosition = OtherCharacter->GetActorLocation();
 

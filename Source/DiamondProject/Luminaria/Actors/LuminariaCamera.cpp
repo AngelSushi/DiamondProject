@@ -41,6 +41,10 @@ void ALuminariaCamera::InitBehavior() {
 void ALuminariaCamera::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
+	if (CurrentArea) {
+		CurrentArea->TickArea(DeltaTime);
+	}
+
 	if (CameraBehavior) {
 		CameraBehavior->TickBehavior(DeltaTime);
 	

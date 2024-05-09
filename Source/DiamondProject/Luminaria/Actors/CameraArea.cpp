@@ -3,7 +3,9 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerStart.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
+#include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
 ACameraArea::ACameraArea() {
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -35,6 +37,7 @@ void ACameraArea::BeginPlay() {
 	}
 
 	bHasVisited = false;
+	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
 }
 
 
