@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Camera/CameraActor.h"
+#include "../../../DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 #include "LuminariaCamera.generated.h"
 
 UENUM(BlueprintType)
@@ -12,6 +13,8 @@ enum ECameraBehavior : uint8
 	DYNAMIC,
 	GOTO,
 };
+
+enum EDeathCause;
 
 UCLASS()
 class DIAMONDPROJECT_API ALuminariaCamera : public ACameraActor {
@@ -31,14 +34,19 @@ public:
 	UPROPERTY(EditAnywhere)
 	float HeightMax;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere) // Mettre privé
 	TObjectPtr<class ACameraArea> CurrentArea;
 
 	UPROPERTY(EditAnywhere)
 	bool bDebugCamera;
 
+	UFUNCTION(BlueprintCallable)
+	ACameraArea* GetCurrentArea() { return CurrentArea; }
+
+
+
 	UFUNCTION()
-	void OnPlayerDeath(ADiamondProjectCharacter* Character);
+	void OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathCause DeathCause);
 
 	UFUNCTION()
 	void OnPlayerRegister(ADiamondProjectCharacter* Character);

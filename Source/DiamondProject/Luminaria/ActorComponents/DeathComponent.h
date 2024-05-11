@@ -5,6 +5,7 @@
 #include "DeathComponent.generated.h"
 
 class UPlayerManager;
+enum EDeathCause;
 
 UCLASS()
 class DIAMONDPROJECT_API UDeathComponent : public UBoxComponent {
@@ -25,4 +26,7 @@ private:
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;
+
+	UPROPERTY(EditAnywhere)
+	TEnumAsByte<EDeathCause> DeathCause;
 };
