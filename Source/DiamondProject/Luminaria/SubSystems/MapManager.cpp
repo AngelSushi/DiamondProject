@@ -110,10 +110,26 @@ void UMapManager::DetectOtherRooms(TArray<FColor>& PixelData, ACameraArea* From,
 
 
 void UMapManager::DrawRoom(TArray<FColor>& PixelData, ACameraArea* From, FVector2D Start, FVector2D End, FVector2D TexSize, FColor RoomColor) {
-	TArray<int32> RoomPixelsData;
-
 	for (int h = Start.Y; h < End.Y; h++) {
 		for (int w = Start.X; w < End.X; w++) {
+
+			if (h == Start.Y && w == Start.X) {
+				From->SetTopLeftCorner(FVector2D(w,h));
+				// Ecrire les coords par rapport a la viewport et non a la texture  
+			}
+
+			if (h == Start.Y && w == (End.X - 1)) {
+				From->SetTopRightCorner(FVector2D(w, h));
+			}
+
+			if (h == (End.Y - 1) && w == Start.X) {
+				From->SetBotLeftCorner(FVector2D(w, h));
+			}
+
+			if (h == (End.Y - 1) && w == (End.X - 1)) {
+				From->SetBotRightCorner(FVector2D(w, h));
+			}
+
 			if (h == Start.Y) {
 				PixelData[w + (h - 1) * TexSize.X] = FColor::White;
 				PixelData[w + (h - 2) * TexSize.X] = FColor::White;
@@ -134,10 +150,9 @@ void UMapManager::DrawRoom(TArray<FColor>& PixelData, ACameraArea* From, FVector
 			}
 
 			PixelData[w + h * TexSize.X] = RoomColor;
-			RoomPixelsData.Push(w + h * TexSize.X);
+			//PixelsDrawn.Push(FVector2D(w / TexSize.X,h / TexSize.Y));
 		}
 	}
-
 	DrawnRooms.Add(From);
 
 	// AJoutez unevariable dans cameraarea pour avoir la liste des pixels
