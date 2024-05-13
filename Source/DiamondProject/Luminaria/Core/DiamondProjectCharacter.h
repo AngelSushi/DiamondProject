@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "../../../DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
 #include "DiamondProjectCharacter.generated.h"
 
 class UPlayerManager;

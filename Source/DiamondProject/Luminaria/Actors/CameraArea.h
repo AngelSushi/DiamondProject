@@ -55,33 +55,6 @@ public:
 
 	UFUNCTION()
 	void SetVisited(bool HasVisited) { bHasVisited = HasVisited; }
-
-	/* Draw Functions */
-
-	UFUNCTION(BlueprintCallable,BlueprintPure)
-	FVector2D GetTopLeftCorner() { return TopLeftCorner; }
-
-	UFUNCTION()
-	void SetTopLeftCorner(FVector2D NewTopLeftCorner) { TopLeftCorner = NewTopLeftCorner; }
-
-	UFUNCTION(BlueprintCallable,BlueprintPure)
-	FVector2D GetTopRightCorner() { return TopRightCorner; }
-
-	UFUNCTION()
-	void SetTopRightCorner(FVector2D NewTopRightCorner) { TopRightCorner = NewTopRightCorner; }
-
-	UFUNCTION(BlueprintCallable,BlueprintPure)
-	FVector2D GetBotLeftCorner() { return BotLeftCorner; }
-
-	UFUNCTION()
-	void SetBotLeftCorner(FVector2D NewBotLeftCorner) { BotLeftCorner = NewBotLeftCorner; }
-
-	UFUNCTION(BlueprintCallable,BlueprintPure)
-	FVector2D GetBotRightCorner() { return BotRightCorner; }
-
-	UFUNCTION()
-	void SetBotRightCorner(FVector2D NewBotRightCorner) { BotRightCorner = NewBotRightCorner; }
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -94,18 +67,4 @@ private:
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;
-
-	/* Draw Variables */
-
-	UPROPERTY()
-	FVector2D TopLeftCorner;
-
-	UPROPERTY()
-	FVector2D TopRightCorner;
-
-	UPROPERTY()
-	FVector2D BotLeftCorner;
-
-	UPROPERTY()
-	FVector2D BotRightCorner;
 };
