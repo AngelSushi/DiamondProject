@@ -126,6 +126,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetButtonPushPressed(bool ButtonPushPressed) { bButtonPushPressed = ButtonPushPressed; }
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LightEnergy = 50000.F;
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
@@ -150,8 +154,6 @@ private:
 	TObjectPtr<class ACameraArea> LastHitArea;
 
 	/* Light Variables */
-	UPROPERTY(EditAnywhere)
-	float LightEnergy = 50000.F;
 
 	UPROPERTY(EditAnywhere)
 	float MinEnergy = 0.F;
