@@ -27,6 +27,9 @@ public:
 	UFUNCTION()
 	void CloseMap(ADiamondProjectCharacter* Character);
 
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	const TArray<ACameraArea*>& GetDrawnRooms() const { return DrawnRooms; }
+
 private:
 	UFUNCTION()
 	void CreateMap();
