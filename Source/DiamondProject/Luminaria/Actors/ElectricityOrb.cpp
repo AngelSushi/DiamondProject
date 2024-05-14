@@ -21,15 +21,15 @@ void AElectricityOrb::BeginPlay() {
 void AElectricityOrb::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	if (orbSender && orbReceiver) {
+	if (Sender && Receiver) {
 
 		if (!_hasBeenSet) {
-			SetActorLocation(orbSender->GetPawn()->GetActorLocation());
+			SetActorLocation(Sender->GetPawn()->GetActorLocation());
 			_hasBeenSet = true;
 		}	
 
-		FVector SenderPosition = orbSender->GetPawn()->GetActorLocation();
-		FVector ReceiverPosition = orbReceiver->GetPawn()->GetActorLocation();
+		FVector SenderPosition = Sender->GetPawn()->GetActorLocation();
+		FVector ReceiverPosition = Receiver->GetPawn()->GetActorLocation();
 
 		float MaxDistance = FVector::Distance(SenderPosition, ReceiverPosition);
 		float CurrentDistance = FVector::Distance(GetActorLocation(), SenderPosition);

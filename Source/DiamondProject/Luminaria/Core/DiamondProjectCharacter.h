@@ -5,6 +5,15 @@
 #include "DiamondProjectCharacter.generated.h"
 
 class UPlayerManager;
+class ADiamondProjectPlayerController;
+
+UENUM(BlueprintType)
+enum EDeathCause {
+	NONE,
+	SPIKE,
+	ABSORBER,
+	OTHER
+};
 
 UCLASS(Blueprintable)
 class ADiamondProjectCharacter : public ACharacter
@@ -18,13 +27,33 @@ public:
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
 
+	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
+
+	virtual void Landed(const FHitResult& Hit) override;
+
 	/** Returns TopDownCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UPointLightComponent* Light;
+
+	UPROPERTY()
+	bool bIsOnGround;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UMapWidget> MapWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<class UMapWidget> MapWidget;
+
+
 	UFUNCTION(BlueprintCallable)
-	void Death();
+	void Death(EDeathCause DeathCause);
+
+	UFUNCTION(BlueprintCallable)
+	void Respawn(EDeathCause DeathCause);
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateCheckpoint(ACheckpoint* checkpoint);
@@ -38,27 +67,76 @@ public:
 	UFUNCTION()
 	AActor* GetGroundActor() { return GroundActor; }
 
-	UPROPERTY()
-	bool bIsOnGround;
+	UFUNCTION(BlueprintCallable)
+	ALuminariaCamera* GetMainCamera() { return MainCamera; }
 
-	UPROPERTY()
-	bool bIsOnGroundLastTick;
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	bool IsGrounded() { return bIsOnGround; }
 
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UMapWidget> MapWidgetClass;
+	/* Light Functions */
 
-	UPROPERTY()
-	TObjectPtr<class UMapWidget> MapWidget;
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	float GetLightEnergy() { return LightEnergy; }
 
+	UFUNCTION(BlueprintCallable)
+	void SetLightEnergy(float NewLightEnergy) { LightEnergy = NewLightEnergy; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	float GetMinEnergy() { return MinEnergy; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	float GetMaxEnergy() { return MaxEnergy; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	float GetSharedEnergy() { return SharedEnergy; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	float GetLastLightValueReceive() { return LastLightValueReceive; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetLastLightValueReceive(float NewLastLightValue) { LastLightValueReceive = NewLastLightValue; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	float GetScaleTarget() { return ScaleTarget; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetScaleTarget(float NewScaleTarget) { ScaleTarget = NewScaleTarget; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	float GetLastLightValue() { return LastLightValue; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetLastLightValue(float NewLastLightValue) { LastLightValue = NewLastLightValue; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	float GetGravityScaleSaved() { return GravityScaleSaved; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetGravityScaleSaved(float NewGravityScaleSaved) { GravityScaleSaved = NewGravityScaleSaved; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	bool CanPush() { return bCanPush; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetCanPush(bool NewCanPush) { bCanPush = NewCanPush; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	bool IsButtonPushPressed() { return bButtonPushPressed; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetButtonPushPressed(bool ButtonPushPressed) { bButtonPushPressed = ButtonPushPressed; }
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LightEnergy = 50000.F;
 
 private:
-	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
 
-	/** Camera boom positioning the camera above the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
+
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;
@@ -75,8 +153,43 @@ private:
 	UPROPERTY()
 	TObjectPtr<class ACameraArea> LastHitArea;
 
+	/* Light Variables */
+
+	UPROPERTY(EditAnywhere)
+	float MinEnergy = 0.F;
+
+	UPROPERTY(EditAnywhere)
+	float MaxEnergy = 100000.F;
+
+	UPROPERTY(EditAnywhere)
+	float SharedEnergy = 5000.F;
+
+	UPROPERTY()
+	float LastLightValueReceive = 50.F;
+
+	UPROPERTY(EditAnywhere)
+	float ScaleTarget = 1.F;
+
+	UPROPERTY()
+	float LastLightValue = 50.F;
+
+	UPROPERTY()
+	float GravityScaleSaved = 1.5F;
+
+	/* Push/Pull Variables */
+	UPROPERTY(VisibleAnywhere)
+	bool bCanPush;
+
+	UPROPERTY()
+	bool bButtonPushPressed;
+
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+	void OnLandOnGround(ADiamondProjectCharacter* Character);
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	ADiamondProjectPlayerController* GetLuminariaController() { return Cast<ADiamondProjectPlayerController>(GetController()); }
 };
 

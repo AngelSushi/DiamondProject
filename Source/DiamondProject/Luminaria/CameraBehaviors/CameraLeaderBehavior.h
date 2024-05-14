@@ -20,5 +20,5 @@ private:
 	void RegisterPlayer(ADiamondProjectCharacter* Character);
 	
 	UFUNCTION()
-	void OnPlayerDeath(ADiamondProjectCharacter* deathPlayer);
+	void OnPlayerDeath(ADiamondProjectCharacter* deathPlayer,EDeathCause DeathCause);
 };
