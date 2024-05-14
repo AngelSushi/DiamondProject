@@ -30,10 +30,10 @@ public:
 	float orbSpeed;
 
 	UPROPERTY(BlueprintReadWrite)
-	TObjectPtr<class ADiamondProjectPlayerController> orbSender;
+	TObjectPtr<class ADiamondProjectPlayerController> Sender;
 
 	UPROPERTY(BlueprintReadWrite)
-	TObjectPtr<class ADiamondProjectPlayerController> orbReceiver;
+	TObjectPtr<class ADiamondProjectPlayerController> Receiver;
 protected:
 	virtual void BeginPlay() override;
 

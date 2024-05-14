@@ -46,7 +46,11 @@ public:
 
 	UFUNCTION()
 	bool HasVisited() { return bHasVisited; }
-	UFUNCTION()
+
+	UFUNCTION(BlueprintCallable)
+	bool CanGrow() { return bCanGrow; }
+
+	UFUNCTION(BlueprintCallable)
 	void TickArea(float DeltaTime);
 
 	UFUNCTION()
@@ -57,7 +61,10 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere)
 	bool bHasVisited;
-private:
+
+	UPROPERTY(EditAnywhere)
+	bool bCanGrow;
+
 	UPROPERTY()
 	UPlayerManager* PlayerManager;
 };
