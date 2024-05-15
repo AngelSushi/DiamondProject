@@ -129,12 +129,22 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 
 		ADiamondProjectCharacter* OtherPlayer = PlayerManager->GetOtherPlayer(this);
 
+		//GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Orange, FString::Printf(TEXT("Hit Player Name %s"), *GetActorNameOrLabel()));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Orange, FString::Printf(TEXT("Other Player Name %s"), *OtherPlayer->GetActorNameOrLabel()));
+
 		if (HitArea->PlayerNeeded == 2) {	
+
+			//GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Orange, TEXT("001"));
 			if (OtherPlayer->LastHitArea == HitArea) {
+
+				//GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Orange, TEXT("002"));
 				// Faire le switch
 				MainCamera->CurrentArea = HitArea;
 
 				if (TargetBehavior != LastHitArea->AreaBehavior) {
+
+				//	GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Orange, FString::Printf(TEXT("Enum %s Name %s"), *UEnum::GetDisplayValueAsText(TargetBehavior).ToString(),*HitArea->GetActorNameOrLabel()));
+
 					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this](UCameraBehavior* Behavior) {
 						if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
 							GoTo->NextBehavior = ECameraBehavior::DEFAULT;

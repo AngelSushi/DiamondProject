@@ -38,6 +38,7 @@ void UHeightCameraBehavior::TickBehavior(float DeltaTime) {
 		}
 
 		FVector HeightCameraPosition = OwnerActor->GetActorLocation();
+
 		HeightCameraPosition.Z = Approach(HeightCameraPosition.Z, OffsetZ, 350 * DeltaTime);
 		HeightCameraPosition.Z = FMath::Clamp(HeightCameraPosition.Z,OwnerActor->HeightMin,OwnerActor->HeightMax);
 			 
