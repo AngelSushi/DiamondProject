@@ -54,7 +54,7 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 			}
 
 			Barycenter.Y = Approach(Barycenter.Y, ToApproachY,350 * DeltaTime);
-			Barycenter.Z = DefaultZ;
+			Barycenter.Z = /*DefaultZ;*/ (PlayerManager->Characters[0]->GetActorLocation().Z + PlayerManager->Characters[1]->GetActorLocation().Z) / 2;
 			Barycenter.X = Approach(Barycenter.X, OffsetX, 350 * DeltaTime);
 
 			if (OwnerActor->CurrentArea) {
