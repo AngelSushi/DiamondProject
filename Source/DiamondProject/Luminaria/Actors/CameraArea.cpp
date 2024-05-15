@@ -19,9 +19,8 @@ ACameraArea::ACameraArea() {
 }
 
 void ACameraArea::TickArea(float DeltaTime) {
-
 	for (ADiamondProjectCharacter* Character : PlayerManager->Characters) {
-		if (Character->GetCharacterMovement()->GetMaxSpeed() != PlayerSpeed) {
+		if (Character->GetCharacterMovement()->MaxWalkSpeed != PlayerSpeed) {
 			Character->GetCharacterMovement()->MaxWalkSpeed = PlayerSpeed;
 		}
 	}
@@ -37,6 +36,7 @@ void ACameraArea::BeginPlay() {
 		MaxPosition = FVector2D(GetActorLocation().Y + BoxExtent.Y, GetActorLocation().Z + BoxExtent.Z)  + FVector2D(1, 0) * 70.F ;
 	}
 
+	bHasVisited = false;
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
 }
 

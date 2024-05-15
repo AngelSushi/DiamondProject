@@ -45,12 +45,26 @@ public:
 	FVector2D MaxPosition;
 
 	UFUNCTION()
+	bool HasVisited() { return bHasVisited; }
+
+	UFUNCTION(BlueprintCallable)
+	bool CanGrow() { return bCanGrow; }
+
+	UFUNCTION(BlueprintCallable)
 	void TickArea(float DeltaTime);
 
+	UFUNCTION()
+	void SetVisited(bool HasVisited) { bHasVisited = HasVisited; }
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	UPROPERTY(VisibleAnywhere)
+	bool bHasVisited;
+
+	UPROPERTY(EditAnywhere)
+	bool bCanGrow;
+
 	UPROPERTY()
 	UPlayerManager* PlayerManager;
 };

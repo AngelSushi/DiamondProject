@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "Link.generated.h"
 
+class UPlayerManager;
 UCLASS()
 class DIAMONDPROJECT_API ALink : public AActor{
 	GENERATED_BODY()

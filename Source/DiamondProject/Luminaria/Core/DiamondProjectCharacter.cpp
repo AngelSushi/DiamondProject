@@ -21,6 +21,8 @@
 
 #include "DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
 
+#include "Components/PointLightComponent.h"
+
 ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -33,7 +35,11 @@ ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
+	//GetCharacterMovement()->bNotifyApex = true;
 	
+	Light = CreateDefaultSubobject<UPointLightComponent>(TEXT("Energy"));
+	Light->SetupAttachment(RootComponent);
+
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
@@ -42,7 +48,13 @@ void ADiamondProjectCharacter::BeginPlay() {
 	Super::BeginPlay();
 	
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
-	PlayerManager->RegisterPlayer(this);
+
+	FTimerHandle RegisterTimer;
+
+	GetWorld()->GetTimerManager().SetTimer(RegisterTimer,[this]() {
+		PlayerManager->RegisterPlayer(this);
+		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, TEXT("Begin Player"));
+	},0.1f,false);
 
 	PlayerManager->OnPlayerUpdateCheckpoint.AddDynamic(this, &ADiamondProjectCharacter::OnPlayerUpdateCheckpoint);
 
@@ -53,46 +65,44 @@ void ADiamondProjectCharacter::BeginPlay() {
 	MainCamera = Cast<ALuminariaCamera>(UGameplayStatics::GetActorOfClass(GetWorld(), ALuminariaCamera::StaticClass()));
 
 	LastHitArea = MainCamera->CurrentArea;
+	bIsOnGround = true;
 }
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
     Super::Tick(DeltaSeconds);
-
-	// Raycast pour détecter s'il est sur le ground ou pas 
-
-	check(GetWorld());
-	TArray<FHitResult> HitResults;
-
-	FVector Start = GetActorLocation() + FVector::DownVector * GetSimpleCollisionRadius() / 2 * 3.5F;
-	FVector End = Start + FVector::DownVector * 50.F;
-
-	DrawDebugSphere(GetWorld(), Start, 10, 25, FColor::Orange);
-	DrawDebugLine(GetWorld(), Start, End, FColor::Orange);
-
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this);
-	Params.AddIgnoredActor(MainCamera->CurrentArea);
-
-	GetWorld()->LineTraceMultiByChannel(HitResults, Start, End, ECollisionChannel::ECC_Visibility,Params);
-
-	bIsOnGround = HitResults.Num() > 0;
-
-	if (bIsOnGround && !bIsOnGroundLastTick) {
-		GroundActor = HitResults[0].GetActor();
-		PlayerManager->OnPlayerLandOnGround.Broadcast(this);
-	}
-
-	bIsOnGroundLastTick = bIsOnGround;
 }
 
-void ADiamondProjectCharacter::Death(EDeathCause DeathCause) {
-	FTimerHandle RespawnTimer;
+void ADiamondProjectCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) {
+	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
 
+	if (PrevMovementMode == EMovementMode::MOVE_Walking) {
+		bIsOnGround = false;
+
+		if (GetLuminariaController()->IsJumping()) {
+			GetCharacterMovement()->bNotifyApex = true;
+		}
+	}
+}
+
+void ADiamondProjectCharacter::Landed(const FHitResult& Hit) {
+	bIsOnGround = true;
+	PlayerManager->OnPlayerLandOnGround.Broadcast(this);
+
+	if (GetLuminariaController()->IsJumping()) {
+		GetLuminariaController()->SetJumping(false);
+	}
+}
+
+void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que fait la mort ya ptetre de le faire en respawn
+	PlayerManager->OnPlayerDeath.Broadcast(this,DeathCause);
+}
+
+void ADiamondProjectCharacter::Respawn(EDeathCause DeathCause) {
 	if (_checkPoint != FVector::Zero()) {
 		SetActorLocation(_checkPoint);
 	}
-	
-	PlayerManager->OnPlayerDeath.Broadcast(this,DeathCause);
+
+	PlayerManager->OnPlayerRespawn.Broadcast(this, DeathCause, _checkPoint);
 }
 
 void ADiamondProjectCharacter::UpdateCheckpoint(ACheckpoint* checkpoint) {
@@ -108,21 +118,34 @@ void ADiamondProjectCharacter::OnPlayerUpdateCheckpoint(ADiamondProjectCharacter
 
 void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	if (ACameraArea* HitArea = Cast<ACameraArea>(OtherActor)) {
-		if (HitArea->AreaBehavior != LastHitArea->AreaBehavior) {
-			MainCamera->CurrentArea = HitArea;
+		HitArea->SetVisited(true);
+		
 
-			ECameraBehavior TargetBehavior = HitArea->AreaBehavior;
+		ECameraBehavior TargetBehavior = HitArea->AreaBehavior;
 
-			if (TargetBehavior == ECameraBehavior::DEFAULT) {
-				TargetBehavior = ECameraBehavior::GOTO;
-			}
+		if (TargetBehavior == ECameraBehavior::DEFAULT) {
+			TargetBehavior = ECameraBehavior::GOTO;
+		}
 
-			ADiamondProjectCharacter* OtherPlayer = PlayerManager->GetOtherPlayer(this);
+		ADiamondProjectCharacter* OtherPlayer = PlayerManager->GetOtherPlayer(this);
 
-			if (HitArea->PlayerNeeded == 2) {	
-				if (OtherPlayer->LastHitArea == HitArea) {
-					// Faire le switch
-					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea,&OtherPlayer,this](UCameraBehavior* Behavior) {
+		//GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Orange, FString::Printf(TEXT("Hit Player Name %s"), *GetActorNameOrLabel()));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Orange, FString::Printf(TEXT("Other Player Name %s"), *OtherPlayer->GetActorNameOrLabel()));
+
+		if (HitArea->PlayerNeeded == 2) {	
+
+			//GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Orange, TEXT("001"));
+			if (OtherPlayer->LastHitArea == HitArea) {
+
+				//GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Orange, TEXT("002"));
+				// Faire le switch
+				MainCamera->CurrentArea = HitArea;
+
+				if (TargetBehavior != LastHitArea->AreaBehavior) {
+
+				//	GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Orange, FString::Printf(TEXT("Enum %s Name %s"), *UEnum::GetDisplayValueAsText(TargetBehavior).ToString(),*HitArea->GetActorNameOrLabel()));
+
+					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this](UCameraBehavior* Behavior) {
 						if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
 							GoTo->NextBehavior = ECameraBehavior::DEFAULT;
 							GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
@@ -136,11 +159,15 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 							DynamicBehavior->SetBarycenter(Barycenter);
 							//
 						}
-					});
+						});
 				}
 			}
-			else {
-				MainCamera->SwitchBehavior(TargetBehavior, [&HitArea,&OtherPlayer,this](UCameraBehavior* Behavior) {
+		}
+		else {
+			MainCamera->CurrentArea = HitArea;
+
+			if (TargetBehavior != LastHitArea->AreaBehavior) {
+				MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this](UCameraBehavior* Behavior) {
 					if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
 						GoTo->NextBehavior = ECameraBehavior::DEFAULT;
 						GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
@@ -154,12 +181,13 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 						DynamicBehavior->SetBarycenter(Barycenter);
 						//
 					}
-				});
+					});
 			}
-
-			LastHitArea = HitArea;
 		}
+
+		LastHitArea = HitArea;
 	}
+	
 }
 
 void ADiamondProjectCharacter::OnLandOnGround(ADiamondProjectCharacter* Character) {
