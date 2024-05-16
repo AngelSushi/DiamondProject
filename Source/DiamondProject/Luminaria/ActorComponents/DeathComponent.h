@@ -5,6 +5,7 @@
 #include "DeathComponent.generated.h"
 
 class UPlayerManager;
+enum EDeathCause;
 
 UCLASS()
 class DIAMONDPROJECT_API UDeathComponent : public UBoxComponent {

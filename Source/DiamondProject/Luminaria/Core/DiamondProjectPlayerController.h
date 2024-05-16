@@ -57,8 +57,39 @@ public:
 
 	bool bIsLookingLeft;
 
-	UPROPERTY()
+	UFUNCTION()
+	bool IsJumping() { return bIsJumping; }
+
+	UFUNCTION()
+	void SetJumping(bool Jumping) { bIsJumping = Jumping; }
+
+	UPROPERTY() // Mettre privé
 	bool bIsJumping;
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	bool IsJumpPressed() { return bIsJumpPressed; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	float GetFallGravityScale() { return FallGravityScale; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	bool IsFalling() { return bIsFalling; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsFalling(bool IsFalling) { bIsFalling = IsFalling; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	float GetJumpOffsetPressed() { return JumpOffsetPressed; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	bool HasAugmentedHeight() { return bHasAugmentedHeight; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetHasAugmentedHeight(bool HasAugmentedHeight) { bHasAugmentedHeight = HasAugmentedHeight; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	FVector2D GetMoveValue() { return MoveValue; }
+
 
 protected:
 
@@ -74,6 +105,10 @@ protected:
 
 private:
 
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	ADiamondProjectCharacter* GetPlayer() { return Cast<ADiamondProjectCharacter>(GetCharacter()); }
+
+
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
 
@@ -86,7 +121,7 @@ private:
 	UFUNCTION()
 	void OpenMap();
 
-	UFUNCTION()
+	/*UFUNCTION()
 	void Push();
 
 	UFUNCTION()
@@ -97,6 +132,7 @@ private:
 
 	UFUNCTION()
 	void StopPull();
+	*/
 
 	UPROPERTY(EditAnywhere)
 	bool isUsingDepthMovement;
@@ -107,6 +143,24 @@ private:
 	UPROPERTY()
 	UPlayerManager* PlayerManager;
 
+	UPROPERTY()
+	FVector2D MoveValue;
+
+	/* Jump Variables */
+	UPROPERTY()
+	bool bIsJumpPressed;
+
+	UPROPERTY(EditAnywhere)
+	float FallGravityScale = 1.0F;
+
+	UPROPERTY(EditAnywhere)
+	float JumpOffsetPressed = 0.5F;
+
+	UPROPERTY()
+	bool bHasAugmentedHeight;
+
+	UPROPERTY()
+	bool bIsFalling;
 };
 
 

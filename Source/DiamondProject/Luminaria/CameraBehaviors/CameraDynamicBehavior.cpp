@@ -11,8 +11,15 @@ void UCameraDynamicBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	
 	PlayerManager->OnPlayerMove.AddDynamic(this, &UCameraDynamicBehavior::OnPlayerMove);
 
-	OffsetX = DefaultX;
-	Barycenter.X = OffsetX;
+	OffsetX = DefaultX; // Possiblement Faux passer a Location.X
+	Barycenter.X = OwnerActor->GetActorLocation().X;
+
+	GEngine->AddOnScreenDebugMessage(-1, 10.F, FColor::Emerald, FString::Printf(TEXT("BarycenterX %f"), Barycenter.X));
+
+	Barycenter.Y = OwnerActor->GetActorLocation().Y;
+	bBlock = false;
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Begin Dynamic"));
 }
 
 
@@ -45,21 +52,28 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 	Super::TickBehavior(DeltaTime);
 
 	if(PlayerManager->Characters.Num() >= 2) {
-
 		if (!bBlock) {
 			float ToApproachY = (PlayerManager->Characters[0]->GetActorLocation().Y + PlayerManager->Characters[1]->GetActorLocation().Y) / 2;
-
+			
 			if (Barycenter.Y == 0.F) {
 				Barycenter.Y = ToApproachY;
 			}
 
 			Barycenter.Y = Approach(Barycenter.Y, ToApproachY,350 * DeltaTime);
 			Barycenter.Z = DefaultZ;
-			Barycenter.X = Approach(Barycenter.X, OffsetX, 350 * DeltaTime);
 
 			if (OwnerActor->CurrentArea) {
-				Barycenter.X = FMath::Clamp(Barycenter.X, OwnerActor->CurrentArea->ZoomMin, OwnerActor->CurrentArea->ZoomMax);
+				if (OwnerActor->CurrentArea->ZoomMin > OwnerActor->CurrentArea->ZoomMax) { // For Some Reason, In Certain Level ZoomMin is Greater Than ZoomMax. We Manage This Case
+					OffsetX = FMath::Clamp(OffsetX, OwnerActor->CurrentArea->ZoomMax, OwnerActor->CurrentArea->ZoomMin);
+				}
+				else {
+					OffsetX = FMath::Clamp(OffsetX, OwnerActor->CurrentArea->ZoomMin, OwnerActor->CurrentArea->ZoomMax);
+				}
+			
+				//Barycenter.X = FMath::Clamp(Barycenter.X, OwnerActor->CurrentArea->ZoomMin, OwnerActor->CurrentArea->ZoomMax);
 			}
+
+			Barycenter.X = Approach(Barycenter.X, OffsetX, 350 * DeltaTime);
 		}
 
 		OwnerActor->SetActorLocation(Barycenter);
@@ -121,6 +135,7 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 				}
 
 				OffsetX -= Offset;
+				GEngine->AddOnScreenDebugMessage(-1, 10.F, FColor::Red, FString::Printf(TEXT("NewOffsetX %f"), OffsetX));
 
 				_extendPositions.Add(FExtendData(Center, direction, _extendPositions.Num(),Offset));
 			}

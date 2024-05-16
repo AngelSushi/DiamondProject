@@ -10,10 +10,9 @@ void UCameraBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 
 	OwnerActor = Owner;
 
-	DefaultX = OwnerActor->GetActorLocation().X;
+	DefaultX = OwnerActor->CurrentArea ? OwnerActor->CurrentArea->ZoomMin : OwnerActor->GetActorLocation().X;
 	//DefaultZ = PlayerManager->Characters.Num() > 0 ? PlayerManager->Characters[0]->GetGroundActor()->GetActorLocation().Z : OwnerActor->GetActorLocation().Z; // Ou au ground 
-	DefaultZ = OwnerActor->CurrentArea ? OwnerActor->CurrentArea->ZoomMin : OwnerActor->GetActorLocation().Z;
-
+	DefaultZ = OwnerActor->GetActorLocation().Z;
 }
 
 void UCameraBehavior::TickBehavior(float DeltaTime) {
@@ -30,6 +29,8 @@ void UCameraBehavior::TickBehavior(float DeltaTime) {
 	}
 
 	// WARNING : When both are true --> what happened ? 
+
+
 	for (ADiamondProjectCharacter* Character : PlayerManager->Characters) {
 
 		FVector Forward = Character->GetActorForwardVector();

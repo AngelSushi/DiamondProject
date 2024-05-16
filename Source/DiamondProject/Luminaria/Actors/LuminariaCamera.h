@@ -40,7 +40,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	bool bDebugCamera;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,BlueprintPure)
 	ACameraArea* GetCurrentArea() { return CurrentArea; }
 
 
