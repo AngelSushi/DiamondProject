@@ -90,6 +90,12 @@ public:
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	FVector2D GetMoveValue() { return MoveValue; }
 
+	UFUNCTION(BlueprintCallable)
+	void SetIsPushing(bool IsPushing) { bIsPushing = IsPushing; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsPulling(bool IsPulling) { bIsPulling = IsPulling; }
+
 
 protected:
 
