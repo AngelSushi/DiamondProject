@@ -59,6 +59,31 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 				Barycenter.Y = ToApproachY;
 			}
 
+			if (!FMath::IsNearlyEqual(Barycenter.Y, ToApproachY, 1.F) && !FMath::IsNearlyEqual(Barycenter.X, OffsetX, 1.0F)) { // X et Y of Camera Is Moving. We Try To Smooth The Speed
+				float DistanceY = FMath::Abs(ToApproachY - Barycenter.Y);
+				float DistanceX = FMath::Abs(OffsetX - Barycenter.X);
+
+				if (DistanceY > DistanceX) { // We Smooth X Speed
+					// Il doit plus parcourir en Y que En X.
+					// On veut donc que la caméra X arrive en même temps que la caméra Y
+
+					// v = d * t
+					float DecelerationX = (SpeedX * SpeedX) / (2 * DistanceX);
+					float DecelerationY = (SpeedY * SpeedY) / (2 * DistanceY);
+
+					GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, FString::Printf(TEXT("DecelerationX %f"), DecelerationX));
+					GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, FString::Printf(TEXT("DecelerationY %f"), DecelerationY));
+
+				}
+				else { // We Smooth Y Speed 
+
+				}
+			}
+			else if (FMath::IsNearlyEqual(Barycenter.Y, ToApproachY, 1.F) && FMath::IsNearlyEqual(Barycenter.X, OffsetX, 1.0F)) {
+				SpeedX = 350.F;
+				SpeedY = 350.F;
+			}
+
 			Barycenter.Y = Approach(Barycenter.Y, ToApproachY,350 * DeltaTime);
 			Barycenter.Z = DefaultZ;
 
