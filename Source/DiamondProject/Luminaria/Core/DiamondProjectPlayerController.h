@@ -121,7 +121,7 @@ private:
 	UFUNCTION()
 	void OpenMap();
 
-	UFUNCTION()
+	/*UFUNCTION()
 	void Push();
 
 	UFUNCTION()
@@ -132,6 +132,7 @@ private:
 
 	UFUNCTION()
 	void StopPull();
+	*/
 
 	UPROPERTY(EditAnywhere)
 	bool isUsingDepthMovement;
