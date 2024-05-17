@@ -90,6 +90,12 @@ public:
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	FVector2D GetMoveValue() { return MoveValue; }
 
+	UFUNCTION(BlueprintCallable)
+	void SetIsPushing(bool IsPushing) { bIsPushing = IsPushing; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsPulling(bool IsPulling) { bIsPulling = IsPulling; }
+
 
 protected:
 
@@ -121,7 +127,7 @@ private:
 	UFUNCTION()
 	void OpenMap();
 
-	UFUNCTION()
+	/*UFUNCTION()
 	void Push();
 
 	UFUNCTION()
@@ -132,6 +138,7 @@ private:
 
 	UFUNCTION()
 	void StopPull();
+	*/
 
 	UPROPERTY(EditAnywhere)
 	bool isUsingDepthMovement;
