@@ -23,6 +23,14 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UArrowComponent> Arrow;
 
+	UFUNCTION(BlueprintImplementableEvent,Category = "DialogSpawner")
+	void OnDisplayDialog();
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	int GetDialogID() { return DialogId; }
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	float GetTextDuration() { return TextDuration; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -32,4 +40,13 @@ private:
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;
+
+	UPROPERTY(EditAnywhere)
+	int DialogId;
+
+	UPROPERTY(EditAnywhere)
+	float TextDuration = 5.0F;
+
+	UPROPERTY()
+	bool bHasChecked;
 };

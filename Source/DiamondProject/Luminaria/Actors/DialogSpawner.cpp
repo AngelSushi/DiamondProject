@@ -17,6 +17,8 @@ ADialogSpawner::ADialogSpawner() {
 	Arrow->SetupAttachment(RootComponent);
 }
 
+//void ADialogSpawner::OnDisplayDialog(int DialogIndex) {}
+
 void ADialogSpawner::BeginPlay() {
 	Super::BeginPlay();
 
@@ -33,9 +35,11 @@ void ADialogSpawner::Tick(float DeltaTime) {
 		float Angle = FVector::DotProduct(PointToPlayer, Forward);
 		float DistanceX = FMath::Abs(PointToPlayer.X);
 		
-		if (Angle < 0 && DistanceX < 50.F) {
+		if (Angle < 0 && DistanceX < 50.F && !bHasChecked) {
 			GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Black, TEXT("Display Text"));
-		}
+			OnDisplayDialog();
+			bHasChecked = true;	
+		}	
 	}
 }
 
