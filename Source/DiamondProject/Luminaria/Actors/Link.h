@@ -8,7 +8,14 @@ class UPlayerManager;
 UCLASS()
 class DIAMONDPROJECT_API ALink : public AActor{
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class USceneComponent> Root;
 	
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> ParticleSystem;
+
 private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> _mesh;
