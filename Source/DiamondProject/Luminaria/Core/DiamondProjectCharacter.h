@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "DiamondProjectPlayerController.h"
 #include "DiamondProjectCharacter.generated.h"
 
 class UPlayerManager;
@@ -190,6 +191,12 @@ private:
 	void OnLandOnGround(ADiamondProjectCharacter* Character);
 
 	UFUNCTION(BlueprintCallable,BlueprintPure)
-	ADiamondProjectPlayerController* GetLuminariaController() { return Cast<ADiamondProjectPlayerController>(GetController()); }
+	ADiamondProjectPlayerController* GetLuminariaController() { 
+		if (GetController()) {
+			return Cast<ADiamondProjectPlayerController>(GetController());
+		}
+
+		return nullptr;
+	}
 };
 

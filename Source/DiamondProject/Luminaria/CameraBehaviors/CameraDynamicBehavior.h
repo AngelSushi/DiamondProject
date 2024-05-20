@@ -42,12 +42,6 @@ private:
 	float OffsetX;
 
 	UPROPERTY()
-	float SpeedX;
-
-	UPROPERTY()
-	float SpeedY;
-
-	UPROPERTY()
 	TArray<FExtendData> _extendPositions;
 
 	UFUNCTION()
