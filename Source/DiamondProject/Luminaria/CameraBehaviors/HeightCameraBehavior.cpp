@@ -72,6 +72,9 @@ void UHeightCameraBehavior::OnPlayerLandOnGround(ADiamondProjectCharacter* Chara
 		}
 
 	}
+	else if (ExceedCharacters.Contains(Character)) {
+		OffsetZ = DefaultZ;		
+	}
 
 	if (Character->GetActorLocation().Z <= LinePositionBot.Z) {
 		ADiamondProjectCharacter* OtherCharacter = PlayerManager->GetOtherPlayer(Character);
@@ -104,6 +107,9 @@ void UHeightCameraBehavior::OnPlayerLandOnGround(ADiamondProjectCharacter* Chara
 				ExceedCharacters.Add(Character);
 			}
 		}
+	}
+	else if (ExceedCharacters.Contains(Character)) { // Not Sure ==> TO Verify
+		OffsetZ = DefaultZ;
 	}
 }
 
