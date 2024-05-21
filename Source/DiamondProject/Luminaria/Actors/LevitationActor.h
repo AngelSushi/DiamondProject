@@ -26,15 +26,12 @@ private:
 	FVector LevitationPosition;
 
 	UPROPERTY(EditAnywhere)
-	float LevitationSpeed;
+	float LevitationSpeed = 30.F;
 
 	UPROPERTY()
-	float CalculateSpeed;
+	float OriginSpeed;
 
 	UPROPERTY()
-	bool bDescent;
-
-	UFUNCTION()
-	FVector PingPong(FVector& Start, FVector& End, float Speed);
+	float LevitationTimer;
 
 };

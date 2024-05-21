@@ -1,4 +1,5 @@
 #include "LevitationActor.h"
+#include "DiamondProject/Luminaria/SubSystems/MathUtilities.h"
 
 ALevitationActor::ALevitationActor() {
  	PrimaryActorTick.bCanEverTick = true;
@@ -12,36 +13,26 @@ void ALevitationActor::BeginPlay() {
 	Super::BeginPlay();
 
 	OriginPosition = GetActorLocation();
-	bDescent = true;
 
 	LevitationPosition += GetActorLocation();
-	CalculateSpeed = LevitationSpeed;
+	OriginSpeed = LevitationSpeed;
 }
 
 void ALevitationActor::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	SetActorLocation(PingPong(OriginPosition, LevitationPosition, CalculateSpeed * DeltaTime));
-}
+	LevitationTimer += DeltaTime * LevitationSpeed;
 
-FVector ALevitationActor::PingPong(FVector& Start, FVector& End, float Speed) {
-	FVector Current = GetActorLocation();
-	FVector Target = bDescent ? End : Start;
-	
-	FVector Normal = (Target - Current);
-	float Length = Normal.Length();
+	bool IsPing = false;
+	FVector Position = UMathUtilities::PingPongVecAscending(LevitationTimer, LevitationPosition, OriginPosition,IsPing);
 
-	if (Length > Speed) {
-		Current += (Normal / Length) * Speed;
+	if (!IsPing) {
+		LevitationSpeed = OriginSpeed * 0.9F;
 	}
 	else {
-		Current = Target;
-		bDescent = !bDescent;
-		CalculateSpeed = bDescent ? LevitationSpeed : LevitationSpeed / 1.75f;
+		LevitationSpeed = OriginSpeed;
 	}
-	
-	return Current;
 
-
+	SetActorLocation(Position);
 }
 

@@ -127,6 +127,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetButtonPushPressed(bool ButtonPushPressed) { bButtonPushPressed = ButtonPushPressed; }
 
+	UFUNCTION(BlueprintCallable)
+	bool CanGrow() { return bCanGrow; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetCanGrow(bool CanGrow) { bCanGrow = CanGrow; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float LightEnergy = 50000.F;
@@ -176,6 +181,9 @@ private:
 
 	UPROPERTY()
 	float GravityScaleSaved = 1.5F;
+
+	UPROPERTY()
+	bool bCanGrow = false;
 
 	/* Push/Pull Variables */
 	UPROPERTY(VisibleAnywhere)
