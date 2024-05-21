@@ -72,13 +72,6 @@ void ALink::OnPlayerMove(ADiamondProjectCharacter* Character, FVector Direction,
 	
 		if (NewDistance >= DistanceMax) {
 			IsCanceled = true;
-
-			if (ADiamondProjectPlayerController* PlayerController = Cast<ADiamondProjectPlayerController>(Character->GetController())) {
-				if (PlayerController->bIsJumping) {			
-					Character->GetCharacterMovement()->GravityScale = 15.0F;
-					PlayerController->bIsJumping = false;
-				}
-			}
 		}
 		else {
 			IsCanceled = false;
