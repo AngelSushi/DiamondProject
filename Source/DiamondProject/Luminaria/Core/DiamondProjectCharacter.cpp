@@ -129,26 +129,32 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 
 		ADiamondProjectCharacter* OtherPlayer = PlayerManager->GetOtherPlayer(this);
 
+		GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Orange, FString::Printf(TEXT("Hit Player Name %s"), *GetActorNameOrLabel()));
+		GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Blue, FString::Printf(TEXT("Other Player Name %s"), *OtherPlayer->GetActorNameOrLabel()));
+
 		if (HitArea->PlayerNeeded == 2) {	
 			if (OtherPlayer->LastHitArea == HitArea) {
+
 				// Faire le switch
 				MainCamera->CurrentArea = HitArea;
 
+				GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Orange, FString::Printf(TEXT("Enum %s Name %s"), *UEnum::GetDisplayValueAsText(TargetBehavior).ToString(), *HitArea->GetActorNameOrLabel()));
+				GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Orange, FString::Printf(TEXT("Enum %s Name %s"), *UEnum::GetDisplayValueAsText(LastHitArea->AreaBehavior).ToString(), *LastHitArea->GetActorNameOrLabel()));
+
+
 				if (TargetBehavior != LastHitArea->AreaBehavior) {
+
+					GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Yellow, TEXT("005"));
+				
 					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this](UCameraBehavior* Behavior) {
 						if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
+							GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Yellow, TEXT("006"));
 							GoTo->NextBehavior = ECameraBehavior::DEFAULT;
 							GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
 							GoTo->Speed = 500.F;
 						}
 
-						if (UCameraDynamicBehavior* DynamicBehavior = Cast<UCameraDynamicBehavior>(Behavior)) {
-							FVector Barycenter = (GetActorLocation() - OtherPlayer->GetActorLocation()) / 2;
-							Barycenter.X = HitArea->ZoomMin;
-
-							DynamicBehavior->SetBarycenter(Barycenter);
-							//
-						}
+						if (UCameraDynamicBehavior* DynamicBehavior = Cast<UCameraDynamicBehavior>(Behavior)) {}
 						});
 				}
 			}
@@ -164,13 +170,7 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 						GoTo->Speed = 500.F;
 					}
 
-					if (UCameraDynamicBehavior* DynamicBehavior = Cast<UCameraDynamicBehavior>(Behavior)) {
-						FVector Barycenter = (GetActorLocation() - OtherPlayer->GetActorLocation()) / 2;
-						Barycenter.X = HitArea->ZoomMin;
-
-						DynamicBehavior->SetBarycenter(Barycenter);
-						//
-					}
+					if (UCameraDynamicBehavior* DynamicBehavior = Cast<UCameraDynamicBehavior>(Behavior)) {}
 					});
 			}
 		}

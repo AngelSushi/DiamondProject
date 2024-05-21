@@ -29,6 +29,8 @@ void UCameraBehavior::TickBehavior(float DeltaTime) {
 	}
 
 	// WARNING : When both are true --> what happened ? 
+
+
 	for (ADiamondProjectCharacter* Character : PlayerManager->Characters) {
 
 		FVector Forward = Character->GetActorForwardVector();
