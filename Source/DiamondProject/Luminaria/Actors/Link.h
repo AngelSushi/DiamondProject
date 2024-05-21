@@ -9,10 +9,11 @@ UCLASS()
 class DIAMONDPROJECT_API ALink : public AActor{
 	GENERATED_BODY()
 	
-private:
-	UPROPERTY(EditAnywhere)
+public:
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	TObjectPtr<class UStaticMeshComponent> _mesh;
 
+private:
 	UPROPERTY()
 	TArray<ADiamondProjectCharacter*> _characters;
 
