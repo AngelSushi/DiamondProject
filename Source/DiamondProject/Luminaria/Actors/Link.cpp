@@ -31,10 +31,9 @@ void ALink::Tick(float DeltaTime) {
 	if (_characters.Num() == 2) {
 		CalculateBarycenter();
 		float distance = FVector::Distance(_characters[0]->GetActorLocation(), _characters[1]->GetActorLocation());
-		distance = FMath::Clamp(distance, 0, DistanceMax);
-
+		
 		SetActorLocation(_barycenter);
-		SetActorScale3D(FVector(distance / 100,0.2f,0.1f));
+		SetActorScale3D(FVector(distance / 100,0.05f,0.1f));
 
 		FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(_characters[0]->GetActorLocation(),_characters[1]->GetActorLocation());
 		SetActorRotation(Rotation);
@@ -64,6 +63,8 @@ void ALink::CalculateBarycenter() {
 void ALink::OnPlayerMove(ADiamondProjectCharacter* Character, FVector Direction, bool& IsCanceled) {
 	if (FMath::IsNearlyEqual(GetActorScale3D().X, DistanceMax / 100, 1.F)) {
 		
+		// Pas sur du fonctionnement a 100%
+
 		FVector NextPosition = Character->GetActorLocation() + Direction * Character->GetCharacterMovement()->GetMaxSpeed();
 		AActor* OtherPlayer = PlayerManager->GetOtherPlayer(Character);
 
@@ -71,13 +72,6 @@ void ALink::OnPlayerMove(ADiamondProjectCharacter* Character, FVector Direction,
 	
 		if (NewDistance >= DistanceMax) {
 			IsCanceled = true;
-
-			if (ADiamondProjectPlayerController* PlayerController = Cast<ADiamondProjectPlayerController>(Character->GetController())) {
-				if (PlayerController->bIsJumping) {			
-					Character->GetCharacterMovement()->GravityScale = 15.0F;
-					PlayerController->bIsJumping = false;
-				}
-			}
 		}
 		else {
 			IsCanceled = false;

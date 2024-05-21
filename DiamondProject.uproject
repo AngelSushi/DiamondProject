@@ -31,6 +31,14 @@
 		{
 			"Name": "JsonBlueprintUtilities",
 			"Enabled": true
+		},
+		{
+			"Name": "CommonUI",
+			"Enabled": true
+		},
+		{
+			"Name": "NiagaraFluids",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [

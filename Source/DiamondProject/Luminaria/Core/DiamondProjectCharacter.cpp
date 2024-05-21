@@ -21,6 +21,8 @@
 
 #include "DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
 
+#include "Components/PointLightComponent.h"
+
 ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -33,7 +35,11 @@ ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
+	//GetCharacterMovement()->bNotifyApex = true;
 	
+	Light = CreateDefaultSubobject<UPointLightComponent>(TEXT("Energy"));
+	Light->SetupAttachment(RootComponent);
+
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
@@ -42,7 +48,13 @@ void ADiamondProjectCharacter::BeginPlay() {
 	Super::BeginPlay();
 	
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
-	PlayerManager->RegisterPlayer(this);
+
+	FTimerHandle RegisterTimer;
+
+	GetWorld()->GetTimerManager().SetTimer(RegisterTimer,[this]() {
+		PlayerManager->RegisterPlayer(this);
+		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, TEXT("Begin Player"));
+	},0.1f,false);
 
 	PlayerManager->OnPlayerUpdateCheckpoint.AddDynamic(this, &ADiamondProjectCharacter::OnPlayerUpdateCheckpoint);
 
@@ -53,36 +65,35 @@ void ADiamondProjectCharacter::BeginPlay() {
 	MainCamera = Cast<ALuminariaCamera>(UGameplayStatics::GetActorOfClass(GetWorld(), ALuminariaCamera::StaticClass()));
 
 	LastHitArea = MainCamera->CurrentArea;
+	bIsOnGround = true;
 }
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
     Super::Tick(DeltaSeconds);
+}
 
-	// Raycast pour détecter s'il est sur le ground ou pas 
+void ADiamondProjectCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) {
+	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
 
-	check(GetWorld());
-	TArray<FHitResult> HitResults;
+	if (PrevMovementMode == EMovementMode::MOVE_Walking) {
+		bIsOnGround = false;
 
-	FVector Start = GetActorLocation() + FVector::DownVector * GetSimpleCollisionRadius() / 2 * 3.5F;
-	FVector End = Start + FVector::DownVector * 50.F;
-
-	DrawDebugSphere(GetWorld(), Start, 10, 25, FColor::Orange);
-	DrawDebugLine(GetWorld(), Start, End, FColor::Orange);
-
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this);
-	Params.AddIgnoredActor(MainCamera->CurrentArea);
-
-	GetWorld()->LineTraceMultiByChannel(HitResults, Start, End, ECollisionChannel::ECC_Visibility,Params);
-
-	bIsOnGround = HitResults.Num() > 0;
-
-	if (bIsOnGround && !bIsOnGroundLastTick) {
-		GroundActor = HitResults[0].GetActor();
-		PlayerManager->OnPlayerLandOnGround.Broadcast(this);
+		if (GetLuminariaController()->IsJumping()) {
+			GetCharacterMovement()->bNotifyApex = true;
+		}
 	}
+}
 
-	bIsOnGroundLastTick = bIsOnGround;
+void ADiamondProjectCharacter::Landed(const FHitResult& Hit) {
+	bIsOnGround = true;
+	PlayerManager->OnPlayerLandOnGround.Broadcast(this);
+	GroundActor = Hit.GetActor();
+
+	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Blue, TEXT("On Ground"));
+
+	if (GetLuminariaController()->IsJumping()) {
+		GetLuminariaController()->SetJumping(false);
+	}
 }
 
 void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que fait la mort ya ptetre de le faire en respawn
@@ -112,10 +123,10 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 	if (ACameraArea* HitArea = Cast<ACameraArea>(OtherActor)) {
 		HitArea->SetVisited(true);
 		
-
+		ECameraBehavior OriginBehavior = HitArea->AreaBehavior;
 		ECameraBehavior TargetBehavior = HitArea->AreaBehavior;
 
-		if (TargetBehavior == ECameraBehavior::DEFAULT) {
+		if (TargetBehavior == ECameraBehavior::DEFAULT || TargetBehavior == ECameraBehavior::DYNAMIC) {
 			TargetBehavior = ECameraBehavior::GOTO;
 		}
 
@@ -123,25 +134,36 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 
 		if (HitArea->PlayerNeeded == 2) {	
 			if (OtherPlayer->LastHitArea == HitArea) {
+
 				// Faire le switch
 				MainCamera->CurrentArea = HitArea;
 
 				if (TargetBehavior != LastHitArea->AreaBehavior) {
-					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this](UCameraBehavior* Behavior) {
+					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this,&OriginBehavior](UCameraBehavior* Behavior) {
 						if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
-							GoTo->NextBehavior = ECameraBehavior::DEFAULT;
-							GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
-							GoTo->Speed = 500.F;
-						}
+							
+							if (OriginBehavior == ECameraBehavior::DEFAULT) {
+								GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Default Behavior"));
+								GoTo->NextBehavior = ECameraBehavior::DEFAULT;
+								GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
+							}
+							else if (OriginBehavior == ECameraBehavior::DYNAMIC) {
+								FVector Barycenter = (GetActorLocation() + OtherPlayer->GetActorLocation()) / 2;
 
-						if (UCameraDynamicBehavior* DynamicBehavior = Cast<UCameraDynamicBehavior>(Behavior)) {
-							FVector Barycenter = (GetActorLocation() - OtherPlayer->GetActorLocation()) / 2;
-							Barycenter.X = HitArea->ZoomMin;
+								if (HitArea->ZoomMin > HitArea->ZoomMax) { // For Some Reason, In Certain Level ZoomMin is Greater Than ZoomMax. We Manage This Case
+									Barycenter.X = FMath::Clamp(Barycenter.X, HitArea->ZoomMax, HitArea->ZoomMin);
+								}
+								else {
+									Barycenter.X = FMath::Clamp(Barycenter.X, HitArea->ZoomMin, HitArea->ZoomMax);
+								}
 
-							DynamicBehavior->SetBarycenter(Barycenter);
-							//
+								Barycenter.Z = GoTo->DefaultZ;
+
+								GoTo->GoTo = Barycenter;
+								GoTo->NextBehavior = ECameraBehavior::DYNAMIC;
+							}
 						}
-						});
+					});
 				}
 			}
 		}
@@ -149,21 +171,30 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 			MainCamera->CurrentArea = HitArea;
 
 			if (TargetBehavior != LastHitArea->AreaBehavior) {
-				MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this](UCameraBehavior* Behavior) {
+				MainCamera->SwitchBehavior(TargetBehavior, [&HitArea,&OtherPlayer, this,&OriginBehavior](UCameraBehavior* Behavior) {
 					if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
-						GoTo->NextBehavior = ECameraBehavior::DEFAULT;
-						GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
-						GoTo->Speed = 500.F;
-					}
+						if (OriginBehavior == ECameraBehavior::DEFAULT) {
+							GoTo->NextBehavior = ECameraBehavior::DEFAULT;
+							GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
+						}
+						else if (OriginBehavior == ECameraBehavior::DYNAMIC) {
+							GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Blue, TEXT("Dynamic Behavior"));
+							FVector Barycenter = (GetActorLocation() + OtherPlayer->GetActorLocation()) / 2;
 
-					if (UCameraDynamicBehavior* DynamicBehavior = Cast<UCameraDynamicBehavior>(Behavior)) {
-						FVector Barycenter = (GetActorLocation() - OtherPlayer->GetActorLocation()) / 2;
-						Barycenter.X = HitArea->ZoomMin;
+							/*if (HitArea->ZoomMin > HitArea->ZoomMax) { // For Some Reason, In Certain Level ZoomMin is Greater Than ZoomMax. We Manage This Case
+								Barycenter.X = FMath::Clamp(Barycenter.X, HitArea->ZoomMax, HitArea->ZoomMin);
+							}
+							else {
+								Barycenter.X = FMath::Clamp(Barycenter.X, HitArea->ZoomMin, HitArea->ZoomMax);
+							}*/
 
-						DynamicBehavior->SetBarycenter(Barycenter);
-						//
+							Barycenter.Z = GoTo->DefaultZ;
+
+							GoTo->GoTo = Barycenter;
+							GoTo->NextBehavior = ECameraBehavior::DYNAMIC;
+						}
 					}
-					});
+				});
 			}
 		}
 

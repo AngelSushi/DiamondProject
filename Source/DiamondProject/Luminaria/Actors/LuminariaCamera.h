@@ -8,6 +8,7 @@
 UENUM(BlueprintType)
 enum ECameraBehavior : uint8
 {
+	NO_BEHAVIOR,
 	DEFAULT,
 	LEADER,
 	DYNAMIC,
@@ -34,11 +35,16 @@ public:
 	UPROPERTY(EditAnywhere)
 	float HeightMax;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere) // Mettre privé
 	TObjectPtr<class ACameraArea> CurrentArea;
 
 	UPROPERTY(EditAnywhere)
 	bool bDebugCamera;
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	ACameraArea* GetCurrentArea() { return CurrentArea; }
+
+
 
 	UFUNCTION()
 	void OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathCause DeathCause);

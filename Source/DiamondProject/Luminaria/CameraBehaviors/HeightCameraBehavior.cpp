@@ -38,6 +38,7 @@ void UHeightCameraBehavior::TickBehavior(float DeltaTime) {
 		}
 
 		FVector HeightCameraPosition = OwnerActor->GetActorLocation();
+
 		HeightCameraPosition.Z = Approach(HeightCameraPosition.Z, OffsetZ, 350 * DeltaTime);
 		HeightCameraPosition.Z = FMath::Clamp(HeightCameraPosition.Z,OwnerActor->HeightMin,OwnerActor->HeightMax);
 			 
@@ -48,6 +49,10 @@ void UHeightCameraBehavior::TickBehavior(float DeltaTime) {
 void UHeightCameraBehavior::OnPlayerLandOnGround(ADiamondProjectCharacter* Character) {
 	if (Character->GetActorLocation().Z >= LinePositionTop.Z) {
 		ADiamondProjectCharacter* OtherCharacter = PlayerManager->GetOtherPlayer(Character);
+
+		if (!OtherCharacter) {
+			return;
+		}
 
 		FVector CharacterPosition = Character->GetActorLocation();
 		FVector OtherCharacterPosition = OtherCharacter->GetActorLocation();
@@ -66,6 +71,9 @@ void UHeightCameraBehavior::OnPlayerLandOnGround(ADiamondProjectCharacter* Chara
 			}
 		}
 
+	}
+	else if (ExceedCharacters.Contains(Character)) {
+		OffsetZ = DefaultZ;		
 	}
 
 	if (Character->GetActorLocation().Z <= LinePositionBot.Z) {
@@ -99,6 +107,9 @@ void UHeightCameraBehavior::OnPlayerLandOnGround(ADiamondProjectCharacter* Chara
 				ExceedCharacters.Add(Character);
 			}
 		}
+	}
+	else if (ExceedCharacters.Contains(Character)) { // Not Sure ==> TO Verify
+		OffsetZ = DefaultZ;
 	}
 }
 

@@ -40,18 +40,19 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		EnhancedInputComponent->BindAction(MovementAction,ETriggerEvent::Triggered,this,&ADiamondProjectPlayerController::Move);
-
+		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::Move);
+		
 		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this,&ADiamondProjectPlayerController::Jump);
 		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&ADiamondProjectPlayerController::StopJump);
 	
 		EnhancedInputComponent->BindAction(OpenMapAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::OpenMap);
 	
-		EnhancedInputComponent->BindAction(PushAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Push);
+		/*EnhancedInputComponent->BindAction(PushAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Push);
 		EnhancedInputComponent->BindAction(PushAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::StopPush);
 
 		EnhancedInputComponent->BindAction(PullAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Pull);
 		EnhancedInputComponent->BindAction(PullAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::StopPull);
-
+		*/
 	}
 	else
 	{
@@ -64,6 +65,7 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
+	MoveValue = MovementVector;
 	// Check si la distance est bonne
 
 	if (MovementDirection.Y < 0)
@@ -130,10 +132,12 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 void ADiamondProjectPlayerController::Jump() {
 	GetCharacter()->Jump();
 	bIsJumping = true;
+	bIsJumpPressed = true;
 }
 
 void ADiamondProjectPlayerController::StopJump() {
 	GetCharacter()->StopJumping();
+	bIsJumpPressed = false;
 }
 
 void ADiamondProjectPlayerController::OpenMap() {
@@ -156,12 +160,13 @@ void ADiamondProjectPlayerController::OpenMap() {
 	bIsMapOpen = !bIsMapOpen;
 }
 
-void ADiamondProjectPlayerController::Push() {
+/*void ADiamondProjectPlayerController::Push() {
 	bIsPushing = true;
 }
 
 void ADiamondProjectPlayerController::StopPush() {
-	bIsPulling = false;
+	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Black, TEXT("Stop Push"));
+	bIsPushing = false;
 }
 
 void ADiamondProjectPlayerController::Pull() {
@@ -171,3 +176,4 @@ void ADiamondProjectPlayerController::Pull() {
 void ADiamondProjectPlayerController::StopPull() {
 	bIsPulling = false;
 }
+*/

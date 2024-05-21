@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "../../../DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
+#include "../../../DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
 #include "PlayerManager.generated.h"
 
 class ADiamondProjectCharacter;
@@ -24,7 +25,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	FOnPlayerMove OnPlayerMove;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere,BlueprintAssignable)
 	FOnPlayerRegister OnPlayerRegister;
 
 	UPROPERTY(VisibleAnywhere, BlueprintAssignable)
@@ -36,17 +37,39 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintAssignable)
 	FOnPlayerUpdateCheckpoint OnPlayerUpdateCheckpoint;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere,BlueprintAssignable)
 	FOnPlayerLandOnGround OnPlayerLandOnGround;
 
 	UFUNCTION()
 	void RegisterPlayer(ADiamondProjectCharacter* Character);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	ADiamondProjectCharacter* GetOnePlayer() { 
+		if (GetAllCharactersRef().Num() > 0) {
+			return GetAllCharactersRef()[0];
+		}
+
+		return nullptr;
+	}
+
+	UFUNCTION(BlueprintCallable)
 	ADiamondProjectCharacter* GetOtherPlayer(ADiamondProjectCharacter* Character);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	TArray<ADiamondProjectCharacter*> GetAllCharactersRef() { return Characters; }
+
+	UFUNCTION(BlueprintCallable)
+	TArray<ADiamondProjectPlayerController*> GetAllControllersRef() {
+		TArray<ADiamondProjectPlayerController*> Controllers;
+
+		for (ADiamondProjectCharacter* Character : GetAllCharactersRef()) {
+			if (ADiamondProjectPlayerController* PlayerController = Cast<ADiamondProjectPlayerController>(Character->GetController())) {
+				Controllers.Add(PlayerController);
+			}
+		}
+
+		return Controllers;
+	}
 
 	UPROPERTY() // PASSER SA EN PRIVE
 	TArray<ADiamondProjectCharacter*> Characters;

@@ -11,8 +11,16 @@ void UCameraDynamicBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	
 	PlayerManager->OnPlayerMove.AddDynamic(this, &UCameraDynamicBehavior::OnPlayerMove);
 
-	OffsetX = DefaultX;
-	Barycenter.X = OffsetX;
+	OffsetX = DefaultX; // Possiblement Faux passer a Location.X
+	Barycenter.X = OwnerActor->GetActorLocation().X;
+
+	Barycenter.Y = OwnerActor->GetActorLocation().Y;
+	bBlock = false;
+
+	if (!OwnerActor->CurrentArea) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Camera has no area preset"));
+		return;
+	}
 }
 
 
@@ -27,9 +35,11 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 			FVector Forward = extendData.Direction;
 
 			float angle = FVector::DotProduct(ExtendToPlayer, Forward);
-			float Distance = FVector::Distance(extendData.Position, character->GetActorLocation());
 
-			if (angle < 0 && Forward == -direction && Distance < 100.F) {
+			//float Distance = FVector::Distance(extendData.Position, character->GetActorLocation());
+			float DistanceX = FMath::Abs(extendData.Position.X - character->GetActorLocation().X);
+
+			if (angle < 0 && Forward == -direction && DistanceX < 100.F) {
 				OffsetX += FMath::Abs(extendData.Offset);
 				return true;
 			}
@@ -48,18 +58,28 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 
 		if (!bBlock) {
 			float ToApproachY = (PlayerManager->Characters[0]->GetActorLocation().Y + PlayerManager->Characters[1]->GetActorLocation().Y) / 2;
-
+			
 			if (Barycenter.Y == 0.F) {
 				Barycenter.Y = ToApproachY;
 			}
-
-			Barycenter.Y = Approach(Barycenter.Y, ToApproachY,350 * DeltaTime);
+			
+			// Faire la différence quand il est en train de transitionner et quand il ne l'est pas 
+			// Faire un GoTo Qui S'occupe de la Transition
+			DefaultZ = OwnerActor->GetActorLocation().Z;
+			Barycenter.Y =Approach(Barycenter.Y, ToApproachY, 350 * DeltaTime);
 			Barycenter.Z = DefaultZ;
-			Barycenter.X = Approach(Barycenter.X, OffsetX, 350 * DeltaTime);
 
 			if (OwnerActor->CurrentArea) {
-				Barycenter.X = FMath::Clamp(Barycenter.X, OwnerActor->CurrentArea->ZoomMin, OwnerActor->CurrentArea->ZoomMax);
+				if (OwnerActor->CurrentArea->ZoomMin > OwnerActor->CurrentArea->ZoomMax) { // For Some Reason, In Certain Level ZoomMin is Greater Than ZoomMax. We Manage This Case
+					OffsetX = FMath::Clamp(OffsetX, OwnerActor->CurrentArea->ZoomMax, OwnerActor->CurrentArea->ZoomMin);
+				}
+				else {
+					OffsetX = FMath::Clamp(OffsetX, OwnerActor->CurrentArea->ZoomMin, OwnerActor->CurrentArea->ZoomMax);
+				}
+			
 			}
+
+			Barycenter.X = Approach(Barycenter.X, OffsetX, 350 * DeltaTime);
 		}
 
 		OwnerActor->SetActorLocation(Barycenter);
@@ -99,6 +119,7 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 			if (!SceneView->ViewFrustum.IntersectSphere(Center, character->GetSimpleCollisionRadius())   && SceneView->ViewFrustum.IntersectSphere(PlayerCenter, character->GetSimpleCollisionRadius())) {
 
 				Center.Y = character->GetActorLocation().Y;
+				Center.Z = character->GetActorLocation().Z;
 
 				for (auto& extendPosition : _extendPositions) {
 					if (FVector::Distance(extendPosition.Position,Center) < 250.F) {
@@ -121,6 +142,7 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 				}
 
 				OffsetX -= Offset;
+				GEngine->AddOnScreenDebugMessage(-1, 10.F, FColor::Red, FString::Printf(TEXT("NewOffsetX %f"), OffsetX));
 
 				_extendPositions.Add(FExtendData(Center, direction, _extendPositions.Num(),Offset));
 			}
