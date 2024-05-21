@@ -52,8 +52,6 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 	Super::TickBehavior(DeltaTime);
 
-	//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Blue, TEXT("Tick Dynamic"));
-
 	if(PlayerManager->Characters.Num() >= 2) {
 
 		if (!bBlock) {
@@ -65,7 +63,7 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 			
 			// Faire la différence quand il est en train de transitionner et quand il ne l'est pas 
 			// Faire un GoTo Qui S'occupe de la Transition
-
+			DefaultZ = OwnerActor->GetActorLocation().Z;
 			Barycenter.Y =Approach(Barycenter.Y, ToApproachY, 350 * DeltaTime);
 			Barycenter.Z = DefaultZ;
 
