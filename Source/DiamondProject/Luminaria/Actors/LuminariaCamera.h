@@ -8,6 +8,7 @@
 UENUM(BlueprintType)
 enum ECameraBehavior : uint8
 {
+	NO_BEHAVIOR,
 	DEFAULT,
 	LEADER,
 	DYNAMIC,

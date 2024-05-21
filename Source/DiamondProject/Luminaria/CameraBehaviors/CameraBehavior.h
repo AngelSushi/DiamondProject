@@ -40,13 +40,13 @@ public:
 	UFUNCTION()
 	void SetBarycenter(FVector NewBarycenter) { Barycenter = NewBarycenter; }
 
-protected:
 	UPROPERTY()
 	float DefaultX;
 
 	UPROPERTY()
 	float DefaultZ;
 
+protected:
 	UPROPERTY()
 	TObjectPtr<class UPlayerManager> PlayerManager;
 
