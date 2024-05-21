@@ -35,9 +35,11 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 			FVector Forward = extendData.Direction;
 
 			float angle = FVector::DotProduct(ExtendToPlayer, Forward);
-			float Distance = FVector::Distance(extendData.Position, character->GetActorLocation());
 
-			if (angle < 0 && Forward == -direction && Distance < 100.F) {
+			//float Distance = FVector::Distance(extendData.Position, character->GetActorLocation());
+			float DistanceX = FMath::Abs(extendData.Position.X - character->GetActorLocation().X);
+
+			if (angle < 0 && Forward == -direction && DistanceX < 100.F) {
 				OffsetX += FMath::Abs(extendData.Offset);
 				return true;
 			}
@@ -117,6 +119,7 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 			if (!SceneView->ViewFrustum.IntersectSphere(Center, character->GetSimpleCollisionRadius())   && SceneView->ViewFrustum.IntersectSphere(PlayerCenter, character->GetSimpleCollisionRadius())) {
 
 				Center.Y = character->GetActorLocation().Y;
+				Center.Z = character->GetActorLocation().Z;
 
 				for (auto& extendPosition : _extendPositions) {
 					if (FVector::Distance(extendPosition.Position,Center) < 250.F) {
