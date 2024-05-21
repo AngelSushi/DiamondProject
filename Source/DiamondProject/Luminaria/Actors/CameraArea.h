@@ -38,6 +38,12 @@ public:
 	UPROPERTY(EditAnywhere)
 	float PlayerSpeed = 600.F;
 
+	UPROPERTY(EditAnywhere)
+	float TransitionDuration = 50.F;
+
+	UPROPERTY(EditAnywhere)
+	float ZoomDuration = 8.F;
+
 	UPROPERTY(VisibleAnywhere)
 	FVector2D MinPosition;
 

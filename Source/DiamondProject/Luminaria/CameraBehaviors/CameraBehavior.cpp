@@ -11,8 +11,8 @@ void UCameraBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	OwnerActor = Owner;
 
 	DefaultX = OwnerActor->CurrentArea ? OwnerActor->CurrentArea->ZoomMin : OwnerActor->GetActorLocation().X;
-	//DefaultZ = PlayerManager->Characters.Num() > 0 ? PlayerManager->Characters[0]->GetGroundActor()->GetActorLocation().Z : OwnerActor->GetActorLocation().Z; // Ou au ground 
-	DefaultZ = OwnerActor->GetActorLocation().Z;
+	DefaultZ = PlayerManager->Characters.Num() > 0 ? PlayerManager->Characters[0]->GetGroundActor()->GetActorLocation().Z : OwnerActor->GetActorLocation().Z; // Ou au ground 
+	//DefaultZ = OwnerActor->GetActorLocation().Z;
 }
 
 void UCameraBehavior::TickBehavior(float DeltaTime) {

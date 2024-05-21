@@ -147,7 +147,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<class ALuminariaCamera> MainCamera;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class AActor> GroundActor;
 
 	UPROPERTY()
