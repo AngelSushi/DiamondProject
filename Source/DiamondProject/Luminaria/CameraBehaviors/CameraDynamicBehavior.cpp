@@ -14,12 +14,13 @@ void UCameraDynamicBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	OffsetX = DefaultX; // Possiblement Faux passer a Location.X
 	Barycenter.X = OwnerActor->GetActorLocation().X;
 
-	GEngine->AddOnScreenDebugMessage(-1, 10.F, FColor::Emerald, FString::Printf(TEXT("BarycenterX %f"), Barycenter.X));
-
 	Barycenter.Y = OwnerActor->GetActorLocation().Y;
 	bBlock = false;
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Begin Dynamic"));
+	if (!OwnerActor->CurrentArea) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Camera has no area preset"));
+		return;
+	}
 }
 
 
@@ -51,40 +52,21 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 	Super::TickBehavior(DeltaTime);
 
+	//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Blue, TEXT("Tick Dynamic"));
+
 	if(PlayerManager->Characters.Num() >= 2) {
+
 		if (!bBlock) {
 			float ToApproachY = (PlayerManager->Characters[0]->GetActorLocation().Y + PlayerManager->Characters[1]->GetActorLocation().Y) / 2;
 			
 			if (Barycenter.Y == 0.F) {
 				Barycenter.Y = ToApproachY;
 			}
+			
+			// Faire la différence quand il est en train de transitionner et quand il ne l'est pas 
+			// Faire un GoTo Qui S'occupe de la Transition
 
-			if (!FMath::IsNearlyEqual(Barycenter.Y, ToApproachY, 1.F) && !FMath::IsNearlyEqual(Barycenter.X, OffsetX, 1.0F)) { // X et Y of Camera Is Moving. We Try To Smooth The Speed
-				float DistanceY = FMath::Abs(ToApproachY - Barycenter.Y);
-				float DistanceX = FMath::Abs(OffsetX - Barycenter.X);
-
-				if (DistanceY > DistanceX) { // We Smooth X Speed
-					// Il doit plus parcourir en Y que En X.
-					// On veut donc que la caméra X arrive en même temps que la caméra Y
-
-					// v = d * t
-					float DecelerationX = (SpeedX * SpeedX) / (2 * DistanceX);
-					float DecelerationY = (SpeedY * SpeedY) / (2 * DistanceY);
-
-					GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, FString::Printf(TEXT("DecelerationX %f"), DecelerationX));
-					GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, FString::Printf(TEXT("DecelerationY %f"), DecelerationY));
-
-				}
-				else { // We Smooth Y Speed 
-
-				}
-			}
-			else if (FMath::IsNearlyEqual(Barycenter.Y, ToApproachY, 1.F) && FMath::IsNearlyEqual(Barycenter.X, OffsetX, 1.0F)) {
-				SpeedX = 350.F;
-				SpeedY = 350.F;
-			}
-
-			Barycenter.Y = Approach(Barycenter.Y, ToApproachY,350 * DeltaTime);
+			Barycenter.Y =Approach(Barycenter.Y, ToApproachY, 350 * DeltaTime);
 			Barycenter.Z = DefaultZ;
 
 			if (OwnerActor->CurrentArea) {
@@ -95,7 +77,6 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 					OffsetX = FMath::Clamp(OffsetX, OwnerActor->CurrentArea->ZoomMin, OwnerActor->CurrentArea->ZoomMax);
 				}
 			
-				//Barycenter.X = FMath::Clamp(Barycenter.X, OwnerActor->CurrentArea->ZoomMin, OwnerActor->CurrentArea->ZoomMax);
 			}
 
 			Barycenter.X = Approach(Barycenter.X, OffsetX, 350 * DeltaTime);
