@@ -16,8 +16,10 @@ private:
 	UPROPERTY()
 	bool _hasBeenSet;
 
+	UPROPERTY()
 	float LastDistance;
-
+	
+	UPROPERTY()
 	float Alpha;
 
 public:	
