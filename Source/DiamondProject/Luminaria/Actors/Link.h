@@ -13,11 +13,10 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USceneComponent> Root;
 	
-public:
-	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+private:
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> _mesh;
 
-private:
 	UPROPERTY()
 	TArray<ADiamondProjectCharacter*> _characters;
 

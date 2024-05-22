@@ -55,7 +55,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	ADiamondProjectCharacter* GetOtherPlayer(ADiamondProjectCharacter* Character);
 
-	UFUNCTION(BlueprintCallable,BlueprintPure)
+	UFUNCTION(BlueprintCallable)
 	TArray<ADiamondProjectCharacter*> GetAllCharactersRef() { return Characters; }
 
 	UFUNCTION(BlueprintCallable)

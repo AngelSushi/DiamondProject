@@ -45,6 +45,9 @@ private:
     UPROPERTY(EditAnywhere)
     float BackSpeed = 100.0f;
 
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<class UDeathComponent> DeathComponent;
+
     UFUNCTION()
     void OnMeshBeginOverlap(UPrimitiveComponent* OverlappedComponent,
         AActor* OtherActor,

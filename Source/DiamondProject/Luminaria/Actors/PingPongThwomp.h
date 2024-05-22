@@ -49,6 +49,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	float Speed;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UDeathComponent> DeathComponent;
+
 	FVector CurrentTarget;
 
 };
