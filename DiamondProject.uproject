@@ -37,11 +37,7 @@
 			"Enabled": true
 		},
 		{
-			"Name": "FMODStudio",
-			"Enabled": true
-		},
-		{
-			"Name": "FMODStudioNiagara",
+			"Name": "NiagaraFluids",
 			"Enabled": true
 		}
 	],

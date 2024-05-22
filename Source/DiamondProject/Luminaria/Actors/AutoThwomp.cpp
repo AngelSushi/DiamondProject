@@ -3,6 +3,8 @@
 
 #include "DiamondProject/Luminaria/Actors/AutoThwomp.h"
 #include "Components/StaticMeshComponent.h"
+#include "DiamondProject/Luminaria/ActorComponents/DeathComponent.h"
+
 
 
 // Sets default values
@@ -10,11 +12,17 @@ AAutoThwomp::AAutoThwomp()
 {
     PrimaryActorTick.bCanEverTick = true;
 
+
     StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
     StaticMeshComponent->SetCollisionProfileName(TEXT("BlockAll"));
-    StaticMeshComponent->SetupAttachment(RootComponent);
+    SetRootComponent(StaticMeshComponent);
+
+
     StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     StaticMeshComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
+
+    DeathComponent = CreateDefaultSubobject<UDeathComponent>(TEXT("Death Component"));
+
 
 }
 
@@ -53,14 +61,12 @@ void AAutoThwomp::ChangeDirection()
     {
         Up = true;
         Down = false;
-        UE_LOG(LogTemp, Error, TEXT("je suis dans le up false, je descend chef "));
 
     }
     else if (Up)
     {
         Down = true;
         Up = false;
-        UE_LOG(LogTemp, Error, TEXT("je suis dans le up true, je suis snsé monter"));
 
     }
 

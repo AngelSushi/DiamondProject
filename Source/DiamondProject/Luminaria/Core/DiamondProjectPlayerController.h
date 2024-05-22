@@ -96,6 +96,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetIsPulling(bool IsPulling) { bIsPulling = IsPulling; }
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	ADiamondProjectCharacter* GetPlayer() { return Cast<ADiamondProjectCharacter>(GetCharacter()); }
 
 protected:
 
@@ -110,10 +112,6 @@ protected:
 	bool bIsPulling;
 
 private:
-
-	UFUNCTION(BlueprintCallable,BlueprintPure)
-	ADiamondProjectCharacter* GetPlayer() { return Cast<ADiamondProjectCharacter>(GetCharacter()); }
-
 
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
