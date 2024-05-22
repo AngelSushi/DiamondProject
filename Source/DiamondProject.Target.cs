@@ -14,7 +14,7 @@ public class DiamondProjectTarget : TargetRules
 
 		if(bBuildEditor)
 		{
-			ExtraModuleNames.AddRange(new string[] { "CustomLuminariaModule" });
+			//ExtraModuleNames.AddRange(new string[] { "CustomLuminariaModule" });
 		}
 	}
 }
