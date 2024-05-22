@@ -41,8 +41,6 @@ void AElectricityOrb::Tick(float DeltaTime) {
 
 		float Limit = Sender->GetPlayer()->GetLightEnergy() / 100000.F;
 
-		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, FString::Printf(TEXT("Limit %f"), Limit));
-
 		FVector SenderPosition = Sender->GetPawn()->GetActorLocation();
 		FVector ReceiverPosition = Receiver->GetPawn()->GetActorLocation();
 
@@ -57,11 +55,9 @@ void AElectricityOrb::Tick(float DeltaTime) {
 		FVector LerpPosition = FMath::Lerp(SenderPosition,ReceiverPosition,Alpha);	
 
 		if (Alpha < Limit) {
-			GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, TEXT("Green Color Orb"));
 			Particle->SetVariableLinearColor(FName("ParticleColor"), FLinearColor(0, 1.F, 0.F, 1.F));
 		}
 		else {
-			GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, TEXT("Orange Color Orb"));
 			Particle->SetVariableLinearColor(FName("ParticleColor"), FLinearColor(1.F, 0.45F, 0.F, 1.F));
 		}
 
