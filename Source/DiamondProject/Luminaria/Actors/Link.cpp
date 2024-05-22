@@ -16,9 +16,6 @@ ALink::ALink() {
 
 	_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	_mesh->SetupAttachment(RootComponent);
-
-	ParticleSystem = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Particle System"));
-	ParticleSystem->SetupAttachment(_mesh);
 }
 
 void ALink::BeginPlay() {
@@ -85,13 +82,6 @@ void ALink::OnPlayerMove(ADiamondProjectCharacter* Character, FVector Direction,
 	
 		if (NewDistance >= DistanceMax) {
 			IsCanceled = true;
-
-			if (ADiamondProjectPlayerController* PlayerController = Cast<ADiamondProjectPlayerController>(Character->GetController())) {
-				if (PlayerController->bIsJumping) {			
-					Character->GetCharacterMovement()->GravityScale = 15.0F;
-					PlayerController->bIsJumping = false;
-				}
-			}
 		}
 		else {
 			IsCanceled = false;

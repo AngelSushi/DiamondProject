@@ -45,12 +45,12 @@ void ALuminariaCamera::Tick(float DeltaTime) {
 		CurrentArea->TickArea(DeltaTime);
 	}
 
+	if (HeightBehavior) {
+		HeightBehavior->TickBehavior(DeltaTime);
+	}
+
 	if (CameraBehavior) {
 		CameraBehavior->TickBehavior(DeltaTime);
-	
-		if (HeightBehavior) {
-			HeightBehavior->TickBehavior(DeltaTime);
-		}
 	}
 }
 
@@ -80,13 +80,14 @@ void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<
 		case ECameraBehavior::DYNAMIC:
 			GoToBehavior = nullptr;
 			DynamicBehavior = NewObject<UCameraDynamicBehavior>();
-			//HeightBehavior = NewObject<UHeightCameraBehavior>();
+			HeightBehavior = NewObject<UHeightCameraBehavior>();
 			CameraBehavior = DynamicBehavior;
 			break;
 
 		case ECameraBehavior::GOTO:
 			DynamicBehavior = nullptr;
 			DefaultBehavior = nullptr;
+			HeightBehavior = nullptr;
 			GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Black, TEXT("Add GoTo Behavior"));
 			GoToBehavior = NewObject<UGoToBehavior>();
 			CameraBehavior = GoToBehavior;

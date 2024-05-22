@@ -12,13 +12,10 @@ class DIAMONDPROJECT_API ALink : public AActor{
 public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USceneComponent> Root;
-	
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UNiagaraComponent> ParticleSystem;
 
-private:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<class UStaticMeshComponent> _mesh;
+private:
 
 	UPROPERTY()
 	TArray<ADiamondProjectCharacter*> _characters;
