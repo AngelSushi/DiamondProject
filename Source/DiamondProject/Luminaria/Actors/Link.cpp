@@ -6,11 +6,16 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+#include "NiagaraComponent.h"
+
 ALink::ALink() {
 	PrimaryActorTick.bCanEverTick = true;
 
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	RootComponent = Root;
+
 	_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	RootComponent = _mesh;
+	_mesh->SetupAttachment(RootComponent);
 }
 
 void ALink::BeginPlay() {
@@ -19,6 +24,8 @@ void ALink::BeginPlay() {
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
 	PlayerManager->OnPlayerRegister.AddDynamic(this, &ALink::RegisterPlayer);
 	PlayerManager->OnPlayerMove.AddDynamic(this, &ALink::OnPlayerMove);
+
+	//ParticleSystem->AddRelativeRotation(FRotator(90, 0, 0));
 }
 
 void ALink::RegisterPlayer(ADiamondProjectCharacter* character) {
@@ -37,6 +44,9 @@ void ALink::Tick(float DeltaTime) {
 
 		FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(_characters[0]->GetActorLocation(),_characters[1]->GetActorLocation());
 		SetActorRotation(Rotation);
+
+		//ParticleSystem->SetWorldLocation(FVector(0,GetActorScale3D().X / 2.F,0));
+		//ParticleSystem->AddRelativeRotation(FRotator(90, 0, 0));
 	}
 
 }
