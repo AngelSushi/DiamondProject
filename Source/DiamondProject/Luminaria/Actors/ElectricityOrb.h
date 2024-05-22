@@ -22,6 +22,12 @@ private:
 	UPROPERTY()
 	float Alpha;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraSystem> ParticleSystem;
+
+	UPROPERTY()
+	TObjectPtr<class UNiagaraComponent> Particle;
+
 public:	
 	AElectricityOrb();
 
@@ -42,4 +48,7 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
+private:
+	UPROPERTY()
+	float TargetX;
 };
