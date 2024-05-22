@@ -8,6 +8,10 @@ class UPlayerManager;
 UCLASS()
 class DIAMONDPROJECT_API ALink : public AActor{
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class USceneComponent> Root;
 	
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly)
