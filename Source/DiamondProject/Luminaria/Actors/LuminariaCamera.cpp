@@ -137,6 +137,8 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathC
 			GoTo.X = StartPosition.X;
 			GoTo.Z = StartPosition.Z;
 
+			GEngine->AddOnScreenDebugMessage(-1, 100.F, FColor::Magenta, FString::Printf(TEXT("Go To Position %s"), *GoTo.ToString()));
+
 			GoToBehaviorComponent->GoTo = GoTo;
 			GoToBehaviorComponent->NextBehavior = CurrentBehavior;
 		}

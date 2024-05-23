@@ -98,10 +98,20 @@ void ADiamondProjectCharacter::Landed(const FHitResult& Hit) {
 
 void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que fait la mort ya ptetre de le faire en respawn
 	PlayerManager->OnPlayerDeath.Broadcast(this,DeathCause);
+
+	FTimerHandle RespawnHandle;
+	
+	GEngine->AddOnScreenDebugMessage(-1, 10.F, FColor::Orange, UEnum::GetValueAsString(DeathCause));
+	//Respawn(DeathCause);
+
+	GetWorld()->GetTimerManager().SetTimer(RespawnHandle, [&]() {
+		//Respawn(DeathCause);
+	}, 2.0F, false);
 }
 
 void ADiamondProjectCharacter::Respawn(EDeathCause DeathCause) {
 	if (_checkPoint != FVector::Zero()) {
+		GEngine->AddOnScreenDebugMessage(-1, 100.F, FColor::Cyan, FString::Printf(TEXT("Respawn Position %s For %s"), *_checkPoint.ToString(),*GetActorNameOrLabel()));
 		SetActorLocation(_checkPoint);
 	}
 
@@ -109,7 +119,6 @@ void ADiamondProjectCharacter::Respawn(EDeathCause DeathCause) {
 }
 
 void ADiamondProjectCharacter::UpdateCheckpoint(ACheckpoint* checkpoint) {
-	_checkPoint = checkpoint->checkPoint->GetComponentLocation();
 	PlayerManager->OnPlayerUpdateCheckpoint.Broadcast(this, checkpoint);
 }
 
