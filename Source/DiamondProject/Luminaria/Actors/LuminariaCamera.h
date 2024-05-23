@@ -8,6 +8,7 @@
 UENUM(BlueprintType)
 enum ECameraBehavior : uint8
 {
+	NO_BEHAVIOR,
 	DEFAULT,
 	LEADER,
 	DYNAMIC,
@@ -40,7 +41,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	bool bDebugCamera;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,BlueprintPure)
 	ACameraArea* GetCurrentArea() { return CurrentArea; }
 
 

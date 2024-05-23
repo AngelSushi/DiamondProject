@@ -90,6 +90,14 @@ public:
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	FVector2D GetMoveValue() { return MoveValue; }
 
+	UFUNCTION(BlueprintCallable)
+	void SetIsPushing(bool IsPushing) { bIsPushing = IsPushing; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsPulling(bool IsPulling) { bIsPulling = IsPulling; }
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	ADiamondProjectCharacter* GetPlayer() { return Cast<ADiamondProjectCharacter>(GetCharacter()); }
 
 protected:
 
@@ -105,10 +113,6 @@ protected:
 
 private:
 
-	UFUNCTION(BlueprintCallable,BlueprintPure)
-	ADiamondProjectCharacter* GetPlayer() { return Cast<ADiamondProjectCharacter>(GetCharacter()); }
-
-
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
 
@@ -121,7 +125,7 @@ private:
 	UFUNCTION()
 	void OpenMap();
 
-	UFUNCTION()
+	/*UFUNCTION()
 	void Push();
 
 	UFUNCTION()
@@ -132,6 +136,7 @@ private:
 
 	UFUNCTION()
 	void StopPull();
+	*/
 
 	UPROPERTY(EditAnywhere)
 	bool isUsingDepthMovement;

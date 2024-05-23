@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "DiamondProjectPlayerController.h"
 #include "DiamondProjectCharacter.generated.h"
 
 class UPlayerManager;
@@ -126,6 +127,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetButtonPushPressed(bool ButtonPushPressed) { bButtonPushPressed = ButtonPushPressed; }
 
+	UFUNCTION(BlueprintCallable)
+	bool CanGrow() { return bCanGrow; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetCanGrow(bool CanGrow) { bCanGrow = CanGrow; }
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LightEnergy = 50000.F;
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
@@ -143,15 +153,13 @@ private:
 	UPROPERTY()
 	TObjectPtr<class ALuminariaCamera> MainCamera;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class AActor> GroundActor;
 
 	UPROPERTY()
 	TObjectPtr<class ACameraArea> LastHitArea;
 
 	/* Light Variables */
-	UPROPERTY(EditAnywhere)
-	float LightEnergy = 50000.F;
 
 	UPROPERTY(EditAnywhere)
 	float MinEnergy = 0.F;
@@ -174,6 +182,9 @@ private:
 	UPROPERTY()
 	float GravityScaleSaved = 1.5F;
 
+	UPROPERTY()
+	bool bCanGrow = false;
+
 	/* Push/Pull Variables */
 	UPROPERTY(VisibleAnywhere)
 	bool bCanPush;
@@ -188,6 +199,12 @@ private:
 	void OnLandOnGround(ADiamondProjectCharacter* Character);
 
 	UFUNCTION(BlueprintCallable,BlueprintPure)
-	ADiamondProjectPlayerController* GetLuminariaController() { return Cast<ADiamondProjectPlayerController>(GetController()); }
+	ADiamondProjectPlayerController* GetLuminariaController() { 
+		if (GetController()) {
+			return Cast<ADiamondProjectPlayerController>(GetController());
+		}
+
+		return nullptr;
+	}
 };
 

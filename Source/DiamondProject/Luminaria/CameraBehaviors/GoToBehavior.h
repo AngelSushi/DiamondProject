@@ -15,9 +15,6 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	FVector GoTo;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	float Speed;
-
 	UPROPERTY(BlueprintReadWrite)
 	TEnumAsByte<ECameraBehavior> NextBehavior;
 
@@ -27,4 +24,9 @@ public:
 private:
 	bool Approach(FVector& Current, FVector Target, float Incr);
 
+	UPROPERTY()
+	float CurrentTimer;
+
+	UPROPERTY()
+	float MaxTimer;
 };

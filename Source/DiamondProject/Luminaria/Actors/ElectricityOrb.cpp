@@ -1,7 +1,10 @@
 #include "DiamondProject/Luminaria/Actors/ElectricityOrb.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
+#include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 
 #include "Components/SphereComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 AElectricityOrb::AElectricityOrb() {
  	PrimaryActorTick.bCanEverTick = true;
@@ -11,25 +14,35 @@ AElectricityOrb::AElectricityOrb() {
 
 	_sphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
 	_sphereCollision->SetupAttachment(RootComponent);
-
+	// FVector Scale, bool bAutoDestroy, bool bAutoActivate, ENCPoolMethod PoolingMethod, bool bPreCullCheck)
+	
+	//Particle->SetupAttachment(mesh);
+	
 }
 
 void AElectricityOrb::BeginPlay() {
 	Super::BeginPlay();
+
+	Particle = UNiagaraFunctionLibrary::SpawnSystemAttached( ParticleSystem,RootComponent,
+		NAME_None, FVector::Zero(), FRotator(0.f),
+		EAttachLocation::Type::KeepRelativeOffset, true);
 }
 
 void AElectricityOrb::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	if (orbSender && orbReceiver) {
+	if (Sender && Receiver) {
 
 		if (!_hasBeenSet) {
-			SetActorLocation(orbSender->GetPawn()->GetActorLocation());
+			SetActorLocation(Sender->GetPawn()->GetActorLocation());
+			TargetX = Sender->GetPawn()->GetActorLocation().X - 10.F;
 			_hasBeenSet = true;
 		}	
 
-		FVector SenderPosition = orbSender->GetPawn()->GetActorLocation();
-		FVector ReceiverPosition = orbReceiver->GetPawn()->GetActorLocation();
+		float Limit = Sender->GetPlayer()->GetLightEnergy() / 100000.F;
+
+		FVector SenderPosition = Sender->GetPawn()->GetActorLocation();
+		FVector ReceiverPosition = Receiver->GetPawn()->GetActorLocation();
 
 		float MaxDistance = FVector::Distance(SenderPosition, ReceiverPosition);
 		float CurrentDistance = FVector::Distance(GetActorLocation(), SenderPosition);
@@ -41,7 +54,14 @@ void AElectricityOrb::Tick(float DeltaTime) {
 		
 		FVector LerpPosition = FMath::Lerp(SenderPosition,ReceiverPosition,Alpha);	
 
-		SetActorLocation(FVector(GetActorLocation().X,LerpPosition.Y,LerpPosition.Z));
+		if (Alpha < Limit) {
+			Particle->SetVariableLinearColor(FName("ParticleColor"), FLinearColor(0, 1.F, 0.F, 1.F));
+		}
+		else {
+			Particle->SetVariableLinearColor(FName("ParticleColor"), FLinearColor(1.F, 0.45F, 0.F, 1.F));
+		}
+
+		SetActorLocation(FVector(TargetX, LerpPosition.Y, LerpPosition.Z));
 
 		LastDistance = CurrentDistance;
 	}

@@ -16,9 +16,17 @@ private:
 	UPROPERTY()
 	bool _hasBeenSet;
 
+	UPROPERTY()
 	float LastDistance;
-
+	
+	UPROPERTY()
 	float Alpha;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraSystem> ParticleSystem;
+
+	UPROPERTY()
+	TObjectPtr<class UNiagaraComponent> Particle;
 
 public:	
 	AElectricityOrb();
@@ -30,14 +38,17 @@ public:
 	float orbSpeed;
 
 	UPROPERTY(BlueprintReadWrite)
-	TObjectPtr<class ADiamondProjectPlayerController> orbSender;
+	TObjectPtr<class ADiamondProjectPlayerController> Sender;
 
 	UPROPERTY(BlueprintReadWrite)
-	TObjectPtr<class ADiamondProjectPlayerController> orbReceiver;
+	TObjectPtr<class ADiamondProjectPlayerController> Receiver;
 protected:
 	virtual void BeginPlay() override;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
 
+private:
+	UPROPERTY()
+	float TargetX;
 };
