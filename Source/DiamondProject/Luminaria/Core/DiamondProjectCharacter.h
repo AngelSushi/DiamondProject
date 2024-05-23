@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "DiamondProjectPlayerController.h"
+#include "../Interface/ButtonInteractable.h"
 #include "DiamondProjectCharacter.generated.h"
 
 class UPlayerManager;
@@ -17,8 +18,7 @@ enum EDeathCause {
 };
 
 UCLASS(Blueprintable)
-class ADiamondProjectCharacter : public ACharacter
-{
+class ADiamondProjectCharacter : public ACharacter,public IButtonInteractable {
 	GENERATED_BODY()
 
 public:

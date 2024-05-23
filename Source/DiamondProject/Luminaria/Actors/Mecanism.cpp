@@ -73,7 +73,11 @@ void AMecanism::OnMecanismOff(AMecanism* TargetMecanism) {
 		return;
 	}
 
-	for (AMecanismRewardActor* MecanismRewardActor : MecanismResults) {
+	for (AMecanismRewardActor* MecanismRewardActor : MecanismResults) {		
+		if (!MecanismRewardActor) {
+			return;
+		}
+
 		MecanismRewardActor->CancelReward();
 	}
 }

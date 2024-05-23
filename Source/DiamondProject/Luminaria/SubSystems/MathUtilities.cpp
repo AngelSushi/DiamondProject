@@ -43,7 +43,7 @@ float UMathUtilities::PingPongFloatAscending(float Value, float Min, float Max, 
 	return Min + PingPongValue;
 }
 
-FVector UMathUtilities::PingPongVec(float Value, FVector& Min, FVector& Max) {
+FVector UMathUtilities::PingPongVec(float Value, FVector Min, FVector Max) {
 	float X = PingPongFloat(Value, Min.X, Max.X);
 	float Y = PingPongFloat(Value, Min.Y, Max.Y);
 	float Z = PingPongFloat(Value, Min.Z, Max.Z);
@@ -51,7 +51,7 @@ FVector UMathUtilities::PingPongVec(float Value, FVector& Min, FVector& Max) {
 	return FVector(X, Y, Z);
 }
 
-FVector UMathUtilities::PingPongVecAscending(float Value, FVector& Min, FVector& Max, bool& IsPing) {
+FVector UMathUtilities::PingPongVecAscending(float Value, FVector Min, FVector Max, bool& IsPing) {
 	float X = PingPongFloatAscending(Value, Min.X, Max.X,IsPing);
 	float Y = PingPongFloatAscending(Value, Min.Y, Max.Y,IsPing);
 	float Z = PingPongFloatAscending(Value, Min.Z, Max.Z,IsPing);

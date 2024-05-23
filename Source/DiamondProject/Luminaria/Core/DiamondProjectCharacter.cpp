@@ -105,8 +105,8 @@ void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que f
 	//Respawn(DeathCause);
 
 	GetWorld()->GetTimerManager().SetTimer(RespawnHandle, [&]() {
-		//Respawn(DeathCause);
-	}, 2.0F, false);
+		Respawn(DeathCause);
+	}, 2.2F, false);
 }
 
 void ADiamondProjectCharacter::Respawn(EDeathCause DeathCause) {
