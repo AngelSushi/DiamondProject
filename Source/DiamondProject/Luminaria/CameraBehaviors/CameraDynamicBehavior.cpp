@@ -55,7 +55,8 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 	Super::TickBehavior(DeltaTime);
 
 	if(PlayerManager->Characters.Num() >= 2) {
-
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, bBlock ? TEXT("Blocked") : TEXT("Not Blocked"));
+		
 		if (!bBlock) {
 			float ToApproachY = (PlayerManager->Characters[0]->GetActorLocation().Y + PlayerManager->Characters[1]->GetActorLocation().Y) / 2;
 			
@@ -64,7 +65,7 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 			}
 			
 			DefaultZ = OwnerActor->GetActorLocation().Z;
-			Barycenter.Y =Approach(Barycenter.Y, ToApproachY, 350 * DeltaTime);
+			Barycenter.Y =Approach(Barycenter.Y, ToApproachY, 700 * DeltaTime); // 350 de base 
 
 			// A CHANGER QUAND ON REMET LE HEIGHTCAMERABEHAVIOR
 			DefaultZ = (PlayerManager->GetAllCharactersRef()[0]->GetActorLocation().Z + PlayerManager->GetAllCharactersRef()[1]->GetActorLocation().Z) / 2;
