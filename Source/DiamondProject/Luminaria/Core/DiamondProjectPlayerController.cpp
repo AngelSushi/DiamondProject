@@ -13,6 +13,8 @@
 #include "Blueprint/UserWidget.h"
 #include "DiamondProject/Luminaria/UMG/MapWidget.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 ADiamondProjectPlayerController::ADiamondProjectPlayerController() {
@@ -33,6 +35,22 @@ void ADiamondProjectPlayerController::BeginPlay()
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
 }
 
+void ADiamondProjectPlayerController::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+
+	if (bIsJumping) {
+		JumpTimer += DeltaTime;
+
+		if (JumpTimer >= JumpMaxDuration) {
+			StopJump();
+		}
+
+		if (!bIsJumpPressed && JumpTimer >= JumpMinDuration) {
+			StopJump();
+		}
+	}
+}
+
 
 void ADiamondProjectPlayerController::SetupInputComponent() {
 	Super::SetupInputComponent();
@@ -43,7 +61,7 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::Move);
 		
 		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this,&ADiamondProjectPlayerController::Jump);
-		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&ADiamondProjectPlayerController::StopJump);
+		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&ADiamondProjectPlayerController::OnInputJumpReleased);
 	
 		EnhancedInputComponent->BindAction(OpenMapAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::OpenMap);
 	
@@ -133,10 +151,20 @@ void ADiamondProjectPlayerController::Jump() {
 	GetCharacter()->Jump();
 	bIsJumping = true;
 	bIsJumpPressed = true;
+
+	GetCharacter()->GetCharacterMovement()->GravityScale = 0.F;
+	JumpTimer = 0.F;
 }
 
 void ADiamondProjectPlayerController::StopJump() {
-	GetCharacter()->StopJumping();
+	GetCharacter()->GetCharacterMovement()->GravityScale = GetPlayer()->GetGravityScaleSaved();
+}
+
+void ADiamondProjectPlayerController::OnInputJumpReleased() {
+	if (JumpTimer > JumpMinDuration) {
+		StopJump();
+	}
+
 	bIsJumpPressed = false;
 }
 
