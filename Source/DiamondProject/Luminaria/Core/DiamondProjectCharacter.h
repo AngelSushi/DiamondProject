@@ -179,8 +179,9 @@ private:
 	UPROPERTY()
 	float LastLightValue = 50.F;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	float GravityScaleSaved = 1.5F;
+
 
 	UPROPERTY()
 	bool bCanGrow = false;

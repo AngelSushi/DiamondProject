@@ -43,7 +43,7 @@ void UCameraBehavior::TickBehavior(float DeltaTime) {
 		
 		if (FMath::IsNearlyEqual(Forward.X, 0.f) && FMath::IsNearlyEqual(Forward.Y, -1.f) && FMath::IsNearlyEqual(Forward.Z, 0.f)) { // If Player Goes To Left
 			if (IsInFrustum(Character,SphereCenter)) { // Check if Left Border Of Area Is In Frustum 
-				bBlock = true;
+				//bBlock = true;
 			}
 		}
 		else if(FMath::IsNearlyEqual(Forward.X, 0.f) && FMath::IsNearlyEqual(Forward.Y, 1.f) && FMath::IsNearlyEqual(Forward.Z, 0.f)) { // If Player Goes To Right
@@ -58,7 +58,7 @@ void UCameraBehavior::TickBehavior(float DeltaTime) {
 
 		if (FMath::IsNearlyEqual(Forward.X, 0.f) && FMath::IsNearlyEqual(Forward.Y, 1.f) && FMath::IsNearlyEqual(Forward.Z, 0.f)) { // If Player Goes To Left
 			if (IsInFrustum(Character, SphereCenter)) { // Check if Left Border Of Area Is In Frustum 
-				bBlock = true;
+				//bBlock = true;
 			}
 		}
 		else if (FMath::IsNearlyEqual(Forward.X, 0.f) && FMath::IsNearlyEqual(Forward.Y, -1.f) && FMath::IsNearlyEqual(Forward.Z, 0.f)) { // If Player Goes To Right

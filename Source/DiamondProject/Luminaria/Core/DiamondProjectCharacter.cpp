@@ -134,16 +134,20 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 
 		if (HitArea->PlayerNeeded == 2) {	
 			if (OtherPlayer->LastHitArea == HitArea) {
+				GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Yellow, TEXT("Switch"));
 
 				// Faire le switch
 				MainCamera->CurrentArea = HitArea;
 
 				if (TargetBehavior != LastHitArea->AreaBehavior) {
 					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this,&OriginBehavior](UCameraBehavior* Behavior) {
+						
+
+						GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("OnSwitchBehavior"));
 						if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
 							
 							if (OriginBehavior == ECameraBehavior::DEFAULT) {
-								GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Default Behavior"));
+								GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("Default Behavior"));
 								GoTo->NextBehavior = ECameraBehavior::DEFAULT;
 								GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
 							}
@@ -169,16 +173,17 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 		}
 		else {
 			MainCamera->CurrentArea = HitArea;
-
+			
 			if (TargetBehavior != LastHitArea->AreaBehavior) {
 				MainCamera->SwitchBehavior(TargetBehavior, [&HitArea,&OtherPlayer, this,&OriginBehavior](UCameraBehavior* Behavior) {
+					
 					if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
 						if (OriginBehavior == ECameraBehavior::DEFAULT) {
 							GoTo->NextBehavior = ECameraBehavior::DEFAULT;
 							GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
 						}
 						else if (OriginBehavior == ECameraBehavior::DYNAMIC) {
-							GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Blue, TEXT("Dynamic Behavior"));
+							GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Blue, TEXT("Dynamic Behavior"));
 							FVector Barycenter = (GetActorLocation() + OtherPlayer->GetActorLocation()) / 2;
 
 							/*if (HitArea->ZoomMin > HitArea->ZoomMax) { // For Some Reason, In Certain Level ZoomMin is Greater Than ZoomMax. We Manage This Case

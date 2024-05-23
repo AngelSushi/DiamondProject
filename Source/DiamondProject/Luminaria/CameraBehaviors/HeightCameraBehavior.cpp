@@ -39,7 +39,9 @@ void UHeightCameraBehavior::TickBehavior(float DeltaTime) {
 
 		FVector HeightCameraPosition = OwnerActor->GetActorLocation();
 
-		HeightCameraPosition.Z = Approach(HeightCameraPosition.Z, OffsetZ, 350 * DeltaTime);
+		//HeightCameraPosition.Z = Approach(HeightCameraPosition.Z, OffsetZ, 350 * DeltaTime);
+		
+		HeightCameraPosition.Z = (PlayerManager->GetAllCharactersRef()[0]->GetActorLocation().Z + PlayerManager->GetAllCharactersRef()[1]->GetActorLocation().Z) / 2 + 45.F;
 		HeightCameraPosition.Z = FMath::Clamp(HeightCameraPosition.Z,OwnerActor->HeightMin,OwnerActor->HeightMax);
 			 
 		OwnerActor->SetActorLocation(HeightCameraPosition);
