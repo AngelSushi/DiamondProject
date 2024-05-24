@@ -48,6 +48,8 @@ private:
     UPROPERTY(EditAnywhere)
     TObjectPtr<class UDeathComponent> DeathComponent;
 
+    
+
     UFUNCTION()
     void OnMeshBeginOverlap(UPrimitiveComponent* OverlappedComponent,
         AActor* OtherActor,
