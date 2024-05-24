@@ -1,5 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,7 +5,6 @@
 #include "GameFramework/PlayerController.h"
 #include "DiamondProjectPlayerController.generated.h"
 
-/** Forward declaration to improve compiling times */
 class UNiagaraSystem;
 class UInputMappingContext;
 class UPlayerManager;
@@ -95,6 +92,18 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetIsPulling(bool IsPulling) { bIsPulling = IsPulling; }
+
+	UFUNCTION(BlueprintPure)
+	float GetJumpMinDuration() { return JumpMinDuration; }
+
+	UFUNCTION(BlueprintPure)
+	float GetJumpMaxDuration() { return JumpMaxDuration; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetJumpMinDuration(float NewJumpMinDuration) { JumpMinDuration = NewJumpMinDuration; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetJumpMaxDuration(float NewJumpMaxDuration) { JumpMaxDuration = NewJumpMaxDuration; }
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	ADiamondProjectCharacter* GetPlayer() { return Cast<ADiamondProjectCharacter>(GetCharacter()); }

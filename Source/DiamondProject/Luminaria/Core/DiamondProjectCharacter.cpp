@@ -135,7 +135,7 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 		ECameraBehavior OriginBehavior = HitArea->AreaBehavior;
 		ECameraBehavior TargetBehavior = HitArea->AreaBehavior;
 
-		if (TargetBehavior == ECameraBehavior::DEFAULT || TargetBehavior == ECameraBehavior::DYNAMIC) {
+		if (TargetBehavior == ECameraBehavior::DEFAULT /* || TargetBehavior == ECameraBehavior::DYNAMIC */) {
 			TargetBehavior = ECameraBehavior::GOTO;
 		}
 
@@ -160,7 +160,7 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 								GoTo->NextBehavior = ECameraBehavior::DEFAULT;
 								GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
 							}
-							else if (OriginBehavior == ECameraBehavior::DYNAMIC) {
+							/*else if (OriginBehavior == ECameraBehavior::DYNAMIC) {
 								FVector Barycenter = (GetActorLocation() + OtherPlayer->GetActorLocation()) / 2;
 
 								if (HitArea->ZoomMin > HitArea->ZoomMax) { // For Some Reason, In Certain Level ZoomMin is Greater Than ZoomMax. We Manage This Case
@@ -175,6 +175,7 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 								GoTo->GoTo = Barycenter;
 								GoTo->NextBehavior = ECameraBehavior::DYNAMIC;
 							}
+							*/
 						}
 					});
 				}
@@ -191,22 +192,22 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 							GoTo->NextBehavior = ECameraBehavior::DEFAULT;
 							GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
 						}
-						else if (OriginBehavior == ECameraBehavior::DYNAMIC) {
+						/*else if (OriginBehavior == ECameraBehavior::DYNAMIC) {
 							GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Blue, TEXT("Dynamic Behavior"));
 							FVector Barycenter = (GetActorLocation() + OtherPlayer->GetActorLocation()) / 2;
 
-							/*if (HitArea->ZoomMin > HitArea->ZoomMax) { // For Some Reason, In Certain Level ZoomMin is Greater Than ZoomMax. We Manage This Case
+							if (HitArea->ZoomMin > HitArea->ZoomMax) { // For Some Reason, In Certain Level ZoomMin is Greater Than ZoomMax. We Manage This Case
 								Barycenter.X = FMath::Clamp(Barycenter.X, HitArea->ZoomMax, HitArea->ZoomMin);
 							}
 							else {
 								Barycenter.X = FMath::Clamp(Barycenter.X, HitArea->ZoomMin, HitArea->ZoomMax);
-							}*/
+							}
 
 							Barycenter.Z = GoTo->DefaultZ;
 
 							GoTo->GoTo = Barycenter;
 							GoTo->NextBehavior = ECameraBehavior::DYNAMIC;
-						}
+						}*/
 					}
 				});
 			}

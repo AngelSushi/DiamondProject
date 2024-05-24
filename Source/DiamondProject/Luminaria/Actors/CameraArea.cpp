@@ -20,9 +20,7 @@ ACameraArea::ACameraArea() {
 
 void ACameraArea::TickArea(float DeltaTime) {
 	for (ADiamondProjectCharacter* Character : PlayerManager->Characters) {
-		if (Character->GetCharacterMovement()->MaxWalkSpeed != PlayerSpeed) {
-			Character->GetCharacterMovement()->MaxWalkSpeed = PlayerSpeed;
-		}
+		Character->GetCharacterMovement()->MaxWalkSpeed = FMath::Clamp(Character->GetCharacterMovement()->MaxWalkSpeed,PlayerSpeedMin,PlayerSpeedMax);
 	}
 }
 

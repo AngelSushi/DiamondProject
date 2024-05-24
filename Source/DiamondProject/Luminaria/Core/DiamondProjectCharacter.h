@@ -133,6 +133,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCanGrow(bool CanGrow) { bCanGrow = CanGrow; }
 
+	UFUNCTION(BlueprintPure)
+	float GetJumpDurationIncrease() { return JumpDurationIncrease; }
+
+	UFUNCTION(BlueprintPure)
+	float GetSpeedIncrease() { return SpeedIncrease; }
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float LightEnergy = 50000.F;
 
@@ -181,6 +187,12 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float GravityScaleSaved = 1.5F;
+
+	UPROPERTY(EditAnywhere)
+	float JumpDurationIncrease = 0.05f;
+
+	UPROPERTY(EditAnywhere)
+	float SpeedIncrease = 40.F;
 
 
 	UPROPERTY()

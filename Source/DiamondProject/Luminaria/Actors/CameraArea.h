@@ -36,7 +36,10 @@ public:
 	uint16 ZoomMax;
 
 	UPROPERTY(EditAnywhere)
-	float PlayerSpeed = 600.F;
+	float PlayerSpeedMin = 600.F;
+
+	UPROPERTY(EditAnywhere)
+	float PlayerSpeedMax = 600.F;
 
 	UPROPERTY(EditAnywhere)
 	float TransitionDuration = 50.F;
