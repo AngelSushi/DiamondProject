@@ -17,22 +17,36 @@ public:
 
 protected:
 	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
+	// Variable exposée dans l'éditeur
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	int32 NumberOfComponents;
+
+	// Fonction pour obtenir les positions des composants
+	UFUNCTION(BlueprintCallable, Category = "Components")
+	TArray<FVector> GetComponentPositions() const;
 private:
+	
+
+	// Composant parent pour contenir les meshes ajoutés manuellement
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	USceneComponent* MeshFolder;
+
+	// Composant parent pour contenir les composants dynamiques
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	USceneComponent* SceneFolder;
+
+	// Liste pour stocker les références des composants ajoutés
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TArray<USceneComponent*> SceneComponents;
 
+	// Fonction pour ajouter des composants
 	void AddComponents();
 };
 
 
-};
+
