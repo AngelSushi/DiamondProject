@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
+#include "DiamondProject/Luminaria/ActorComponents/DeathComponent.h"
 
 // Sets default values
 AThwomp::AThwomp()
@@ -20,6 +21,9 @@ AThwomp::AThwomp()
 
     StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics); 
     StaticMeshComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
+
+    DeathComponent = CreateDefaultSubobject<UDeathComponent>(TEXT("Death Component"));
+    DeathComponent->SetupAttachment(RootComponent);
 
 }
 void AThwomp::BeginPlay()

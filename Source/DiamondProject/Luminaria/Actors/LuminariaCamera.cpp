@@ -45,12 +45,12 @@ void ALuminariaCamera::Tick(float DeltaTime) {
 		CurrentArea->TickArea(DeltaTime);
 	}
 
+	if (HeightBehavior) {
+		HeightBehavior->TickBehavior(DeltaTime);
+	}
+
 	if (CameraBehavior) {
 		CameraBehavior->TickBehavior(DeltaTime);
-	
-		if (HeightBehavior) {
-			HeightBehavior->TickBehavior(DeltaTime);
-		}
 	}
 }
 
@@ -66,20 +66,29 @@ void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<
 	}
 
 	//CameraBehavior = NewObject<UCameraBehavior>(Behavior); Doesn't work with child functions
+	GEngine->AddOnScreenDebugMessage(-1, 3.F, FColor::Orange, TEXT("Ask For Switch"));
+	BehaviorState = SwitchBehavior;
 
 	switch (SwitchBehavior) {
 		case ECameraBehavior::DEFAULT:
+			GoToBehavior = nullptr;
+			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Yellow, TEXT("Reset GoTo"));
 			DefaultBehavior = NewObject<UCameraDefaultBehavior>();
 			CameraBehavior = DefaultBehavior;
 			break;
 
 		case ECameraBehavior::DYNAMIC:
+			GoToBehavior = nullptr;
 			DynamicBehavior = NewObject<UCameraDynamicBehavior>();
 			//HeightBehavior = NewObject<UHeightCameraBehavior>();
 			CameraBehavior = DynamicBehavior;
 			break;
 
 		case ECameraBehavior::GOTO:
+			DynamicBehavior = nullptr;
+			DefaultBehavior = nullptr;
+			HeightBehavior = nullptr;
+			GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Black, TEXT("Add GoTo Behavior"));
 			GoToBehavior = NewObject<UGoToBehavior>();
 			CameraBehavior = GoToBehavior;
 			break;
@@ -128,8 +137,9 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathC
 			GoTo.X = StartPosition.X;
 			GoTo.Z = StartPosition.Z;
 
+			GEngine->AddOnScreenDebugMessage(-1, 100.F, FColor::Magenta, FString::Printf(TEXT("Go To Position %s"), *GoTo.ToString()));
+
 			GoToBehaviorComponent->GoTo = GoTo;
-			GoToBehaviorComponent->Speed = 1000.F;
 			GoToBehaviorComponent->NextBehavior = CurrentBehavior;
 		}
 	});

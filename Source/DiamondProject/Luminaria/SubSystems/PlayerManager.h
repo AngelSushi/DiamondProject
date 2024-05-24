@@ -7,7 +7,6 @@
 #include "PlayerManager.generated.h"
 
 class ADiamondProjectCharacter;
-class ADiamondProjectPlayerController;
 class ACheckpoint;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPlayerMove,ADiamondProjectCharacter*,Character, FVector,Direction,bool&,isCanceled);
@@ -44,10 +43,19 @@ public:
 	UFUNCTION()
 	void RegisterPlayer(ADiamondProjectCharacter* Character);
 
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	ADiamondProjectCharacter* GetOnePlayer() { 
+		if (GetAllCharactersRef().Num() > 0) {
+			return GetAllCharactersRef()[0];
+		}
+
+		return nullptr;
+	}
+
 	UFUNCTION(BlueprintCallable)
 	ADiamondProjectCharacter* GetOtherPlayer(ADiamondProjectCharacter* Character);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintPure)
 	TArray<ADiamondProjectCharacter*> GetAllCharactersRef() { return Characters; }
 
 	UFUNCTION(BlueprintCallable)

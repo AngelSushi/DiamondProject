@@ -96,12 +96,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetIsPulling(bool IsPulling) { bIsPulling = IsPulling; }
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	ADiamondProjectCharacter* GetPlayer() { return Cast<ADiamondProjectCharacter>(GetCharacter()); }
 
 protected:
 
 	virtual void SetupInputComponent() override;
 	
 	virtual void BeginPlay();
+	virtual void Tick(float DeltaTime) override;
 	
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsPushing;
@@ -111,10 +114,6 @@ protected:
 
 private:
 
-	UFUNCTION(BlueprintCallable,BlueprintPure)
-	ADiamondProjectCharacter* GetPlayer() { return Cast<ADiamondProjectCharacter>(GetCharacter()); }
-
-
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
 
@@ -123,6 +122,9 @@ private:
 
 	UFUNCTION()
 	void StopJump();
+
+	UFUNCTION()
+	void OnInputJumpReleased();
 
 	UFUNCTION()
 	void OpenMap();
@@ -167,6 +169,18 @@ private:
 
 	UPROPERTY()
 	bool bIsFalling;
+
+	UPROPERTY(EditAnywhere)
+	float JumpMinDuration;
+
+	UPROPERTY(EditAnywhere)
+	float JumpMaxDuration;
+
+	//UPROPERTY(EditAnywhere)
+	//float JumpDuration;
+
+	UPROPERTY()
+	float JumpTimer;
 };
 
 

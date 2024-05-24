@@ -14,12 +14,13 @@ void UCameraDynamicBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	OffsetX = DefaultX; // Possiblement Faux passer a Location.X
 	Barycenter.X = OwnerActor->GetActorLocation().X;
 
-	GEngine->AddOnScreenDebugMessage(-1, 10.F, FColor::Emerald, FString::Printf(TEXT("BarycenterX %f"), Barycenter.X));
-
 	Barycenter.Y = OwnerActor->GetActorLocation().Y;
 	bBlock = false;
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Begin Dynamic"));
+	if (!OwnerActor->CurrentArea) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Camera has no area preset"));
+		return;
+	}
 }
 
 
@@ -34,9 +35,11 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 			FVector Forward = extendData.Direction;
 
 			float angle = FVector::DotProduct(ExtendToPlayer, Forward);
-			float Distance = FVector::Distance(extendData.Position, character->GetActorLocation());
 
-			if (angle < 0 && Forward == -direction && Distance < 100.F) {
+			//float Distance = FVector::Distance(extendData.Position, character->GetActorLocation());
+			float DistanceX = FMath::Abs(extendData.Position.X - character->GetActorLocation().X);
+
+			if (angle < 0 && Forward == -direction && DistanceX < 100.F) {
 				OffsetX += FMath::Abs(extendData.Offset);
 				return true;
 			}
@@ -52,39 +55,22 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 	Super::TickBehavior(DeltaTime);
 
 	if(PlayerManager->Characters.Num() >= 2) {
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, bBlock ? TEXT("Blocked") : TEXT("Not Blocked"));
+		
 		if (!bBlock) {
 			float ToApproachY = (PlayerManager->Characters[0]->GetActorLocation().Y + PlayerManager->Characters[1]->GetActorLocation().Y) / 2;
 			
 			if (Barycenter.Y == 0.F) {
 				Barycenter.Y = ToApproachY;
 			}
+			
+			DefaultZ = OwnerActor->GetActorLocation().Z;
+			Barycenter.Y =Approach(Barycenter.Y, ToApproachY, 700 * DeltaTime); // 350 de base 
 
-			if (!FMath::IsNearlyEqual(Barycenter.Y, ToApproachY, 1.F) && !FMath::IsNearlyEqual(Barycenter.X, OffsetX, 1.0F)) { // X et Y of Camera Is Moving. We Try To Smooth The Speed
-				float DistanceY = FMath::Abs(ToApproachY - Barycenter.Y);
-				float DistanceX = FMath::Abs(OffsetX - Barycenter.X);
+			// A CHANGER QUAND ON REMET LE HEIGHTCAMERABEHAVIOR
+			DefaultZ = (PlayerManager->GetAllCharactersRef()[0]->GetActorLocation().Z + PlayerManager->GetAllCharactersRef()[1]->GetActorLocation().Z) / 2;
+			DefaultZ += 45.F;
 
-				if (DistanceY > DistanceX) { // We Smooth X Speed
-					// Il doit plus parcourir en Y que En X.
-					// On veut donc que la caméra X arrive en même temps que la caméra Y
-
-					// v = d * t
-					float DecelerationX = (SpeedX * SpeedX) / (2 * DistanceX);
-					float DecelerationY = (SpeedY * SpeedY) / (2 * DistanceY);
-
-					GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, FString::Printf(TEXT("DecelerationX %f"), DecelerationX));
-					GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, FString::Printf(TEXT("DecelerationY %f"), DecelerationY));
-
-				}
-				else { // We Smooth Y Speed 
-
-				}
-			}
-			else if (FMath::IsNearlyEqual(Barycenter.Y, ToApproachY, 1.F) && FMath::IsNearlyEqual(Barycenter.X, OffsetX, 1.0F)) {
-				SpeedX = 350.F;
-				SpeedY = 350.F;
-			}
-
-			Barycenter.Y = Approach(Barycenter.Y, ToApproachY,350 * DeltaTime);
 			Barycenter.Z = DefaultZ;
 
 			if (OwnerActor->CurrentArea) {
@@ -95,7 +81,6 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 					OffsetX = FMath::Clamp(OffsetX, OwnerActor->CurrentArea->ZoomMin, OwnerActor->CurrentArea->ZoomMax);
 				}
 			
-				//Barycenter.X = FMath::Clamp(Barycenter.X, OwnerActor->CurrentArea->ZoomMin, OwnerActor->CurrentArea->ZoomMax);
 			}
 
 			Barycenter.X = Approach(Barycenter.X, OffsetX, 350 * DeltaTime);
@@ -138,6 +123,7 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 			if (!SceneView->ViewFrustum.IntersectSphere(Center, character->GetSimpleCollisionRadius())   && SceneView->ViewFrustum.IntersectSphere(PlayerCenter, character->GetSimpleCollisionRadius())) {
 
 				Center.Y = character->GetActorLocation().Y;
+				Center.Z = character->GetActorLocation().Z;
 
 				for (auto& extendPosition : _extendPositions) {
 					if (FVector::Distance(extendPosition.Position,Center) < 250.F) {
