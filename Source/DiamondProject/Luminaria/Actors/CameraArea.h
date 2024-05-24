@@ -36,7 +36,10 @@ public:
 	uint16 ZoomMax;
 
 	UPROPERTY(EditAnywhere)
-	float PlayerSpeed = 600.F;
+	float PlayerSpeedMin = 600.F;
+
+	UPROPERTY(EditAnywhere)
+	float PlayerSpeedMax = 600.F;
 
 	UPROPERTY(EditAnywhere)
 	float TransitionDuration = 50.F;
@@ -53,8 +56,8 @@ public:
 	UFUNCTION()
 	bool HasVisited() { return bHasVisited; }
 
-	UFUNCTION(BlueprintCallable)
-	bool CanGrow() { return bCanGrow; }
+	//UFUNCTION(BlueprintCallable)
+	//bool CanGrow() { return bCanGrow; }
 
 	UFUNCTION(BlueprintCallable)
 	void TickArea(float DeltaTime);
@@ -68,8 +71,8 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	bool bHasVisited;
 
-	UPROPERTY(EditAnywhere)
-	bool bCanGrow;
+	//UPROPERTY(EditAnywhere)
+	//bool bCanGrow;
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;

@@ -80,7 +80,7 @@ void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<
 		case ECameraBehavior::DYNAMIC:
 			GoToBehavior = nullptr;
 			DynamicBehavior = NewObject<UCameraDynamicBehavior>();
-			HeightBehavior = NewObject<UHeightCameraBehavior>();
+			//HeightBehavior = NewObject<UHeightCameraBehavior>();
 			CameraBehavior = DynamicBehavior;
 			break;
 
@@ -136,6 +136,8 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathC
 			GoTo /= Characters.Num();
 			GoTo.X = StartPosition.X;
 			GoTo.Z = StartPosition.Z;
+
+			GEngine->AddOnScreenDebugMessage(-1, 100.F, FColor::Magenta, FString::Printf(TEXT("Go To Position %s"), *GoTo.ToString()));
 
 			GoToBehaviorComponent->GoTo = GoTo;
 			GoToBehaviorComponent->NextBehavior = CurrentBehavior;
