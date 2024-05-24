@@ -80,7 +80,7 @@ void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<
 		case ECameraBehavior::DYNAMIC:
 			GoToBehavior = nullptr;
 			DynamicBehavior = NewObject<UCameraDynamicBehavior>();
-			HeightBehavior = NewObject<UHeightCameraBehavior>();
+			//HeightBehavior = NewObject<UHeightCameraBehavior>();
 			CameraBehavior = DynamicBehavior;
 			break;
 

@@ -104,6 +104,7 @@ protected:
 	virtual void SetupInputComponent() override;
 	
 	virtual void BeginPlay();
+	virtual void Tick(float DeltaTime) override;
 	
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsPushing;
@@ -121,6 +122,9 @@ private:
 
 	UFUNCTION()
 	void StopJump();
+
+	UFUNCTION()
+	void OnInputJumpReleased();
 
 	UFUNCTION()
 	void OpenMap();
@@ -165,6 +169,18 @@ private:
 
 	UPROPERTY()
 	bool bIsFalling;
+
+	UPROPERTY(EditAnywhere)
+	float JumpMinDuration;
+
+	UPROPERTY(EditAnywhere)
+	float JumpMaxDuration;
+
+	//UPROPERTY(EditAnywhere)
+	//float JumpDuration;
+
+	UPROPERTY()
+	float JumpTimer;
 };
 
 

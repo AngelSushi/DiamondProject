@@ -55,7 +55,8 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 	Super::TickBehavior(DeltaTime);
 
 	if(PlayerManager->Characters.Num() >= 2) {
-
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, bBlock ? TEXT("Blocked") : TEXT("Not Blocked"));
+		
 		if (!bBlock) {
 			float ToApproachY = (PlayerManager->Characters[0]->GetActorLocation().Y + PlayerManager->Characters[1]->GetActorLocation().Y) / 2;
 			
@@ -63,10 +64,13 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 				Barycenter.Y = ToApproachY;
 			}
 			
-			// Faire la différence quand il est en train de transitionner et quand il ne l'est pas 
-			// Faire un GoTo Qui S'occupe de la Transition
 			DefaultZ = OwnerActor->GetActorLocation().Z;
-			Barycenter.Y =Approach(Barycenter.Y, ToApproachY, 350 * DeltaTime);
+			Barycenter.Y =Approach(Barycenter.Y, ToApproachY, 700 * DeltaTime); // 350 de base 
+
+			// A CHANGER QUAND ON REMET LE HEIGHTCAMERABEHAVIOR
+			DefaultZ = (PlayerManager->GetAllCharactersRef()[0]->GetActorLocation().Z + PlayerManager->GetAllCharactersRef()[1]->GetActorLocation().Z) / 2;
+			DefaultZ += 45.F;
+
 			Barycenter.Z = DefaultZ;
 
 			if (OwnerActor->CurrentArea) {
