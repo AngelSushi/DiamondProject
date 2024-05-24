@@ -66,6 +66,7 @@ public:
 	void SetVisited(bool HasVisited) { bHasVisited = HasVisited; }
 protected:
 	virtual void BeginPlay() override;
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
 private:
 	UPROPERTY(VisibleAnywhere)

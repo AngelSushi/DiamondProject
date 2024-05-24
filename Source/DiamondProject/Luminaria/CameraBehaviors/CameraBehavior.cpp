@@ -56,6 +56,10 @@ void UCameraBehavior::TickBehavior(float DeltaTime) {
 
 		SphereCenter.Y = OwnerActor->CurrentArea->MaxPosition.X;
 
+		if (OwnerActor->bDebugCamera) {
+			DrawDebugSphere(OwnerActor->GetWorld(), SphereCenter, 30.f, 8, FColor::Yellow, false, 1.F, 1, 3.F);
+		}
+
 		if (FMath::IsNearlyEqual(Forward.X, 0.f) && FMath::IsNearlyEqual(Forward.Y, 1.f) && FMath::IsNearlyEqual(Forward.Z, 0.f)) { // If Player Goes To Left
 			if (IsInFrustum(Character, SphereCenter)) { // Check if Left Border Of Area Is In Frustum 
 				//bBlock = true;

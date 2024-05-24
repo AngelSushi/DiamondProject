@@ -38,4 +38,29 @@ void ACameraArea::BeginPlay() {
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
 }
 
+void ACameraArea::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) {
+	if (PropertyChangedEvent.GetMemberPropertyName() == "AreaBehavior") {
+		switch (AreaBehavior) {
+			case ECameraBehavior::DEFAULT:
+				BoxCollision->ShapeColor = FColor::Cyan;
+				break;
+
+			case ECameraBehavior::DYNAMIC:
+				BoxCollision->ShapeColor = FColor::Yellow;
+				break;
+
+			case ECameraBehavior::NO_BEHAVIOR:
+				BoxCollision->ShapeColor = FColor::White;
+				break;
+
+			case ECameraBehavior::GOTO:
+			case ECameraBehavior::LEADER:
+				BoxCollision->ShapeColor = FColor::Black;
+				break;
+		}
+	}
+
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+}
+
 

@@ -15,4 +15,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USceneComponent> checkPoint;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UBillboardComponent> Billboard;
 };
