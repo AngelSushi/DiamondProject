@@ -14,10 +14,10 @@ ACameraArea::ACameraArea() {
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collision"));
 	BoxCollision->SetupAttachment(RootComponent);
 
-	if (AreaBehavior == ECameraBehavior::DEFAULT && !GoTo) {
+	//if (AreaBehavior == ECameraBehavior::DEFAULT && !GoTo) {
 		GoTo = CreateDefaultSubobject<USceneComponent>(TEXT("GoTo"));
 		GoTo->SetupAttachment(RootComponent);
-	}
+//	}
 }
 
 void ACameraArea::TickArea(float DeltaTime) {
@@ -38,6 +38,10 @@ void ACameraArea::BeginPlay() {
 
 	bHasVisited = false;
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
+
+	if (GoTo && AreaBehavior == ECameraBehavior::DEFAULT && GoTo->GetRelativeLocation() == FVector::Zero()) {
+		GoTo->SetRelativeLocation(FVector(-ZoomMin, 0, 0));
+	}
 }
 
 #if WITH_EDITOR
@@ -68,7 +72,7 @@ void ACameraArea::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedE
 				break;
 		}
 
-		if (AreaBehavior == ECameraBehavior::DEFAULT) {
+		/*if (AreaBehavior == ECameraBehavior::DEFAULT) {
 			if (!GoTo && GetWorld()) {
 				GoTo = NewObject<USceneComponent>(this, USceneComponent::StaticClass(), TEXT("GoTo"));
 				GoTo->SetupAttachment(Root);
@@ -81,7 +85,7 @@ void ACameraArea::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedE
 				GoTo->DestroyComponent();
 				GoTo = nullptr;
 			}
-		}
+		}*/
 	}
 
 	Super::PostEditChangeProperty(PropertyChangedEvent);

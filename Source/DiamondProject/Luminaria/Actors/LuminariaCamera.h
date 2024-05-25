@@ -76,8 +76,10 @@ public:
 	TObjectPtr<class UHeightCameraBehavior> HeightBehavior;
 
 	/* State Machine Functions */
-
 	void SwitchBehavior(ECameraBehavior SwitchBehavior,TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc = [](UCameraBehavior* CameraBehavior) {});
+
+	UFUNCTION(BlueprintCallable)
+	void SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavior);
 
 	void InitBehavior();
 

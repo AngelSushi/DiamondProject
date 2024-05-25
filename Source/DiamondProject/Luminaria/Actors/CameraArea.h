@@ -17,13 +17,16 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USceneComponent> Root;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	TObjectPtr<class USceneComponent> GoTo;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<class UBoxComponent> BoxCollision;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 Id;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TEnumAsByte<ECameraBehavior> AreaBehavior;
 
 	UPROPERTY(EditAnywhere)
@@ -31,6 +34,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	uint16 ZoomMin;
+
+	UFUNCTION(BlueprintPure)
+	int GetZoomMin() { return ZoomMin; }
 
 	UPROPERTY(EditAnywhere)
 	uint16 ZoomMax;
