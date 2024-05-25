@@ -10,12 +10,11 @@
 void UGoToBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	Super::BeginBehavior(Owner);
 
-	Barycenter = OwnerActor->GetActorLocation();
+	Barycenter = Owner->GetActorLocation();
+	Owner->BehaviorState = ECameraBehavior::GOTO;
 
 	CurrentTimer = 0.F;
 	MaxTimer = 2.0F;
-
-	OwnerActor->BehaviorState = ECameraBehavior::GOTO;
 }
 
 void UGoToBehavior::TickBehavior(float DeltaTime) {

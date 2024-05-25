@@ -49,6 +49,9 @@ private:
     UPROPERTY(VisibleAnywhere)
     float CurrentReturnDelay = 0.0f;
 
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<class UDeathComponent> DeathComponent;
+
 
     UFUNCTION()
     void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,

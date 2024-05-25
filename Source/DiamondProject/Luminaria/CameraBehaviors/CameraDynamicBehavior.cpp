@@ -35,9 +35,11 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 			FVector Forward = extendData.Direction;
 
 			float angle = FVector::DotProduct(ExtendToPlayer, Forward);
-			float Distance = FVector::Distance(extendData.Position, character->GetActorLocation());
 
-			if (angle < 0 && Forward == -direction && Distance < 100.F) {
+			//float Distance = FVector::Distance(extendData.Position, character->GetActorLocation());
+			float DistanceX = FMath::Abs(extendData.Position.X - character->GetActorLocation().X);
+
+			if (angle < 0 && Forward == -direction && DistanceX < 100.F) {
 				OffsetX += FMath::Abs(extendData.Offset);
 				return true;
 			}
@@ -52,10 +54,9 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, F
 void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 	Super::TickBehavior(DeltaTime);
 
-	//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Blue, TEXT("Tick Dynamic"));
-
 	if(PlayerManager->Characters.Num() >= 2) {
-
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, bBlock ? TEXT("Blocked") : TEXT("Not Blocked"));
+		
 		if (!bBlock) {
 			float ToApproachY = (PlayerManager->Characters[0]->GetActorLocation().Y + PlayerManager->Characters[1]->GetActorLocation().Y) / 2;
 			
@@ -63,10 +64,13 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 				Barycenter.Y = ToApproachY;
 			}
 			
-			// Faire la différence quand il est en train de transitionner et quand il ne l'est pas 
-			// Faire un GoTo Qui S'occupe de la Transition
+			DefaultZ = OwnerActor->GetActorLocation().Z;
+			Barycenter.Y =Approach(Barycenter.Y, ToApproachY, 700 * DeltaTime); // 350 de base 
 
-			Barycenter.Y =Approach(Barycenter.Y, ToApproachY, 350 * DeltaTime);
+			// A CHANGER QUAND ON REMET LE HEIGHTCAMERABEHAVIOR
+			DefaultZ = (PlayerManager->GetAllCharactersRef()[0]->GetActorLocation().Z + PlayerManager->GetAllCharactersRef()[1]->GetActorLocation().Z) / 2;
+			DefaultZ += 45.F;
+
 			Barycenter.Z = DefaultZ;
 
 			if (OwnerActor->CurrentArea) {
@@ -119,6 +123,7 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 			if (!SceneView->ViewFrustum.IntersectSphere(Center, character->GetSimpleCollisionRadius())   && SceneView->ViewFrustum.IntersectSphere(PlayerCenter, character->GetSimpleCollisionRadius())) {
 
 				Center.Y = character->GetActorLocation().Y;
+				Center.Z = character->GetActorLocation().Z;
 
 				for (auto& extendPosition : _extendPositions) {
 					if (FVector::Distance(extendPosition.Position,Center) < 250.F) {

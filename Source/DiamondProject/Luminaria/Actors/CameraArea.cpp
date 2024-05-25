@@ -14,15 +14,15 @@ ACameraArea::ACameraArea() {
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collision"));
 	BoxCollision->SetupAttachment(RootComponent);
 
-	GoTo = CreateDefaultSubobject<USceneComponent>(TEXT("GoTo"));
-	GoTo->SetupAttachment(RootComponent);
+	//if (AreaBehavior == ECameraBehavior::DEFAULT && !GoTo) {
+		GoTo = CreateDefaultSubobject<USceneComponent>(TEXT("GoTo"));
+		GoTo->SetupAttachment(RootComponent);
+//	}
 }
 
 void ACameraArea::TickArea(float DeltaTime) {
 	for (ADiamondProjectCharacter* Character : PlayerManager->Characters) {
-		if (Character->GetCharacterMovement()->MaxWalkSpeed != PlayerSpeed) {
-			Character->GetCharacterMovement()->MaxWalkSpeed = PlayerSpeed;
-		}
+		Character->GetCharacterMovement()->MaxWalkSpeed = FMath::Clamp(Character->GetCharacterMovement()->MaxWalkSpeed,PlayerSpeedMin,PlayerSpeedMax);
 	}
 }
 
@@ -38,6 +38,58 @@ void ACameraArea::BeginPlay() {
 
 	bHasVisited = false;
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
+
+	if (GoTo && AreaBehavior == ECameraBehavior::DEFAULT && GoTo->GetRelativeLocation() == FVector::Zero()) {
+		GoTo->SetRelativeLocation(FVector(-ZoomMin, 0, 0));
+	}
 }
+
+#if WITH_EDITOR
+void ACameraArea::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) {
+	//Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	if (AreaBehavior == ECameraBehavior::DEFAULT) {
+		ZoomMax = ZoomMin;
+	}
+
+	if (PropertyChangedEvent.GetMemberPropertyName() == "AreaBehavior") {
+		switch (AreaBehavior) {
+			case ECameraBehavior::DEFAULT:
+				BoxCollision->ShapeColor = FColor::Cyan;
+				break;
+
+			case ECameraBehavior::DYNAMIC:
+				BoxCollision->ShapeColor = FColor::Yellow;
+				break;
+
+			case ECameraBehavior::NO_BEHAVIOR:
+				BoxCollision->ShapeColor = FColor::White;
+				break;
+
+			case ECameraBehavior::GOTO:
+			case ECameraBehavior::LEADER:
+				BoxCollision->ShapeColor = FColor::Black;
+				break;
+		}
+
+		/*if (AreaBehavior == ECameraBehavior::DEFAULT) {
+			if (!GoTo && GetWorld()) {
+				GoTo = NewObject<USceneComponent>(this, USceneComponent::StaticClass(), TEXT("GoTo"));
+				GoTo->SetupAttachment(Root);
+				GoTo->RegisterComponent();
+				GoTo->SetRelativeLocation(FVector(-ZoomMin, 0, 0));
+			}
+		}
+		else {
+			if (GoTo) {
+				GoTo->DestroyComponent();
+				GoTo = nullptr;
+			}
+		}*/
+	}
+
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+}
+#endif
 
 

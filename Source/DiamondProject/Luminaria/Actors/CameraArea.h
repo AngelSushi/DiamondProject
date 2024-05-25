@@ -17,13 +17,16 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USceneComponent> Root;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	TObjectPtr<class USceneComponent> GoTo;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<class UBoxComponent> BoxCollision;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 Id;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TEnumAsByte<ECameraBehavior> AreaBehavior;
 
 	UPROPERTY(EditAnywhere)
@@ -32,11 +35,17 @@ public:
 	UPROPERTY(EditAnywhere)
 	uint16 ZoomMin;
 
+	UFUNCTION(BlueprintPure)
+	int GetZoomMin() { return ZoomMin; }
+
 	UPROPERTY(EditAnywhere)
 	uint16 ZoomMax;
 
 	UPROPERTY(EditAnywhere)
-	float PlayerSpeed = 600.F;
+	float PlayerSpeedMin = 600.F;
+
+	UPROPERTY(EditAnywhere)
+	float PlayerSpeedMax = 600.F;
 
 	UPROPERTY(EditAnywhere)
 	float TransitionDuration = 50.F;
@@ -53,8 +62,8 @@ public:
 	UFUNCTION()
 	bool HasVisited() { return bHasVisited; }
 
-	UFUNCTION(BlueprintCallable)
-	bool CanGrow() { return bCanGrow; }
+	//UFUNCTION(BlueprintCallable)
+	//bool CanGrow() { return bCanGrow; }
 
 	UFUNCTION(BlueprintCallable)
 	void TickArea(float DeltaTime);
@@ -64,12 +73,16 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	bool bHasVisited;
 
-	UPROPERTY(EditAnywhere)
-	bool bCanGrow;
+	//UPROPERTY(EditAnywhere)
+	//bool bCanGrow;
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;
