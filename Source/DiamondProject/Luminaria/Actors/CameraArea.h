@@ -23,6 +23,9 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<class UBoxComponent> BoxCollision;
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TObjectPtr<class USceneComponent> SpawnPoint;
+
 	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	int64 Id;
 
@@ -53,10 +56,10 @@ public:
 	UPROPERTY(EditAnywhere)
 	float ZoomDuration = 8.F;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	FVector2D MinPosition;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	FVector2D MaxPosition;
 
 	UFUNCTION()

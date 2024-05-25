@@ -62,6 +62,8 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Jump);
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnInputJumpReleased);
+
+			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Keyboard"));
 		}
 		else if (GetLocalPlayer()->GetControllerId() == 1) { // Gamepad
 			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ADiamondProjectPlayerController::Move);
@@ -69,6 +71,9 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Jump);
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnInputJumpReleased);
+
+
+			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Blue, TEXT("Gamepad"));
 		}
 	}
 	else {
@@ -78,6 +83,10 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 
 void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	FVector2D MovementVector = Value.Get<FVector2D>();
+
+	if ((MovementVector.X > 0.0F && MovementVector.X < 0.1F)  || (MovementVector.X < 0.0F && MovementVector.X > -0.1F)) {
+		return;
+	}
 
 	MoveValue = MovementVector;
 	// Check si la distance est bonne

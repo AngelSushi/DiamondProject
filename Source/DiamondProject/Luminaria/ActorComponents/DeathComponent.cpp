@@ -2,7 +2,13 @@
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 #include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
 
+UDeathComponent::UDeathComponent() {
+
+}
+
 void UDeathComponent::BeginPlay() {
+	Super::BeginPlay();
+
 	OnComponentBeginOverlap.AddDynamic(this, &UDeathComponent::OnBeginOverlap);
 
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();

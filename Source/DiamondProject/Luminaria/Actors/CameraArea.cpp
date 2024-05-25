@@ -14,10 +14,12 @@ ACameraArea::ACameraArea() {
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collision"));
 	BoxCollision->SetupAttachment(RootComponent);
 
-	//if (AreaBehavior == ECameraBehavior::DEFAULT && !GoTo) {
-		GoTo = CreateDefaultSubobject<USceneComponent>(TEXT("GoTo"));
-		GoTo->SetupAttachment(RootComponent);
-//	}
+	GoTo = CreateDefaultSubobject<USceneComponent>(TEXT("GoTo"));
+	GoTo->SetupAttachment(RootComponent);
+
+	SpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("SpawnPoint"));
+	SpawnPoint->SetupAttachment(RootComponent);
+
 }
 
 void ACameraArea::TickArea(float DeltaTime) {
