@@ -55,29 +55,25 @@ void ADiamondProjectPlayerController::Tick(float DeltaTime) {
 void ADiamondProjectPlayerController::SetupInputComponent() {
 	Super::SetupInputComponent();
 
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
-	{
-		EnhancedInputComponent->BindAction(MovementAction,ETriggerEvent::Triggered,this,&ADiamondProjectPlayerController::Move);
-		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::Move);
-		
-		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this,&ADiamondProjectPlayerController::Jump);
-		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&ADiamondProjectPlayerController::OnInputJumpReleased);
-	
-		EnhancedInputComponent->BindAction(OpenMapAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::OpenMap);
-	
-		/*EnhancedInputComponent->BindAction(PushAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Push);
-		EnhancedInputComponent->BindAction(PushAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::StopPush);
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent)) {
+		if (GetLocalPlayer()->GetControllerId() == 0) { // Keyboard
+			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ADiamondProjectPlayerController::Move);
+			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::Move);
 
-		EnhancedInputComponent->BindAction(PullAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Pull);
-		EnhancedInputComponent->BindAction(PullAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::StopPull);
-		*/
+			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Jump);
+			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnInputJumpReleased);
+		}
+		else if (GetLocalPlayer()->GetControllerId() == 1) { // Gamepad
+			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ADiamondProjectPlayerController::Move);
+			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::Move);
+
+			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Jump);
+			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnInputJumpReleased);
+		}
 	}
-	else
-	{
+	else {
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
-
-	
 }
 
 void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {

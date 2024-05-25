@@ -42,7 +42,11 @@ void ACameraArea::BeginPlay() {
 
 #if WITH_EDITOR
 void ACameraArea::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) {
-	Super::PostEditChangeProperty(PropertyChangedEvent);
+	//Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	if (AreaBehavior == ECameraBehavior::DEFAULT) {
+		ZoomMax = ZoomMin;
+	}
 
 	if (PropertyChangedEvent.GetMemberPropertyName() == "AreaBehavior") {
 		switch (AreaBehavior) {
@@ -69,7 +73,7 @@ void ACameraArea::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedE
 				GoTo = NewObject<USceneComponent>(this, USceneComponent::StaticClass(), TEXT("GoTo"));
 				GoTo->SetupAttachment(Root);
 				GoTo->RegisterComponent();
-				GoTo->SetRelativeLocation(FVector(0, 0, 0));
+				GoTo->SetRelativeLocation(FVector(-ZoomMin, 0, 0));
 			}
 		}
 		else {
@@ -78,11 +82,9 @@ void ACameraArea::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedE
 				GoTo = nullptr;
 			}
 		}
-
-
 	}
 
-	//Super::PostEditChangeProperty(PropertyChangedEvent);
+	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
 #endif
 

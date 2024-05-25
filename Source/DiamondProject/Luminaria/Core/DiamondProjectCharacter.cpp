@@ -100,6 +100,8 @@ void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que f
 	PlayerManager->OnPlayerDeath.Broadcast(this,DeathCause);
 
 	FTimerHandle RespawnHandle;
+
+	
 	
 	GEngine->AddOnScreenDebugMessage(-1, 10.F, FColor::Orange, UEnum::GetValueAsString(DeathCause));
 	//Respawn(DeathCause);
