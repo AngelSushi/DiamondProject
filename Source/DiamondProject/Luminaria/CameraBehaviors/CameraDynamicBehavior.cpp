@@ -13,14 +13,11 @@ void UCameraDynamicBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 
 	OffsetX = DefaultX; // Possiblement Faux passer a Location.X
 	Barycenter.X = OwnerActor->GetActorLocation().X;
-
 	Barycenter.Y = OwnerActor->GetActorLocation().Y;
+	Barycenter.Z = OwnerActor->GetActorLocation().Z;
 	bBlock = false;
 
-	if (!OwnerActor->CurrentArea) {
-		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Camera has no area preset"));
-		return;
-	}
+	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Magenta, TEXT("Begin Dynamic Behavior"));
 }
 
 
@@ -67,11 +64,11 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 			DefaultZ = OwnerActor->GetActorLocation().Z;
 			Barycenter.Y =Approach(Barycenter.Y, ToApproachY, 700 * DeltaTime); // 350 de base 
 
-			// A CHANGER QUAND ON REMET LE HEIGHTCAMERABEHAVIOR
+			// A CHANGER QUAND ON REMET LE HEIGHTCAMERABEHAVIOR A LA POSITION Z DE LA CAMERA
 			DefaultZ = (PlayerManager->GetAllCharactersRef()[0]->GetActorLocation().Z + PlayerManager->GetAllCharactersRef()[1]->GetActorLocation().Z) / 2;
 			DefaultZ += 45.F;
 
-			Barycenter.Z = DefaultZ;
+			Barycenter.Z = /*DefaultZ*/ Approach(Barycenter.Z,DefaultZ,700 * DeltaTime);
 
 			if (OwnerActor->CurrentArea) {
 				if (OwnerActor->CurrentArea->ZoomMin > OwnerActor->CurrentArea->ZoomMax) { // For Some Reason, In Certain Level ZoomMin is Greater Than ZoomMax. We Manage This Case
@@ -83,7 +80,7 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 			
 			}
 
-			Barycenter.X = Approach(Barycenter.X, OffsetX, 350 * DeltaTime);
+			Barycenter.X = Approach(Barycenter.X, OffsetX, 700 * DeltaTime);
 		}
 
 		OwnerActor->SetActorLocation(Barycenter);
