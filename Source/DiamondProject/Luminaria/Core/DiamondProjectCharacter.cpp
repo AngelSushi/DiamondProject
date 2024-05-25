@@ -160,7 +160,9 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 							if (OriginBehavior == ECameraBehavior::DEFAULT) {
 								GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("Default Behavior"));
 								GoTo->NextBehavior = ECameraBehavior::DEFAULT;
-								GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
+								if (HitArea->GoTo) {
+									GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
+								}
 							}
 							/*else if (OriginBehavior == ECameraBehavior::DYNAMIC) {
 								FVector Barycenter = (GetActorLocation() + OtherPlayer->GetActorLocation()) / 2;
