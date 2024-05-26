@@ -6,6 +6,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
+#include "DiamondProject/Luminaria/DataAssets/CameraAreaDataAsset.h"
+
 ACameraArea::ACameraArea() {
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -22,32 +24,46 @@ ACameraArea::ACameraArea() {
 
 }
 
-void ACameraArea::TickArea(float DeltaTime) {
-	for (ADiamondProjectCharacter* Character : PlayerManager->Characters) {
-		Character->GetCharacterMovement()->MaxWalkSpeed = FMath::Clamp(Character->GetCharacterMovement()->MaxWalkSpeed,PlayerSpeedMin,PlayerSpeedMax);
-	}
-}
-
 void ACameraArea::BeginPlay() {
 	Super::BeginPlay();
-	
+
 	FVector BoxExtent = BoxCollision->GetScaledBoxExtent();
 
 	if (APlayerStart* PlayerStart = Cast<APlayerStart>(UGameplayStatics::GetActorOfClass(GetWorld(), APlayerStart::StaticClass()))) {
-		MinPosition = GetActorLocation() + FVector(0,-BoxExtent.Y,0)  - FVector(1, 0,0) * 70.F ;
-		MaxPosition = GetActorLocation() + FVector(0,BoxExtent.Y,0)  + FVector(1, 0,0) * 70.F ;
+		MinPosition = GetActorLocation() + FVector(0, -BoxExtent.Y, 0) - FVector(1, 0, 0) * 70.F;
+		MaxPosition = GetActorLocation() + FVector(0, BoxExtent.Y, 0) + FVector(1, 0, 0) * 70.F;
 	}
 
 	bHasVisited = false;
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
 
+	AreaBehavior = GetDataAsset()->AreaBehavior;
+	Id = GetDataAsset()->Id;
+	ZoomMin = GetDataAsset()->ZoomMin;
+
+
 	if (GoTo && AreaBehavior == ECameraBehavior::DEFAULT && GoTo->GetRelativeLocation() == FVector::Zero()) {
 		GoTo->SetRelativeLocation(FVector(-ZoomMin, 0, 0));
 	}
+	
 
-	if (HeightMin == 0.F || HeightMax == 0.F) {
-		HeightMin = GetActorLocation().Z;
-		HeightMax = HeightMin;
+}
+
+void ACameraArea::TickArea(float DeltaTime) {
+	
+	ZoomMin = GetDataAsset()->ZoomMin;
+	ZoomMax = GetDataAsset()->ZoomMax;
+	PlayerNeeded = GetDataAsset()->PlayerNeeded;
+	HeightMin = GetDataAsset()->HeightMin;
+	HeightMax = GetDataAsset()->HeightMax;
+	PlayerSpeedMin = GetDataAsset()->PlayerSpeedMin;
+	PlayerSpeedMax = GetDataAsset()->PlayerSpeedMax;
+	TransitionDuration = GetDataAsset()->TransitionDuration;
+	ZoomDuration = GetDataAsset()->ZoomDuration;
+
+
+	for (ADiamondProjectCharacter* Character : PlayerManager->Characters) {
+		Character->GetCharacterMovement()->MaxWalkSpeed = FMath::Clamp(Character->GetCharacterMovement()->MaxWalkSpeed,PlayerSpeedMin,PlayerSpeedMax);
 	}
 }
 

@@ -138,22 +138,6 @@ private:
 	UFUNCTION()
 	void OpenMap();
 
-	/*UFUNCTION()
-	void Push();
-
-	UFUNCTION()
-	void StopPush();
-
-	UFUNCTION()
-	void Pull();
-
-	UFUNCTION()
-	void StopPull();
-	*/
-
-	UPROPERTY(EditAnywhere)
-	bool isUsingDepthMovement;
-
 	UPROPERTY()
 	bool bIsMapOpen;
 
@@ -167,10 +151,10 @@ private:
 	UPROPERTY()
 	bool bIsJumpPressed;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	float FallGravityScale = 1.0F;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	float JumpOffsetPressed = 0.5F;
 
 	UPROPERTY()
@@ -179,14 +163,11 @@ private:
 	UPROPERTY()
 	bool bIsFalling;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	float JumpMinDuration;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	float JumpMaxDuration;
-
-	//UPROPERTY(EditAnywhere)
-	//float JumpDuration;
 
 	UPROPERTY()
 	float JumpTimer;

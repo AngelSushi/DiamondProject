@@ -22,6 +22,7 @@
 #include "DiamondProject/Luminaria/Core/DiamondProjectPlayerController.h"
 
 #include "Components/PointLightComponent.h"
+#include "DiamondProject/Luminaria/DataAssets/PlayerAsset.h"
 
 ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	
@@ -66,10 +67,19 @@ void ADiamondProjectCharacter::BeginPlay() {
 
 	LastHitArea = MainCamera->CurrentArea;
 	bIsOnGround = true;
+
+
+	GetCharacterMovement()->MaxWalkSpeed = GetPlayerAsset()->Speed;
 }
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
     Super::Tick(DeltaSeconds);
+
+	MinEnergy = GetPlayerAsset()->MinEnergy;
+	MaxEnergy = GetPlayerAsset()->MaxEnergy;
+
+	SpeedIncrease = GetPlayerAsset()->SpeedIncrease;
+	JumpDurationIncrease = GetPlayerAsset()->JumpDurationIncrease;
 }
 
 void ADiamondProjectCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) {
