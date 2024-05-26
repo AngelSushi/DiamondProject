@@ -84,38 +84,24 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
-	if ((MovementVector.X > 0.0F && MovementVector.X < 0.1F)  || (MovementVector.X < 0.0F && MovementVector.X > -0.1F)) {
+	if ((MovementVector.X > 0.0F && MovementVector.X < 0.2F)  || (MovementVector.X < 0.0F && MovementVector.X > -0.2F)) {
 		return;
 	}
 
 	MoveValue = MovementVector;
 	// Check si la distance est bonne
 
-	if (MovementDirection.Y < 0)
-	{
-		if (bCanFlip == true) 
-		{
+	if (MovementDirection.Y < 0) {
+		if (bCanFlip == true) {
 			GetPawn()->SetActorRotation(FRotator(0, -90, 0), ETeleportType::None);
 
 		}
-
-		/*if (bIsLookingLeft == false)
-		{
-			bIsLookingLeft = true;
-		}*/
 	}
-	else
-	{
-		if (bCanFlip == true)
-		{
+	else {
+		if (bCanFlip == true) {
 			GetPawn()->SetActorRotation(FRotator(0, 90, 0), ETeleportType::None);
 
 		}
-		/*if (bIsLookingLeft == true)
-		{
-			bIsLookingLeft = false;
-		}*/
-
 	}
 	
 	// find out which way is forward
@@ -136,20 +122,13 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	}
 	
 	bool isCanceled = false;
-	PlayerManager->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()), MovementDirection, isCanceled);
+	PlayerManager->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()),MovementVector, MovementDirection, isCanceled);
 
 	if (isCanceled) {
 		return;
 	}
 
-	if(isUsingDepthMovement) {
-		GetCharacter()->AddMovementInput(ForwardDirection, MovementVector.Y);
-		GetCharacter()->AddMovementInput(RightDirection, MovementVector.X);	
-	}
-	else {
-		GetCharacter()->AddMovementInput(ForwardDirection, MovementVector.X);
-	}
-
+	GetCharacter()->AddMovementInput(ForwardDirection, MovementVector.X);
 }
 
 void ADiamondProjectPlayerController::Jump() {

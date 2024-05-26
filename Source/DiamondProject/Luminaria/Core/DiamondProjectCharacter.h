@@ -142,6 +142,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float LightEnergy = 50000.F;
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	ADiamondProjectPlayerController* GetLuminariaController() {
+		if (GetController()) {
+			return Cast<ADiamondProjectPlayerController>(GetController());
+		}
+
+		return nullptr;
+	}
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
@@ -210,14 +219,5 @@ private:
 
 	UFUNCTION()
 	void OnLandOnGround(ADiamondProjectCharacter* Character);
-
-	UFUNCTION(BlueprintCallable,BlueprintPure)
-	ADiamondProjectPlayerController* GetLuminariaController() { 
-		if (GetController()) {
-			return Cast<ADiamondProjectPlayerController>(GetController());
-		}
-
-		return nullptr;
-	}
 };
 

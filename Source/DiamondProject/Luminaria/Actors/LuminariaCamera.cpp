@@ -46,7 +46,7 @@ void ALuminariaCamera::Tick(float DeltaTime) {
 	}
 
 	if (HeightBehavior) {
-		HeightBehavior->TickBehavior(DeltaTime);
+		//HeightBehavior->TickBehavior(DeltaTime);
 	}
 
 	if (CameraBehavior) {
@@ -84,7 +84,7 @@ void ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavio
 	case ECameraBehavior::DYNAMIC:
 		GoToBehavior = nullptr;
 		DynamicBehavior = NewObject<UCameraDynamicBehavior>();
-		//HeightBehavior = NewObject<UHeightCameraBehavior>();
+		HeightBehavior = NewObject<UHeightCameraBehavior>();
 		CameraBehavior = DynamicBehavior;
 		break;
 

@@ -34,8 +34,8 @@ void ACameraArea::BeginPlay() {
 	FVector BoxExtent = BoxCollision->GetScaledBoxExtent();
 
 	if (APlayerStart* PlayerStart = Cast<APlayerStart>(UGameplayStatics::GetActorOfClass(GetWorld(), APlayerStart::StaticClass()))) {
-		MinPosition = FVector2D(GetActorLocation().Y - BoxExtent.Y, GetActorLocation().Z - BoxExtent.Z)  - FVector2D(1, 0) * 70.F ;
-		MaxPosition = FVector2D(GetActorLocation().Y + BoxExtent.Y, GetActorLocation().Z + BoxExtent.Z)  + FVector2D(1, 0) * 70.F ;
+		MinPosition = GetActorLocation() + FVector(0,-BoxExtent.Y,0)  - FVector(1, 0,0) * 70.F ;
+		MaxPosition = GetActorLocation() + FVector(0,BoxExtent.Y,0)  + FVector(1, 0,0) * 70.F ;
 	}
 
 	bHasVisited = false;
@@ -43,6 +43,11 @@ void ACameraArea::BeginPlay() {
 
 	if (GoTo && AreaBehavior == ECameraBehavior::DEFAULT && GoTo->GetRelativeLocation() == FVector::Zero()) {
 		GoTo->SetRelativeLocation(FVector(-ZoomMin, 0, 0));
+	}
+
+	if (HeightMin == 0.F || HeightMax == 0.F) {
+		HeightMin = GetActorLocation().Z;
+		HeightMax = HeightMin;
 	}
 }
 

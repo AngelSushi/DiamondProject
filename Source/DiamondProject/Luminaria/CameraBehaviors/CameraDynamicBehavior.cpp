@@ -15,14 +15,13 @@ void UCameraDynamicBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	Barycenter.X = OwnerActor->GetActorLocation().X;
 	Barycenter.Y = OwnerActor->GetActorLocation().Y;
 	Barycenter.Z = OwnerActor->GetActorLocation().Z;
-	bBlock = false;
 
 	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Magenta, TEXT("Begin Dynamic Behavior"));
 }
 
 
-void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character, FVector direction, bool& isCanceled) {
-	Super::OnPlayerMove(character, direction, isCanceled);
+void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character,FVector2D Input,FVector direction,bool& isCanceled) { // VERIFIER QUE CELA SAPPELLE BIEN
+	Super::OnPlayerMove(character,Input,direction, isCanceled);
 
 	CalculateOffsideFrustumOffset(character, direction);
 
@@ -52,37 +51,40 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 	Super::TickBehavior(DeltaTime);
 
 	if(PlayerManager->Characters.Num() >= 2) {
-		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, bBlock ? TEXT("Blocked") : TEXT("Not Blocked"));
 		
-		if (!bBlock) {
-			float ToApproachY = (PlayerManager->Characters[0]->GetActorLocation().Y + PlayerManager->Characters[1]->GetActorLocation().Y) / 2;
+		float ToApproachY = (PlayerManager->Characters[0]->GetActorLocation().Y + PlayerManager->Characters[1]->GetActorLocation().Y) / 2;
 			
-			if (Barycenter.Y == 0.F) {
-				Barycenter.Y = ToApproachY;
+		if (Barycenter.Y == 0.F) {
+			Barycenter.Y = ToApproachY;
+		}
+			
+		DefaultZ = OwnerActor->GetActorLocation().Z;
+		Barycenter.Y = Approach(Barycenter.Y, ToApproachY, 700 * DeltaTime); // 350 de base 
+
+		//if (ToApproachY >= MinY && ToApproachY <= MaxY) { // We Clamp Only If Camera Is Inside The Bounds To Let Transition Between Areas
+			Barycenter.Y = FMath::Clamp(Barycenter.Y, MinY, MaxY);
+		//}
+
+		DefaultZ = OwnerActor->GetActorLocation().Z;
+
+		Barycenter.Z = /*DefaultZ*/ Approach(Barycenter.Z,DefaultZ,700 * DeltaTime);
+
+			
+
+		if (OwnerActor->CurrentArea) {
+			if (OwnerActor->CurrentArea->ZoomMin > OwnerActor->CurrentArea->ZoomMax) { // For Some Reason, In Certain Level ZoomMin is Greater Than ZoomMax. We Manage This Case
+				OffsetX = FMath::Clamp(OffsetX, OwnerActor->CurrentArea->ZoomMax, OwnerActor->CurrentArea->ZoomMin);
+			}
+			else {
+				OffsetX = FMath::Clamp(OffsetX, OwnerActor->CurrentArea->ZoomMin, OwnerActor->CurrentArea->ZoomMax);
 			}
 			
-			DefaultZ = OwnerActor->GetActorLocation().Z;
-			Barycenter.Y =Approach(Barycenter.Y, ToApproachY, 700 * DeltaTime); // 350 de base 
-
-			// A CHANGER QUAND ON REMET LE HEIGHTCAMERABEHAVIOR A LA POSITION Z DE LA CAMERA
-			DefaultZ = (PlayerManager->GetAllCharactersRef()[0]->GetActorLocation().Z + PlayerManager->GetAllCharactersRef()[1]->GetActorLocation().Z) / 2;
-			DefaultZ += 45.F;
-
-			Barycenter.Z = /*DefaultZ*/ Approach(Barycenter.Z,DefaultZ,700 * DeltaTime);
-
-			if (OwnerActor->CurrentArea) {
-				if (OwnerActor->CurrentArea->ZoomMin > OwnerActor->CurrentArea->ZoomMax) { // For Some Reason, In Certain Level ZoomMin is Greater Than ZoomMax. We Manage This Case
-					OffsetX = FMath::Clamp(OffsetX, OwnerActor->CurrentArea->ZoomMax, OwnerActor->CurrentArea->ZoomMin);
-				}
-				else {
-					OffsetX = FMath::Clamp(OffsetX, OwnerActor->CurrentArea->ZoomMin, OwnerActor->CurrentArea->ZoomMax);
-				}
-			
-			}
-
-			Barycenter.X = Approach(Barycenter.X, OffsetX, 700 * DeltaTime);
 		}
 
+		Barycenter.X = Approach(Barycenter.X, OffsetX, 700 * DeltaTime);
+		
+
+	//	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Cyan, FString::Printf(TEXT("Cam Z %f"), Barycenter.Z));
 		OwnerActor->SetActorLocation(Barycenter);
 
 		if (OwnerActor->bDebugCamera) {
@@ -97,7 +99,7 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharacter* character,FVector direction) {
 	ULocalPlayer* LocalPlayer = character->GetWorld()->GetFirstLocalPlayerFromController();
 
-	if (bBlock || !OwnerActor->CurrentArea) {
+	if (!OwnerActor->CurrentArea) {
 		return;
 	}
 

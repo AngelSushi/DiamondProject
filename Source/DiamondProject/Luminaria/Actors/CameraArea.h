@@ -45,6 +45,12 @@ public:
 	uint16 ZoomMax;
 
 	UPROPERTY(EditAnywhere)
+	uint16 HeightMin;
+
+	UPROPERTY(EditAnywhere)
+	uint16 HeightMax;
+
+	UPROPERTY(EditAnywhere)
 	float PlayerSpeedMin = 600.F;
 
 	UPROPERTY(EditAnywhere)
@@ -57,10 +63,10 @@ public:
 	float ZoomDuration = 8.F;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
-	FVector2D MinPosition;
+	FVector MinPosition;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
-	FVector2D MaxPosition;
+	FVector MaxPosition;
 
 	UFUNCTION()
 	bool HasVisited() { return bHasVisited; }
