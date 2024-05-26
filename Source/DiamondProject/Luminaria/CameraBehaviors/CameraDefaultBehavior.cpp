@@ -19,7 +19,7 @@ void UCameraDefaultBehavior::RegisterPlayer(ADiamondProjectCharacter* Character)
 	_characters.AddUnique(Character);
 }
 
-void UCameraDefaultBehavior::OnPlayerMove(ADiamondProjectCharacter* character, FVector direction, bool& isCanceled) {
+void UCameraDefaultBehavior::OnPlayerMove(ADiamondProjectCharacter* character,FVector2D Input,FVector direction,bool& isCanceled) {
 
 	ULocalPlayer* LocalPlayer = character->GetWorld()->GetFirstLocalPlayerFromController();
 	if (LocalPlayer != nullptr && LocalPlayer->ViewportClient != nullptr && LocalPlayer->ViewportClient->Viewport) {

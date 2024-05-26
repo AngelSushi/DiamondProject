@@ -70,7 +70,7 @@ void ALink::CalculateBarycenter() {
 	_barycenter = (First + Second) / divider;
 }
 
-void ALink::OnPlayerMove(ADiamondProjectCharacter* Character, FVector Direction, bool& IsCanceled) {
+void ALink::OnPlayerMove(ADiamondProjectCharacter* Character,FVector2D Input,FVector Direction,bool& IsCanceled) {
 	if (FMath::IsNearlyEqual(GetActorScale3D().X, DistanceMax / 100, 1.F)) {
 		
 		// Pas sur du fonctionnement a 100%

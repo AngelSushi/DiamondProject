@@ -17,13 +17,19 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USceneComponent> Root;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	TObjectPtr<class USceneComponent> GoTo;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<class UBoxComponent> BoxCollision;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TObjectPtr<class USceneComponent> SpawnPoint;
+
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 Id;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TEnumAsByte<ECameraBehavior> AreaBehavior;
 
 	UPROPERTY(EditAnywhere)
@@ -32,11 +38,23 @@ public:
 	UPROPERTY(EditAnywhere)
 	uint16 ZoomMin;
 
+	UFUNCTION(BlueprintPure)
+	int GetZoomMin() { return ZoomMin; }
+
 	UPROPERTY(EditAnywhere)
 	uint16 ZoomMax;
 
 	UPROPERTY(EditAnywhere)
-	float PlayerSpeed = 600.F;
+	uint16 HeightMin;
+
+	UPROPERTY(EditAnywhere)
+	uint16 HeightMax;
+
+	UPROPERTY(EditAnywhere)
+	float PlayerSpeedMin = 600.F;
+
+	UPROPERTY(EditAnywhere)
+	float PlayerSpeedMax = 600.F;
 
 	UPROPERTY(EditAnywhere)
 	float TransitionDuration = 50.F;
@@ -44,11 +62,11 @@ public:
 	UPROPERTY(EditAnywhere)
 	float ZoomDuration = 8.F;
 
-	UPROPERTY(VisibleAnywhere)
-	FVector2D MinPosition;
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
+	FVector MinPosition;
 
-	UPROPERTY(VisibleAnywhere)
-	FVector2D MaxPosition;
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
+	FVector MaxPosition;
 
 	UFUNCTION()
 	bool HasVisited() { return bHasVisited; }
@@ -63,6 +81,10 @@ public:
 	void SetVisited(bool HasVisited) { bHasVisited = HasVisited; }
 protected:
 	virtual void BeginPlay() override;
+
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
 
 private:
 	UPROPERTY(VisibleAnywhere)

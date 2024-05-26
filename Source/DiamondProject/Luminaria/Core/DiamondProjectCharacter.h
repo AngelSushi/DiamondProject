@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "DiamondProjectPlayerController.h"
+#include "../Interface/ButtonInteractable.h"
 #include "DiamondProjectCharacter.generated.h"
 
 class UPlayerManager;
@@ -17,8 +18,7 @@ enum EDeathCause {
 };
 
 UCLASS(Blueprintable)
-class ADiamondProjectCharacter : public ACharacter
-{
+class ADiamondProjectCharacter : public ACharacter,public IButtonInteractable {
 	GENERATED_BODY()
 
 public:
@@ -133,8 +133,23 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCanGrow(bool CanGrow) { bCanGrow = CanGrow; }
 
+	UFUNCTION(BlueprintPure)
+	float GetJumpDurationIncrease() { return JumpDurationIncrease; }
+
+	UFUNCTION(BlueprintPure)
+	float GetSpeedIncrease() { return SpeedIncrease; }
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float LightEnergy = 50000.F;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	ADiamondProjectPlayerController* GetLuminariaController() {
+		if (GetController()) {
+			return Cast<ADiamondProjectPlayerController>(GetController());
+		}
+
+		return nullptr;
+	}
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -182,6 +197,12 @@ private:
 	UPROPERTY(EditAnywhere)
 	float GravityScaleSaved = 1.5F;
 
+	UPROPERTY(EditAnywhere)
+	float JumpDurationIncrease = 0.05f;
+
+	UPROPERTY(EditAnywhere)
+	float SpeedIncrease = 40.F;
+
 
 	UPROPERTY()
 	bool bCanGrow = false;
@@ -198,14 +219,5 @@ private:
 
 	UFUNCTION()
 	void OnLandOnGround(ADiamondProjectCharacter* Character);
-
-	UFUNCTION(BlueprintCallable,BlueprintPure)
-	ADiamondProjectPlayerController* GetLuminariaController() { 
-		if (GetController()) {
-			return Cast<ADiamondProjectPlayerController>(GetController());
-		}
-
-		return nullptr;
-	}
 };
 
