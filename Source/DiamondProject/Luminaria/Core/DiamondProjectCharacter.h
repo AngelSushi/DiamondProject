@@ -151,6 +151,9 @@ public:
 		return nullptr;
 	}
 
+	UFUNCTION(BlueprintPure)
+	UPlayerAsset* GetPlayerAsset() { return PlayerAsset; }
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
@@ -158,6 +161,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UPlayerAsset> PlayerAsset;
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;
@@ -176,10 +181,10 @@ private:
 
 	/* Light Variables */
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	float MinEnergy = 0.F;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	float MaxEnergy = 100000.F;
 
 	UPROPERTY(EditAnywhere)
@@ -197,10 +202,10 @@ private:
 	UPROPERTY(EditAnywhere)
 	float GravityScaleSaved = 1.5F;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	float JumpDurationIncrease = 0.05f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	float SpeedIncrease = 40.F;
 
 

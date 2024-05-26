@@ -14,6 +14,7 @@
 #include "DiamondProject/Luminaria/UMG/MapWidget.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
+#include "DiamondProject/Luminaria/DataAssets/PlayerAsset.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -37,6 +38,13 @@ void ADiamondProjectPlayerController::BeginPlay()
 
 void ADiamondProjectPlayerController::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+
+	if (!GetPlayer()) {
+		return;
+	}
+
+	JumpMaxDuration = GetPlayer()->GetPlayerAsset()->JumpMaxDuration;
+	JumpMinDuration = GetPlayer()->GetPlayerAsset()->JumpMinDuration;
 
 	if (bIsJumping) {
 		JumpTimer += DeltaTime;
