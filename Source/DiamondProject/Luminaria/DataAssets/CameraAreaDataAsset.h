@@ -3,11 +3,12 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "../../../DiamondProject/Luminaria/Actors/LuminariaCamera.h"
+#include "LuminariaDataAsset.h"
 #include "CameraAreaDataAsset.generated.h"
 
 
 UCLASS()
-class DIAMONDPROJECT_API UCameraAreaDataAsset : public UDataAsset {
+class DIAMONDPROJECT_API UCameraAreaDataAsset : public ULuminariaDataAsset {
 	GENERATED_BODY()
 
 public: 

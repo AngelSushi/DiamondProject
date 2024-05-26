@@ -2,11 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "LuminariaDataAsset.h"
 #include "DoorDataAsset.generated.h"
 
 
 UCLASS()
-class DIAMONDPROJECT_API UDoorDataAsset : public UDataAsset {
+class DIAMONDPROJECT_API UDoorDataAsset : public ULuminariaDataAsset {
 	GENERATED_BODY()
 
 public: 
