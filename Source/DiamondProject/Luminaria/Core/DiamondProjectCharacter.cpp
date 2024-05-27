@@ -88,7 +88,7 @@ void ADiamondProjectCharacter::OnMovementModeChanged(EMovementMode PrevMovementM
 	if (PrevMovementMode == EMovementMode::MOVE_Walking) {
 		bIsOnGround = false;
 
-		if (GetLuminariaController()->IsJumping()) {
+		if (GetLuminariaController() && GetLuminariaController()->IsJumping()) {
 			GetCharacterMovement()->bNotifyApex = true;
 		}
 	}
@@ -101,7 +101,7 @@ void ADiamondProjectCharacter::Landed(const FHitResult& Hit) {
 
 	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Blue, TEXT("On Ground"));
 
-	if (GetLuminariaController()->IsJumping()) {
+	if (GetLuminariaController() && GetLuminariaController()->IsJumping()) {
 		GetLuminariaController()->SetJumping(false);
 	}
 }

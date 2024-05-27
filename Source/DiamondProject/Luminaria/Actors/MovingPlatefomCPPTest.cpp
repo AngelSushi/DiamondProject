@@ -1,10 +1,9 @@
 #include "DiamondProject/Luminaria/Actors/MovingPlatefomCPPTest.h"
+#include "DiamondProject/Luminaria/SubSystems/MecanismEventsDispatcher.h"
+#include "DiamondProject/Luminaria/DataAssets/PlateformDataAsset.h"
 
-AMovingPlatefomCPPTest::AMovingPlatefomCPPTest()
-{
+AMovingPlatefomCPPTest::AMovingPlatefomCPPTest(){
     PrimaryActorTick.bCanEverTick = true;
-    MovementSpeed = 100.0f;
-
 }
 
 void AMovingPlatefomCPPTest::BeginPlay()
@@ -14,45 +13,59 @@ void AMovingPlatefomCPPTest::BeginPlay()
     StartLocation = GetActorLocation();
     CurrentWaypointIndex = 0;
     bMovingForward = true;
-	
+
+    UMecanismEventsDispatcher* MecanismDispatcher = GetWorld()->GetSubsystem<UMecanismEventsDispatcher>();
+
+    MecanismDispatcher->OnMecanismOn.AddDynamic(this, &AMovingPlatefomCPPTest::OnMecanismOn);
+    MecanismDispatcher->OnMecanismOff.AddDynamic(this, &AMovingPlatefomCPPTest::OnMecanismOff);
 }
 
 
-void AMovingPlatefomCPPTest::Tick(float DeltaTime)
-{
+void AMovingPlatefomCPPTest::Tick(float DeltaTime) {
     Super::Tick(DeltaTime);
 
     if (Waypoints.Num() == 0)
         return;
 
-    FVector TargetLocation = Waypoints[CurrentWaypointIndex]->GetActorLocation();
-    FVector CurrentLocation = GetActorLocation();
+    if (!TargetMecanism || (TargetMecanism && bEnable)) {
 
-    FVector Direction = (TargetLocation - CurrentLocation).GetSafeNormal();
-    FVector NewLocation = CurrentLocation + Direction * MovementSpeed * DeltaTime;
+        FVector TargetLocation = Waypoints[CurrentWaypointIndex]->GetActorLocation();
+        FVector CurrentLocation = GetActorLocation();
 
-    SetActorLocation(NewLocation);
+        FVector Direction = (TargetLocation - CurrentLocation).GetSafeNormal();
+        FVector NewLocation = CurrentLocation + Direction * GetPlateformAsset()->Speed * DeltaTime;
 
-    float DistanceSquared = FVector::DistSquared(CurrentLocation, TargetLocation);
-    if (DistanceSquared <= FMath::Square(10.0f)) // Distance de tolérance
-    {
-        if (bMovingForward)
+        SetActorLocation(NewLocation);
+
+        float DistanceSquared = FVector::DistSquared(CurrentLocation, TargetLocation);
+        if (DistanceSquared <= FMath::Square(10.0f)) // Distance de tolérance
         {
-            CurrentWaypointIndex++;
-            if (CurrentWaypointIndex >= Waypoints.Num())
-            {
-                CurrentWaypointIndex = Waypoints.Num() - 2;
-                bMovingForward = false;
+            if (bMovingForward) {
+                CurrentWaypointIndex++;
+                if (CurrentWaypointIndex >= Waypoints.Num()) {
+                    CurrentWaypointIndex = Waypoints.Num() - 2;
+                    bMovingForward = false;
+                }
+            }
+            else {
+                CurrentWaypointIndex--;
+                if (CurrentWaypointIndex < 0) {
+                    CurrentWaypointIndex = 1;
+                    bMovingForward = true;
+                }
             }
         }
-        else
-        {
-            CurrentWaypointIndex--;
-            if (CurrentWaypointIndex < 0)
-            {
-                CurrentWaypointIndex = 1;
-                bMovingForward = true;
-            }
-        }
+    }
+}
+
+void AMovingPlatefomCPPTest::OnMecanismOn(AMecanism* Mecanism) {
+    if (Mecanism == TargetMecanism) {
+        bEnable = true;
+    }
+}
+
+void AMovingPlatefomCPPTest::OnMecanismOff(AMecanism* Mecanism) {
+    if (Mecanism == TargetMecanism) {
+        bEnable = false;
     }
 }

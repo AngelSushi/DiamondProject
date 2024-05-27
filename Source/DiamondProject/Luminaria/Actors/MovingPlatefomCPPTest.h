@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "MecanismRewardActor.h"
 #include "MovingPlatefomCPPTest.generated.h"
 
 UCLASS()
-class DIAMONDPROJECT_API AMovingPlatefomCPPTest : public AActor
-{
+class DIAMONDPROJECT_API AMovingPlatefomCPPTest : public AMecanismRewardActor {
 	GENERATED_BODY()
 	
 public:	
@@ -17,8 +17,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Platform Settings")
     TArray<AActor*> Waypoints;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Platform Settings")
-    float MovementSpeed;
+  
+
+    UFUNCTION(BlueprintPure)
+    UPlateformDataAsset* GetPlateformAsset() { return PlateformAsset; }
 
 protected:
     virtual void BeginPlay() override;
@@ -27,9 +29,18 @@ public:
     virtual void Tick(float DeltaTime) override;
 
 private:
+    UPROPERTY(EditAnywhere, Category = "Platform Settings")
+    TObjectPtr<class UPlateformDataAsset> PlateformAsset;
+
     FVector StartLocation;
     int32 CurrentWaypointIndex;
     bool bMovingForward;
+
+    UPROPERTY()
+    bool bEnable;
+
+    void OnMecanismOn(AMecanism* Mecanism);
+    void OnMecanismOff(AMecanism* Mecanism);
 
 
 };
