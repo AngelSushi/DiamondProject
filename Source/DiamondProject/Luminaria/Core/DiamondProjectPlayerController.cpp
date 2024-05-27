@@ -67,11 +67,11 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 		if (GetLocalPlayer()->GetControllerId() == 0) { // Keyboard
 			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ADiamondProjectPlayerController::Move);
 			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::Move);
-
+			
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Jump);
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnInputJumpReleased);
 
-			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Keyboard"));
+			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, FString::Printf(TEXT("From Keyboard %s"),*GetActorNameOrLabel()));
 		}
 		else if (GetLocalPlayer()->GetControllerId() == 1) { // Gamepad
 			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ADiamondProjectPlayerController::Move);
@@ -81,8 +81,9 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnInputJumpReleased);
 
 
-			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Blue, TEXT("Gamepad"));
+			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Blue, FString::Printf(TEXT("Gamepad from %s"),*GetActorNameOrLabel()));
 		}
+		
 	}
 	else {
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
@@ -91,10 +92,12 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 
 void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	FVector2D MovementVector = Value.Get<FVector2D>();
-
 	if ((MovementVector.X > 0.0F && MovementVector.X < 0.2F)  || (MovementVector.X < 0.0F && MovementVector.X > -0.2F)) {
 		return;
 	}
+
+	//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, TEXT("Ask For Movement"));
+
 
 	MoveValue = MovementVector;
 	// Check si la distance est bonne
