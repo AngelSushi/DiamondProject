@@ -43,6 +43,13 @@ void ADiamondProjectPlayerController::Tick(float DeltaTime) {
 		return;
 	}
 
+	if (GetLocalPlayer()) {
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, TEXT("Has Player Local"));
+	}
+	else {
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, FString::Printf(TEXT("Has No Player Local For %s"),*GetActorNameOrLabel()));
+	}
+
 	JumpMaxDuration = GetPlayer()->GetPlayerAsset()->JumpMaxDuration;
 	JumpMinDuration = GetPlayer()->GetPlayerAsset()->JumpMinDuration;
 
@@ -57,6 +64,8 @@ void ADiamondProjectPlayerController::Tick(float DeltaTime) {
 			StopJump();
 		}
 	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, FString::Printf(TEXT("From %s"), *GetPawn()->GetActorNameOrLabel()));
 }
 
 
@@ -64,26 +73,25 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 	Super::SetupInputComponent();
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent)) {
-		if (GetLocalPlayer()->GetControllerId() == 0) { // Keyboard
+		//if (GetLocalPlayer() && GetLocalPlayer()->GetControllerId() == 0) { // Keyboard
 			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ADiamondProjectPlayerController::Move);
 			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::Move);
 			
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Jump);
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnInputJumpReleased);
 
-			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, FString::Printf(TEXT("From Keyboard %s"),*GetActorNameOrLabel()));
-		}
-		else if (GetLocalPlayer()->GetControllerId() == 1) { // Gamepad
-			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ADiamondProjectPlayerController::Move);
-			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::Move);
+			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Keyboard"));
+		//}
+		//else if (GetLocalPlayer()->GetControllerId() == 1) { // Gamepad
+			//EnhancedInputComponent->BindAction(MovementActionGamepad, ETriggerEvent::Triggered, this, &ADiamondProjectPlayerController::Move);
+			//EnhancedInputComponent->BindAction(MovementActionGamepad, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::Move);
 
-			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Jump);
-			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnInputJumpReleased);
+			//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Jump);
+			//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnInputJumpReleased);
 
-
-			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Blue, FString::Printf(TEXT("Gamepad from %s"),*GetActorNameOrLabel()));
-		}
-		
+			
+			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Blue, TEXT("Gamepad"));
+		//}
 	}
 	else {
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
@@ -96,9 +104,16 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 		return;
 	}
 
-	//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, TEXT("Ask For Movement"));
+	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, FString::FromInt(GetLocalPlayer()->GetControllerId()));
+	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Magenta, FString::Printf(TEXT("%s"), *GetLocalPlayer()->GetName()));
 
+	if (GetLocalPlayer()->GetControllerId() == 0) {
+		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, TEXT("Keyboard & Gamepad"));
+	}
+	else if (GetLocalPlayer()->GetControllerId() == 1) {
+		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, TEXT("Gamepad"));
 
+	}
 	MoveValue = MovementVector;
 	// Check si la distance est bonne
 
@@ -146,6 +161,8 @@ void ADiamondProjectPlayerController::Jump() {
 	GetCharacter()->Jump();
 	bIsJumping = true;
 	bIsJumpPressed = true;
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Magenta, FString::Printf(TEXT("Jump From %s"), *GetActorNameOrLabel()));
 
 	GetCharacter()->GetCharacterMovement()->GravityScale = 0.F;
 	JumpTimer = 0.F;

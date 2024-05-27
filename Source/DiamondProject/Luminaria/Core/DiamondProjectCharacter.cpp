@@ -99,8 +99,6 @@ void ADiamondProjectCharacter::Landed(const FHitResult& Hit) {
 	PlayerManager->OnPlayerLandOnGround.Broadcast(this);
 	GroundActor = Hit.GetActor();
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Blue, TEXT("On Ground"));
-
 	if (GetLuminariaController() && GetLuminariaController()->IsJumping()) {
 		GetLuminariaController()->SetJumping(false);
 	}
