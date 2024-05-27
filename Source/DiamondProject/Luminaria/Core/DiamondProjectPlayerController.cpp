@@ -14,6 +14,7 @@
 #include "DiamondProject/Luminaria/UMG/MapWidget.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
+#include "DiamondProject/Luminaria/DataAssets/PlayerAsset.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -38,6 +39,13 @@ void ADiamondProjectPlayerController::BeginPlay()
 void ADiamondProjectPlayerController::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
+	if (!GetPlayer()) {
+		return;
+	}
+
+	JumpMaxDuration = GetPlayer()->GetPlayerAsset()->JumpMaxDuration;
+	JumpMinDuration = GetPlayer()->GetPlayerAsset()->JumpMinDuration;
+
 	if (bIsJumping) {
 		JumpTimer += DeltaTime;
 
@@ -55,62 +63,53 @@ void ADiamondProjectPlayerController::Tick(float DeltaTime) {
 void ADiamondProjectPlayerController::SetupInputComponent() {
 	Super::SetupInputComponent();
 
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
-	{
-		EnhancedInputComponent->BindAction(MovementAction,ETriggerEvent::Triggered,this,&ADiamondProjectPlayerController::Move);
-		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::Move);
-		
-		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this,&ADiamondProjectPlayerController::Jump);
-		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&ADiamondProjectPlayerController::OnInputJumpReleased);
-	
-		EnhancedInputComponent->BindAction(OpenMapAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::OpenMap);
-	
-		/*EnhancedInputComponent->BindAction(PushAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Push);
-		EnhancedInputComponent->BindAction(PushAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::StopPush);
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent)) {
+		if (GetLocalPlayer()->GetControllerId() == 0) { // Keyboard
+			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ADiamondProjectPlayerController::Move);
+			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::Move);
 
-		EnhancedInputComponent->BindAction(PullAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Pull);
-		EnhancedInputComponent->BindAction(PullAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::StopPull);
-		*/
+			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Jump);
+			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnInputJumpReleased);
+
+			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Keyboard"));
+		}
+		else if (GetLocalPlayer()->GetControllerId() == 1) { // Gamepad
+			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ADiamondProjectPlayerController::Move);
+			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::Move);
+
+			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Jump);
+			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnInputJumpReleased);
+
+
+			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Blue, TEXT("Gamepad"));
+		}
 	}
-	else
-	{
+	else {
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
-
-	
 }
 
 void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
+	if ((MovementVector.X > 0.0F && MovementVector.X < 0.2F)  || (MovementVector.X < 0.0F && MovementVector.X > -0.2F)) {
+		return;
+	}
+
 	MoveValue = MovementVector;
 	// Check si la distance est bonne
 
-	if (MovementDirection.Y < 0)
-	{
-		if (bCanFlip == true) 
-		{
+	if (MovementDirection.Y < 0) {
+		if (bCanFlip == true) {
 			GetPawn()->SetActorRotation(FRotator(0, -90, 0), ETeleportType::None);
 
 		}
-
-		/*if (bIsLookingLeft == false)
-		{
-			bIsLookingLeft = true;
-		}*/
 	}
-	else
-	{
-		if (bCanFlip == true)
-		{
+	else {
+		if (bCanFlip == true) {
 			GetPawn()->SetActorRotation(FRotator(0, 90, 0), ETeleportType::None);
 
 		}
-		/*if (bIsLookingLeft == true)
-		{
-			bIsLookingLeft = false;
-		}*/
-
 	}
 	
 	// find out which way is forward
@@ -131,20 +130,13 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	}
 	
 	bool isCanceled = false;
-	PlayerManager->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()), MovementDirection, isCanceled);
+	PlayerManager->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()),MovementVector, MovementDirection, isCanceled);
 
 	if (isCanceled) {
 		return;
 	}
 
-	if(isUsingDepthMovement) {
-		GetCharacter()->AddMovementInput(ForwardDirection, MovementVector.Y);
-		GetCharacter()->AddMovementInput(RightDirection, MovementVector.X);	
-	}
-	else {
-		GetCharacter()->AddMovementInput(ForwardDirection, MovementVector.X);
-	}
-
+	GetCharacter()->AddMovementInput(ForwardDirection, MovementVector.X);
 }
 
 void ADiamondProjectPlayerController::Jump() {

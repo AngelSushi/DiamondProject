@@ -11,6 +11,8 @@ UCLASS()
 class DIAMONDPROJECT_API UDeathComponent : public UBoxComponent {
 	GENERATED_BODY()
 
+	UDeathComponent();
+
 protected:
 	virtual void BeginPlay() override;
 
