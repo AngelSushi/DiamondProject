@@ -12,17 +12,16 @@ AAutoThwomp::AAutoThwomp()
 {
     PrimaryActorTick.bCanEverTick = true;
 
-
     StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
     StaticMeshComponent->SetCollisionProfileName(TEXT("BlockAll"));
-    SetRootComponent(StaticMeshComponent);
-
+    StaticMeshComponent->SetupAttachment(RootComponent);
+    RootComponent = StaticMeshComponent;
 
     StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     StaticMeshComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
 
     DeathComponent = CreateDefaultSubobject<UDeathComponent>(TEXT("Death Component"));
-
+    DeathComponent->SetupAttachment(RootComponent);
 
 }
 
@@ -32,7 +31,7 @@ void AAutoThwomp::BeginPlay()
 	Super::BeginPlay();
     StaticMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &AAutoThwomp::OnMeshBeginOverlap);
     StaticMeshComponent->OnComponentEndOverlap.AddDynamic(this, &AAutoThwomp::OnMeshEndOverlap);
-    InitialLocation = GetActorLocation();
+    //InitialLocation = GetActorLocation();
 }
 
 // Called every frame

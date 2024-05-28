@@ -43,7 +43,18 @@ float UMathUtilities::PingPongFloatAscending(float Value, float Min, float Max, 
 	return Min + PingPongValue;
 }
 
-FVector UMathUtilities::PingPongVec(float Value, FVector& Min, FVector& Max) {
+FVector UMathUtilities::PingPongVec(float Value, FVector Min, FVector Max) {
+
+	//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, FString::Printf(TEXT("Min %s"), *Min.ToString()));
+	//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, FString::Printf(TEXT("Max %s"), *Max.ToString()));
+
+	if (Min.X >= Max.X && Min.Y >= Max.Y && Min.Z >= Max.Z) {
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Blue, TEXT("Min Is Greater"));
+		FVector SaveMax = Max;
+		Max = Min;
+		Min = SaveMax;
+	}
+
 	float X = PingPongFloat(Value, Min.X, Max.X);
 	float Y = PingPongFloat(Value, Min.Y, Max.Y);
 	float Z = PingPongFloat(Value, Min.Z, Max.Z);
@@ -51,7 +62,15 @@ FVector UMathUtilities::PingPongVec(float Value, FVector& Min, FVector& Max) {
 	return FVector(X, Y, Z);
 }
 
-FVector UMathUtilities::PingPongVecAscending(float Value, FVector& Min, FVector& Max, bool& IsPing) {
+FVector UMathUtilities::PingPongVecAscending(float Value, FVector Min, FVector Max, bool& IsPing) {
+
+	if (Min.X >= Max.X && Min.Y >= Max.Y && Min.Z >= Max.Z) {
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Blue, TEXT("Min Is Greater"));
+		FVector SaveMax = Max;
+		Max = Min;
+		Min = SaveMax;
+	}
+
 	float X = PingPongFloatAscending(Value, Min.X, Max.X,IsPing);
 	float Y = PingPongFloatAscending(Value, Min.Y, Max.Y,IsPing);
 	float Z = PingPongFloatAscending(Value, Min.Z, Max.Z,IsPing);
