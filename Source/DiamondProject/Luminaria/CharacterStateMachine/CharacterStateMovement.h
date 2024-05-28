@@ -16,6 +16,7 @@ public:
 protected:
 	virtual void OnStateInit() override;
 	virtual void OnStateBegin() override;
+	virtual void OnStateTick(float DeltaTime) override;
 
 
 	UPROPERTY()

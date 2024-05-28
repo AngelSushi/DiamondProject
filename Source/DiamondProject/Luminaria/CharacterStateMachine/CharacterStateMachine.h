@@ -20,6 +20,7 @@ class UCharacterStateIdle;
 class UCharacterStateMovement;
 class UCharacterStateJump;
 class UCharacterStateDie;
+class UCharacterStateFall;
 
 UCLASS()
 class DIAMONDPROJECT_API UCharacterStateMachine : public UObject {
@@ -42,6 +43,7 @@ public:
 	UPROPERTY() TObjectPtr<UCharacterStateMovement> StateMovement;
 	UPROPERTY() TObjectPtr<UCharacterStateJump> StateJump;
 	UPROPERTY() TObjectPtr<UCharacterStateDie> StateDie;
+	UPROPERTY() TObjectPtr<UCharacterStateFall> StateFall;
 
 	// Fonction Init ? 
 private:

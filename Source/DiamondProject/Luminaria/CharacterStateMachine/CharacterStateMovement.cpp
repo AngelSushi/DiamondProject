@@ -1,19 +1,29 @@
 #include "CharacterStateMovement.h"
 #include "CharacterStateJump.h"
 #include "CharacterStateIdle.h"
+#include "CharacterStateFall.h"
 #include <InputActionValue.h>
 
 #include "../Core/DiamondProjectCharacter.h"
 #include "../Core/DiamondProjectPlayerController.h"
 #include "../SubSystems/PlayerManager.h"
 
-#include <typeinfo>
+#include "GameFramework/CharacterMovementComponent.h"
+
 void UCharacterStateMovement::OnStateInit() {
 	PlayerManager = GetCharacter()->GetWorld()->GetSubsystem<UPlayerManager>();
 }
 
 void UCharacterStateMovement::OnStateBegin() {
 	Controller = GetCharacter()->GetLuminariaController();
+}
+
+void UCharacterStateMovement::OnStateTick(float DeltaTime) {
+	if (GetClass() == UCharacterStateMovement::StaticClass()) {
+		if (!GetCharacter()->GetCharacterMovement()->IsMovingOnGround()) {
+			ChangeState(GetStateMachine()->StateFall);
+		}
+	}
 }
 
 void UCharacterStateMovement::OnMovement(const FInputActionValue& Value) {
