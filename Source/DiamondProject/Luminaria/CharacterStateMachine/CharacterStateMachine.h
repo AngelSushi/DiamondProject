@@ -13,35 +13,53 @@ enum ECharacterState {
 	JUMPING,
 	FALLING,
 	ATTRACT, // For Absorbers
-	NO_INPUT,
+	DIE,
 };
+
+class UCharacterStateIdle;
+class UCharacterStateMovement;
+class UCharacterStateJump;
+class UCharacterStateDie;
 
 UCLASS()
 class DIAMONDPROJECT_API UCharacterStateMachine : public UObject {
 	GENERATED_BODY()
 
+public:
+
 	UCharacterStateMachine();
 
-public:
 	UPROPERTY()
 	TEnumAsByte<ECharacterState> CharacterState;
 
 	UFUNCTION()
-	UCharacterState* GetCurrentState() { return CurrentState; }
+	UCharacterState* GetCurrentState() const { return CurrentState; }
+
+	UFUNCTION()
+	ADiamondProjectCharacter* GetCharacter() const { return Character; }
+
+	UPROPERTY() TObjectPtr<UCharacterStateIdle> StateIdle;
+	UPROPERTY() TObjectPtr<UCharacterStateMovement> StateMovement;
+	UPROPERTY() TObjectPtr<UCharacterStateJump> StateJump;
+	UPROPERTY() TObjectPtr<UCharacterStateDie> StateDie;
 
 	// Fonction Init ? 
 private:
 	UPROPERTY()
-	TObjectPtr<class UCharacterState> CurrentState;
+	TObjectPtr<UCharacterState> CurrentState;
+
+	UPROPERTY()
+	TObjectPtr<ADiamondProjectCharacter> Character;
 
 public:
-	UFUNCTION()
-	void BeginStateMachine();
+	void SMInit(ADiamondProjectCharacter* StateCharacter);
+	void SMBegin();
+	void SMTick(float DeltaTime);
+	void ChangeState(UCharacterState* NewState);
 
-	UFUNCTION()
-	void StateTick(float DeltaTime);
-
-	UFUNCTION()
-	void SwitchState(UCharacterState* NewState);
+	void OnMovement(const FInputActionValue& Value);
+	void OnJump();
+	void OnInputJumpReleased();
+	void OnDie();
 	
 };

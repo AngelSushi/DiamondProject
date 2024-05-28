@@ -46,7 +46,7 @@ ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
-	CharacterStateMachine = NewObject<UCharacterStateMachine>();
+	CharacterStateMachine = CreateDefaultSubobject<UCharacterStateMachine>(TEXT("StateMachine"));
 }
 
 void ADiamondProjectCharacter::BeginPlay() {
@@ -58,7 +58,6 @@ void ADiamondProjectCharacter::BeginPlay() {
 
 	GetWorld()->GetTimerManager().SetTimer(RegisterTimer,[this]() {
 		PlayerManager->RegisterPlayer(this);
-		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, TEXT("Begin Player"));
 	},0.1f,false);
 
 	PlayerManager->OnPlayerUpdateCheckpoint.AddDynamic(this, &ADiamondProjectCharacter::OnPlayerUpdateCheckpoint);
@@ -75,7 +74,8 @@ void ADiamondProjectCharacter::BeginPlay() {
 
 	GetCharacterMovement()->MaxWalkSpeed = GetPlayerAsset()->Speed;
 
-	CharacterStateMachine->BeginStateMachine();
+	CharacterStateMachine->SMInit(this);
+	CharacterStateMachine->SMBegin();
 }
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
@@ -87,7 +87,7 @@ void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
 	SpeedIncrease = GetPlayerAsset()->SpeedIncrease;
 	JumpDurationIncrease = GetPlayerAsset()->JumpDurationIncrease;
 
-	CharacterStateMachine->StateTick(DeltaSeconds);
+	CharacterStateMachine->SMTick(DeltaSeconds);
 }
 
 void ADiamondProjectCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) {
@@ -107,15 +107,16 @@ void ADiamondProjectCharacter::Landed(const FHitResult& Hit) {
 	PlayerManager->OnPlayerLandOnGround.Broadcast(this);
 	GroundActor = Hit.GetActor();
 
-	if (GetLuminariaController() && GetLuminariaController()->IsJumping()) {
-		GetLuminariaController()->SetJumping(false);
-	}
+	//if (GetLuminariaController() && GetLuminariaController()->IsJumping()) {
+		//GetLuminariaController()->SetJumping(false);
+	//}
 }
 
 void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que fait la mort ya ptetre de le faire en respawn
 	PlayerManager->OnPlayerDeath.Broadcast(this,DeathCause);
 
 	FTimerHandle RespawnHandle;
+	GetStateMachine()->OnDie();
 
 	
 	

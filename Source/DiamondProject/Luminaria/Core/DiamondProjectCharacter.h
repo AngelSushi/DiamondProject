@@ -154,6 +154,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	UPlayerAsset* GetPlayerAsset() { return PlayerAsset; }
 
+	UFUNCTION()
+	UCharacterStateMachine* GetStateMachine() { return CharacterStateMachine; }
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;

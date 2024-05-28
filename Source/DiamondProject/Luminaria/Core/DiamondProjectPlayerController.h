@@ -133,9 +133,6 @@ private:
 	void Jump();
 
 	UFUNCTION()
-	void StopJump();
-
-	UFUNCTION()
 	void OnInputJumpReleased();
 
 	UFUNCTION()

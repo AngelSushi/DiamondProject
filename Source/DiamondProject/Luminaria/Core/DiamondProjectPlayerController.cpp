@@ -15,6 +15,10 @@
 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "DiamondProject/Luminaria/DataAssets/PlayerAsset.h"
+#include "../CharacterStateMachine/CharacterStateMachine.h"
+
+#include "../CharacterStateMachine/CharacterStateJump.h"
+
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -24,8 +28,7 @@ ADiamondProjectPlayerController::ADiamondProjectPlayerController() {
 }
 
 
-void ADiamondProjectPlayerController::BeginPlay()
-{
+void ADiamondProjectPlayerController::BeginPlay() {
 	Super::BeginPlay();
 
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
@@ -50,20 +53,14 @@ void ADiamondProjectPlayerController::Tick(float DeltaTime) {
 		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, FString::Printf(TEXT("Has No Player Local For %s"),*GetActorNameOrLabel()));
 	}
 
-	JumpMaxDuration = GetPlayer()->GetPlayerAsset()->JumpMaxDuration;
-	JumpMinDuration = GetPlayer()->GetPlayerAsset()->JumpMinDuration;
+	//JumpMaxDuration = GetPlayer()->GetPlayerAsset()->JumpMaxDuration;
+	//JumpMinDuration = GetPlayer()->GetPlayerAsset()->JumpMinDuration;
 
-	if (bIsJumping) {
-		JumpTimer += DeltaTime;
-
-		if (JumpTimer >= JumpMaxDuration) {
-			StopJump();
-		}
-
-		if (!bIsJumpPressed && JumpTimer >= JumpMinDuration) {
-			StopJump();
-		}
+	if (GetPlayer()->GetStateMachine() && GetPlayer()->GetStateMachine()->StateJump) { // A MODIFIER DIRECT DEPUISLE STATE 
+		GetPlayer()->GetStateMachine()->StateJump->SetJumpMinDuration(GetPlayer()->GetPlayerAsset()->JumpMinDuration);
+		GetPlayer()->GetStateMachine()->StateJump->SetJumpMaxDuration(GetPlayer()->GetPlayerAsset()->JumpMaxDuration);
 	}
+
 
 	// Set Le deuxieme local player id sur 1
 	// 
@@ -82,7 +79,7 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Jump);
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnInputJumpReleased);
 
-			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Keyboard"));
+			//GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Keyboard"));
 		//}
 		//else if (GetLocalPlayer()->GetControllerId() == 1) { // Gamepad
 			//EnhancedInputComponent->BindAction(MovementActionGamepad, ETriggerEvent::Triggered, this, &ADiamondProjectPlayerController::Move);
@@ -92,7 +89,7 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 			//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnInputJumpReleased);
 
 			
-			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Blue, TEXT("Gamepad"));
+			//GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Blue, TEXT("Gamepad"));
 		//}
 	}
 	else {
@@ -101,84 +98,15 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 }
 
 void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
-	FVector2D MovementVector = Value.Get<FVector2D>();
-	if ((MovementVector.X > 0.0F && MovementVector.X < 0.2F)  || (MovementVector.X < 0.0F && MovementVector.X > -0.2F)) {
-		return;
-	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, FString::FromInt(GetLocalPlayer()->GetControllerId()));
-	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Magenta, FString::Printf(TEXT("%s"), *GetLocalPlayer()->GetName()));
-
-	if (GetLocalPlayer()->GetControllerId() == 0) {
-		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, TEXT("Keyboard & Gamepad"));
-	}
-	else if (GetLocalPlayer()->GetControllerId() == 1) {
-		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, TEXT("Gamepad"));
-	}
-	MoveValue = MovementVector;
-	// Check si la distance est bonne
-
-	if (MovementDirection.Y < 0) {
-		if (bCanFlip == true) {
-			GetPawn()->SetActorRotation(FRotator(0, -90, 0), ETeleportType::None);
-
-		}
-	}
-	else {
-		if (bCanFlip == true) {
-			GetPawn()->SetActorRotation(FRotator(0, 90, 0), ETeleportType::None);
-
-		}
-	}
-	
-	// find out which way is forward
-	const FRotator Rotation =GetControlRotation();
-	const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-	// get forward vector
-	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-
-	// get right vector 
-	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-	if (ForwardDirection.X != 0) {
-		MovementDirection = FVector(0.F, MovementVector.X, 0.f);
-	}
-	else if (ForwardDirection.Y != 0) {
-		MovementDirection = FVector(MovementVector.X,0.F, 0.F);
-	}
-	
-	bool isCanceled = false;
-	PlayerManager->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()),MovementVector, MovementDirection, isCanceled);
-
-	if (isCanceled) {
-		return;
-	}
-
-	GetCharacter()->AddMovementInput(ForwardDirection, MovementVector.X);
+	GetPlayer()->GetStateMachine()->OnMovement(Value);
 }
 
 void ADiamondProjectPlayerController::Jump() {
-	GetCharacter()->Jump();
-	bIsJumping = true;
-	bIsJumpPressed = true;
-
-	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Magenta, FString::Printf(TEXT("Jump From %s"), *GetActorNameOrLabel()));
-
-	GetCharacter()->GetCharacterMovement()->GravityScale = 0.F;
-	JumpTimer = 0.F;
-}
-
-void ADiamondProjectPlayerController::StopJump() {
-	GetCharacter()->GetCharacterMovement()->GravityScale = GetPlayer()->GetGravityScaleSaved();
+	GetPlayer()->GetStateMachine()->OnJump();
 }
 
 void ADiamondProjectPlayerController::OnInputJumpReleased() {
-	if (JumpTimer > JumpMinDuration) {
-		StopJump();
-	}
-
-	bIsJumpPressed = false;
+	GetPlayer()->GetStateMachine()->OnInputJumpReleased();
 }
 
 void ADiamondProjectPlayerController::OpenMap() {
