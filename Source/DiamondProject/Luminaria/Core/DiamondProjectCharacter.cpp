@@ -24,6 +24,8 @@
 #include "Components/PointLightComponent.h"
 #include "DiamondProject/Luminaria/DataAssets/PlayerAsset.h"
 
+#include "DiamondProject/Luminaria/CharacterStateMachine/CharacterStateMachine.h"
+
 ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -43,6 +45,8 @@ ADiamondProjectCharacter::ADiamondProjectCharacter(){
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	CharacterStateMachine = NewObject<UCharacterStateMachine>();
 }
 
 void ADiamondProjectCharacter::BeginPlay() {
@@ -70,6 +74,8 @@ void ADiamondProjectCharacter::BeginPlay() {
 
 
 	GetCharacterMovement()->MaxWalkSpeed = GetPlayerAsset()->Speed;
+
+	CharacterStateMachine->BeginStateMachine();
 }
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
@@ -80,6 +86,8 @@ void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
 
 	SpeedIncrease = GetPlayerAsset()->SpeedIncrease;
 	JumpDurationIncrease = GetPlayerAsset()->JumpDurationIncrease;
+
+	CharacterStateMachine->StateTick(DeltaSeconds);
 }
 
 void ADiamondProjectCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) {

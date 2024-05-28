@@ -65,7 +65,9 @@ void ADiamondProjectPlayerController::Tick(float DeltaTime) {
 		}
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, FString::Printf(TEXT("From %s"), *GetPawn()->GetActorNameOrLabel()));
+	// Set Le deuxieme local player id sur 1
+	// 
+	//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, FString::Printf(TEXT("From %s"), *GetPawn()->GetActorNameOrLabel()));
 }
 
 
@@ -108,11 +110,10 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Magenta, FString::Printf(TEXT("%s"), *GetLocalPlayer()->GetName()));
 
 	if (GetLocalPlayer()->GetControllerId() == 0) {
-		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, TEXT("Keyboard & Gamepad"));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, TEXT("Keyboard & Gamepad"));
 	}
 	else if (GetLocalPlayer()->GetControllerId() == 1) {
-		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, TEXT("Gamepad"));
-
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, TEXT("Gamepad"));
 	}
 	MoveValue = MovementVector;
 	// Check si la distance est bonne
