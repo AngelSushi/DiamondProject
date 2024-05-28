@@ -154,6 +154,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	UPlayerAsset* GetPlayerAsset() { return PlayerAsset; }
 
+	UFUNCTION()
+	UCharacterStateMachine* GetStateMachine() { return CharacterStateMachine; }
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
@@ -208,7 +211,6 @@ private:
 	UPROPERTY()
 	float SpeedIncrease = 40.F;
 
-
 	UPROPERTY()
 	bool bCanGrow = false;
 
@@ -218,6 +220,9 @@ private:
 
 	UPROPERTY()
 	bool bButtonPushPressed;
+
+	UPROPERTY()
+	TObjectPtr<class UCharacterStateMachine> CharacterStateMachine;
 
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

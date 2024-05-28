@@ -29,7 +29,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MovementAction;
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MovementActionGamepad;
 
@@ -64,7 +63,7 @@ public:
 	UFUNCTION()
 	void SetJumping(bool Jumping) { bIsJumping = Jumping; }
 
-	UPROPERTY() // Mettre privé
+	UPROPERTY() // Mettre privï¿½
 	bool bIsJumping;
 
 	UFUNCTION(BlueprintCallable,BlueprintPure)
@@ -132,9 +131,6 @@ private:
 
 	UFUNCTION()
 	void Jump();
-
-	UFUNCTION()
-	void StopJump();
 
 	UFUNCTION()
 	void OnInputJumpReleased();

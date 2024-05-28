@@ -24,6 +24,8 @@
 #include "Components/PointLightComponent.h"
 #include "DiamondProject/Luminaria/DataAssets/PlayerAsset.h"
 
+#include "DiamondProject/Luminaria/CharacterStateMachine/CharacterStateMachine.h"
+
 ADiamondProjectCharacter::ADiamondProjectCharacter(){
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -43,6 +45,8 @@ ADiamondProjectCharacter::ADiamondProjectCharacter(){
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	CharacterStateMachine = CreateDefaultSubobject<UCharacterStateMachine>(TEXT("StateMachine"));
 }
 
 void ADiamondProjectCharacter::BeginPlay() {
@@ -54,7 +58,6 @@ void ADiamondProjectCharacter::BeginPlay() {
 
 	GetWorld()->GetTimerManager().SetTimer(RegisterTimer,[this]() {
 		PlayerManager->RegisterPlayer(this);
-		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, TEXT("Begin Player"));
 	},0.1f,false);
 
 	PlayerManager->OnPlayerUpdateCheckpoint.AddDynamic(this, &ADiamondProjectCharacter::OnPlayerUpdateCheckpoint);
@@ -70,6 +73,9 @@ void ADiamondProjectCharacter::BeginPlay() {
 
 
 	GetCharacterMovement()->MaxWalkSpeed = GetPlayerAsset()->Speed;
+
+	CharacterStateMachine->SMInit(this);
+	CharacterStateMachine->SMBegin();
 }
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
@@ -80,6 +86,8 @@ void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
 
 	SpeedIncrease = GetPlayerAsset()->SpeedIncrease;
 	JumpDurationIncrease = GetPlayerAsset()->JumpDurationIncrease;
+
+	CharacterStateMachine->SMTick(DeltaSeconds);
 }
 
 void ADiamondProjectCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) {
@@ -99,17 +107,16 @@ void ADiamondProjectCharacter::Landed(const FHitResult& Hit) {
 	PlayerManager->OnPlayerLandOnGround.Broadcast(this);
 	GroundActor = Hit.GetActor();
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Blue, TEXT("On Ground"));
-
-	if (GetLuminariaController() && GetLuminariaController()->IsJumping()) {
-		GetLuminariaController()->SetJumping(false);
-	}
+	//if (GetLuminariaController() && GetLuminariaController()->IsJumping()) {
+		//GetLuminariaController()->SetJumping(false);
+	//}
 }
 
 void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que fait la mort ya ptetre de le faire en respawn
 	PlayerManager->OnPlayerDeath.Broadcast(this,DeathCause);
 
 	FTimerHandle RespawnHandle;
+	GetStateMachine()->OnDie();
 
 	
 	
