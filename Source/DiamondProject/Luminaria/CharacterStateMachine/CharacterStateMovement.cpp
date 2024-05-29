@@ -2,8 +2,12 @@
 #include "CharacterStateJump.h"
 #include "CharacterStateIdle.h"
 #include "CharacterStateFall.h"
+#include "CharacterStateAttract.h"
+#include "CharacterStateDie.h"
+
 #include <InputActionValue.h>
 
+#include "../Actors/Absorber.h"
 #include "../Core/DiamondProjectCharacter.h"
 #include "../Core/DiamondProjectPlayerController.h"
 #include "../SubSystems/PlayerManager.h"
@@ -87,6 +91,10 @@ void UCharacterStateMovement::OnJump() {
 
 void UCharacterStateMovement::OnDie() {
 	ChangeState(GetStateMachine()->StateDie);
+}
+
+void UCharacterStateMovement::OnAbsorberDetectCharacter(ADiamondProjectCharacter* Character, AAbsorber* Absorber) {
+	ChangeState(GetStateMachine()->StateAttract);
 }
 
 

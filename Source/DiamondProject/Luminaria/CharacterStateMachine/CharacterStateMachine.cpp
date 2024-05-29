@@ -5,6 +5,7 @@
 #include "CharacterStateJump.h"
 #include "CharacterStateDie.h"
 #include "CharacterStateFall.h"
+#include "CharacterStateAttract.h"
 
 #include "InputActionValue.h"
 #include "../Core/DiamondProjectCharacter.h"
@@ -15,6 +16,7 @@ UCharacterStateMachine::UCharacterStateMachine() {
 	StateJump = CreateDefaultSubobject<UCharacterStateJump>(TEXT("StateJump"));
 	StateDie = CreateDefaultSubobject<UCharacterStateDie>(TEXT("StateDie"));
 	StateFall = CreateDefaultSubobject<UCharacterStateFall>(TEXT("StateFall"));
+	StateAttract = CreateDefaultSubobject<UCharacterStateAttract>(TEXT("StateAttract"));
 }
 
 
@@ -26,6 +28,7 @@ void UCharacterStateMachine::SMInit(ADiamondProjectCharacter* StateCharacter) {
 	StateJump->StateInit(this);
 	StateDie->StateInit(this);
 	StateFall->StateInit(this);
+	StateAttract->StateInit(this);
 
 }
 
@@ -83,4 +86,12 @@ void UCharacterStateMachine::OnDie() {
 	}
 
 	CurrentState->OnDie();
+}
+
+void UCharacterStateMachine::OnAbsorberDetectCharacter(ADiamondProjectCharacter* DetectedCharacter, AAbsorber* Absorber) {
+	if (!CurrentState) {
+		return;
+	}
+
+	CurrentState->OnAbsorberDetectCharacter(DetectedCharacter, Absorber);
 }

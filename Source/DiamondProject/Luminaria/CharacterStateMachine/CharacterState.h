@@ -19,7 +19,9 @@ public:
 	TEnumAsByte<ECharacterState> State;
 
 	void StateInit(UCharacterStateMachine* CharacterStateMachine);
+	
 	void StateBegin();
+
 	void StateTick(float DeltaTime);
 	void StateExit();
 
@@ -28,6 +30,7 @@ public:
 	virtual void OnJump();
 	virtual void OnInputJumpReleased();
 	virtual void OnDie();
+	virtual void OnAbsorberDetectCharacter(ADiamondProjectCharacter* Character, AAbsorber* Absorber);
 
 protected:
 	virtual void OnStateInit();

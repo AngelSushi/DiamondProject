@@ -1,6 +1,7 @@
 #include "CharacterState.h"
 #include "CharacterStateMachine.h"
 #include "InputActionValue.h"
+#include "../Actors/Absorber.h"
 
 void UCharacterState::StateInit(UCharacterStateMachine* CharacterStateMachine) {
 	StateMachine = CharacterStateMachine;
@@ -32,5 +33,6 @@ void UCharacterState::OnMovement(const FInputActionValue& Value) {}
 void UCharacterState::OnJump() {}
 void UCharacterState::OnInputJumpReleased() {}
 void UCharacterState::OnDie() {}
+void UCharacterState::OnAbsorberDetectCharacter(ADiamondProjectCharacter* Character, AAbsorber* Absorber) {}
 
 
