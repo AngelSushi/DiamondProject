@@ -156,14 +156,6 @@ public:
 
 	UFUNCTION()
 	UCharacterStateMachine* GetStateMachine() { return CharacterStateMachine; }
-
-
-	// TO DELETE JUST FOR TEST
-	UPROPERTY()
-	TObjectPtr<class UUIComboInput> ComboInputWidget;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUIComboInput> ComboInputClass;
 	
 
 private:

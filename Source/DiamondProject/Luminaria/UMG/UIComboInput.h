@@ -6,6 +6,7 @@
 
 UENUM(BlueprintType)
 enum EInput {
+	NO_INPUT,
 	A,
 	B,
 	X,
@@ -13,6 +14,9 @@ enum EInput {
 	JOYSTICK_R,
 	JOYSTICK_L,
 };
+
+class UHorizontalBox;
+struct FInputData;
 
 UCLASS()
 class DIAMONDPROJECT_API UUIComboInput : public UUserWidget {
@@ -23,15 +27,24 @@ public:
 	UUIComboInput(const FObjectInitializer& Initializer);
 
 	UFUNCTION()
-	void InitComboUI(TArray<TEnumAsByte<EInput>> Inputs);
+	void InitComboUI(TArray<TEnumAsByte<EInput>> Inputs, FText ActionName = FText::FromString(TEXT("")));
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class UCanvasPanel> Canvas;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UHorizontalBox> Box;
 	
 private:
-	void AddElement(EInput Input);
+	void AddElement(TEnumAsByte<EInput> Input,UHorizontalBox* HorizontalBox);
+	void AddText(FText Text, UHorizontalBox* HorizontalBox,float Size);
+
+	FInputData GetDataByInput(TEnumAsByte<EInput> Input);
 
 	UPROPERTY()
-	TObjectPtr<class UUIInputDataAsset> InputsIcon;
+	TObjectPtr<class UUIInputDataAsset> InputsIconAsset;
+
+	UPROPERTY()
+	TObjectPtr<class UMaterial> IconMaterial;
 
 };

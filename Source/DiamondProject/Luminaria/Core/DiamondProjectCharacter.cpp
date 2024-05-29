@@ -80,11 +80,6 @@ void ADiamondProjectCharacter::BeginPlay() {
 	CharacterStateMachine->SMInit(this);
 	CharacterStateMachine->SMBegin();
 
-
-	// TO DELETE JUST FOR TEST
-	ComboInputWidget = CreateWidget<UUIComboInput>(GetWorld(), ComboInputClass);
-	ComboInputWidget->InitComboUI({EInput::A});
-	ComboInputWidget->AddToViewport();
 }
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
