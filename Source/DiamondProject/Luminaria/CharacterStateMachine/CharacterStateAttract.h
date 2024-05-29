@@ -15,7 +15,9 @@ public:
 
 protected:
 	virtual void OnStateInit() override;
+	virtual void OnStateBegin() override;
 	virtual void OnStateTick(float DeltaTime) override;
+	virtual void OnStateExit() override;
 
 private:
 
@@ -29,9 +31,15 @@ private:
 	TObjectPtr<class UAbsorberEventsDispatcher> AbsorberEventsDispatcher;
 
 	UPROPERTY()
+	TObjectPtr<class UUISubsystem> UISystem;
+
+	UPROPERTY()
 	TObjectPtr<class ADiamondProjectCharacter> DetectedCharacter;
 
 	UPROPERTY()
 	TObjectPtr<class AAbsorber> CurrentAbsorber;
+
+	UPROPERTY()
+	TObjectPtr<class UUIComboInput> ComboWidget;
 	
 };

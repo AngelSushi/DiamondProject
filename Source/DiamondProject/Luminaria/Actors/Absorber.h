@@ -4,9 +4,10 @@
 #include "GameFramework/Actor.h"
 #include "Absorber.generated.h"
 
+enum EInput;
+
 UCLASS()
-class DIAMONDPROJECT_API AAbsorber : public AActor
-{
+class DIAMONDPROJECT_API AAbsorber : public AActor {
 	GENERATED_BODY()
 	
 public:	
@@ -15,11 +16,16 @@ public:
 	UFUNCTION(BlueprintPure)
 	float GetAbsorberForce() { return AbsorberForce; }
 
+	UFUNCTION()
+	EInput GetCurrentInput() { return CurrentInput; }
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	UFUNCTION()
+	void GenerateInput();
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> Mesh;
@@ -38,4 +44,13 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<class UAbsorberEventsDispatcher> AbsorberEventsDispatcher;
+
+	UPROPERTY(EditAnywhere)
+	TArray<TEnumAsByte<EInput>> PossibleInputs;
+
+	UPROPERTY(VisibleAnywhere)
+	TEnumAsByte<EInput> CurrentInput;
+
+	UPROPERTY()
+	TEnumAsByte<EInput> LastInput;
 };

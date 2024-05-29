@@ -2,6 +2,7 @@
 #include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
 #include "../SubSystems/AbsorberEventsDispatcher.h"
 #include "../CharacterStateMachine/CharacterStateMachine.h"
+#include "../UMG/UIComboInput.h"
 
 AAbsorber::AAbsorber() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -27,7 +28,7 @@ void AAbsorber::Tick(float DeltaTime) {
 			float Distance = FVector::DistSquared(Character->GetActorLocation(), GetActorLocation());
 
 			if (Distance <= RadiusDetection * RadiusDetection) {
-				GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Green, TEXT("Detect Player"));
+				GenerateInput();
 				Character->GetStateMachine()->OnAbsorberDetectCharacter(Character, this);
 				DetectedPlayer = Character;
 				AbsorberEventsDispatcher->OnDetectPlayer.Broadcast(Character, this);
@@ -39,11 +40,30 @@ void AAbsorber::Tick(float DeltaTime) {
 		float Distance = FVector::DistSquared(DetectedPlayer->GetActorLocation(), GetActorLocation());
 	
 		if (Distance >= RadiusDetection * RadiusDetection) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("UnDetect Player"));
 			AbsorberEventsDispatcher->OnUnDetectPlayer.Broadcast(DetectedPlayer, this);
 			DetectedPlayer = nullptr;
 			return;
 		}
 	}
 
+}
+
+void AAbsorber::GenerateInput() {
+	int RandomInput = FMath::RandRange(0, PossibleInputs.Num() - 1);
+
+	if (RandomInput < 0) {
+		return;
+	}
+
+	CurrentInput = PossibleInputs[RandomInput];
+
+	if (PossibleInputs.Num() > 1) {
+		PossibleInputs.Remove(CurrentInput);
+
+		if (LastInput != EInput::NO_INPUT) {
+			PossibleInputs.Add(LastInput);
+		}
+
+		LastInput = CurrentInput;
+	}
 }
