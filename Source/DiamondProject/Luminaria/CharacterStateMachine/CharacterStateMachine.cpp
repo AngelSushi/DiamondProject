@@ -21,6 +21,12 @@ UCharacterStateMachine::UCharacterStateMachine() {
 
 
 void UCharacterStateMachine::SMInit(ADiamondProjectCharacter* StateCharacter) {
+	
+	if (!StateCharacter) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("Bad Player Return Node"));
+		return;
+	}
+
 	Character = StateCharacter;
 
 	StateIdle->StateInit(this);

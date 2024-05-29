@@ -157,6 +157,15 @@ public:
 	UFUNCTION()
 	UCharacterStateMachine* GetStateMachine() { return CharacterStateMachine; }
 
+
+	// TO DELETE JUST FOR TEST
+	UPROPERTY()
+	TObjectPtr<class UUIComboInput> ComboInputWidget;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUIComboInput> ComboInputClass;
+	
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;

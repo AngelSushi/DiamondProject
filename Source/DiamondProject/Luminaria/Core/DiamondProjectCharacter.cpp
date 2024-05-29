@@ -26,20 +26,23 @@
 
 #include "DiamondProject/Luminaria/CharacterStateMachine/CharacterStateMachine.h"
 
-ADiamondProjectCharacter::ADiamondProjectCharacter(){
-	
+
+#include "../UMG/UIComboInput.h"
+
+ADiamondProjectCharacter::ADiamondProjectCharacter() {
+
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-	
+
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Rotate character to moving direction
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 	//GetCharacterMovement()->bNotifyApex = true;
-	
+
 	Light = CreateDefaultSubobject<UPointLightComponent>(TEXT("Energy"));
 	Light->SetupAttachment(RootComponent);
 
@@ -76,6 +79,12 @@ void ADiamondProjectCharacter::BeginPlay() {
 
 	CharacterStateMachine->SMInit(this);
 	CharacterStateMachine->SMBegin();
+
+
+	// TO DELETE JUST FOR TEST
+	ComboInputWidget = CreateWidget<UUIComboInput>(GetWorld(), ComboInputClass);
+	ComboInputWidget->InitComboUI({EInput::A});
+	ComboInputWidget->AddToViewport();
 }
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
