@@ -1,4 +1,6 @@
 #include "CharacterStateJump.h"
+#include "CharacterStateAttract.h"
+
 #include "../Core/DiamondProjectPlayerController.h"
 #include "../Core/DiamondProjectCharacter.h"
 
@@ -60,4 +62,8 @@ void UCharacterStateJump::StopJump() {
 
 void UCharacterStateJump::OnDie() {
 	ChangeState(GetStateMachine()->StateDie);
+}
+
+void UCharacterStateJump::OnAbsorberDetectCharacter(ADiamondProjectCharacter* Character, AAbsorber* Absorber) {
+	ChangeState(GetStateMachine()->StateAttract);
 }

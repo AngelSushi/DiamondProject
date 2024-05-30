@@ -26,27 +26,28 @@
 
 #include "DiamondProject/Luminaria/CharacterStateMachine/CharacterStateMachine.h"
 
-ADiamondProjectCharacter::ADiamondProjectCharacter(){
-	
+
+#include "../UMG/UIComboInput.h"
+
+ADiamondProjectCharacter::ADiamondProjectCharacter() {
+
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-	
+
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Rotate character to moving direction
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 	//GetCharacterMovement()->bNotifyApex = true;
-	
+
 	Light = CreateDefaultSubobject<UPointLightComponent>(TEXT("Energy"));
 	Light->SetupAttachment(RootComponent);
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
-
-	CharacterStateMachine = CreateDefaultSubobject<UCharacterStateMachine>(TEXT("StateMachine"));
 }
 
 void ADiamondProjectCharacter::BeginPlay() {
@@ -74,8 +75,10 @@ void ADiamondProjectCharacter::BeginPlay() {
 
 	GetCharacterMovement()->MaxWalkSpeed = GetPlayerAsset()->Speed;
 
+	CharacterStateMachine = NewObject<UCharacterStateMachine>(/*TEXT("StateMachine")*/);
 	CharacterStateMachine->SMInit(this);
 	CharacterStateMachine->SMBegin();
+
 }
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
@@ -110,6 +113,24 @@ void ADiamondProjectCharacter::Landed(const FHitResult& Hit) {
 	//if (GetLuminariaController() && GetLuminariaController()->IsJumping()) {
 		//GetLuminariaController()->SetJumping(false);
 	//}
+}
+
+void ADiamondProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
+	PlayerInputComponent->BindKey(EKeys::A, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+	PlayerInputComponent->BindKey(EKeys::E, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+	
+	
+	PlayerInputComponent->BindKey(EKeys::Gamepad_FaceButton_Bottom, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+	PlayerInputComponent->BindKey(EKeys::Gamepad_FaceButton_Top, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+	PlayerInputComponent->BindKey(EKeys::Gamepad_FaceButton_Right, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+	PlayerInputComponent->BindKey(EKeys::Gamepad_FaceButton_Left, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+
+}
+
+void ADiamondProjectCharacter::AbsorberInputStarted(FKey Key) {
+	GetStateMachine()->OnAbsorberInputStarted(Key);
 }
 
 void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que fait la mort ya ptetre de le faire en respawn
