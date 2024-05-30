@@ -56,7 +56,9 @@ void UCharacterStateAttract::OnStateTick(float DeltaTime) {
 	if (bIsSpam) {
 		SpamTimer += DeltaTime;
 
-		if (GetWorld()->GetTimeSeconds() - TimerCountdown > 0.3F) {
+		ComboWidget->GetDynamicMaterial()->SetScalarParameterValue("Threshold",(float)(SpamTimer / SpamMaxTimer));
+
+		if (GetCharacter()->GetWorld()->GetTimeSeconds() - TimerCountdown > 0.3F) {
 			SpamTimer = 0.F;
 			bIsSpam = false;
 		}
@@ -96,7 +98,7 @@ void UCharacterStateAttract::OnJump() {}
 void UCharacterStateAttract::OnAbsorberInputStarted(FKey Key) {
 	if (ConvertKeyToInput(Key) == CurrentAbsorber->GetCurrentInput()) {
 		bIsSpam = true;
-		TimerCountdown = GetWorld()->GetTimeSeconds();
+		TimerCountdown = GetCharacter()->GetWorld()->GetTimeSeconds();
 	}
 }
 

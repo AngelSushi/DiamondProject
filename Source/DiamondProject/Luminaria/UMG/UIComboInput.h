@@ -34,6 +34,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class UHorizontalBox> Box;
+
+	UFUNCTION()
+	UMaterialInstanceDynamic* GetDynamicMaterial() { return DynamicMaterial; }
 	
 private:
 	void AddText(FText Text, UHorizontalBox* HorizontalBox,float Size);
@@ -46,6 +49,9 @@ private:
 protected:
 	UPROPERTY()
 	TObjectPtr<class UMaterial> IconMaterial;
+
+	UPROPERTY()
+	TObjectPtr<class UMaterialInstanceDynamic> DynamicMaterial;
 
 	UPROPERTY()
 	FVector2D Offset;

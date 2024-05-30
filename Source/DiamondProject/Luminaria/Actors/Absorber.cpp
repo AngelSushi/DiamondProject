@@ -8,8 +8,11 @@
 AAbsorber::AAbsorber() {
 	PrimaryActorTick.bCanEverTick = true;
 
+	Root = CreateDefaultSubobject <USceneComponent>(TEXT("Root"));
+	RootComponent = Root;
+
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	RootComponent = Mesh;
+	Mesh->SetupAttachment(Root);
 }
 
 void AAbsorber::BeginPlay() {
@@ -40,22 +43,22 @@ void AAbsorber::Tick(float DeltaTime) {
 	if (!bIsStun) {
 		if (!DetectedPlayer) {
 			for (ADiamondProjectCharacter* Character : PlayerManager->GetAllCharactersRef()) {
-				float Distance = FVector::DistSquared(Character->GetActorLocation(), GetActorLocation());
+				float Distance = FVector::Distance(Character->GetActorLocation(), GetActorLocation()); // Not Good For Perf
 
-				if (Distance <= RadiusDetection * RadiusDetection) {
-					// Check s'il y a un mur entre les deux 
+				if (Distance <= RadiusDetection /* * RadiusDetection*/) {
+
 					DetectedPlayer = Character;
-					float DistanceSqr = FVector::DistSquared(GetActorLocation(),DetectedPlayer->GetActorLocation());
-
+					
 					FVector Direction = GetActorLocation() - DetectedPlayer->GetActorLocation();
 					Direction.Normalize();
 					TArray<FHitResult> HitResults;
 
-					GetWorld()->LineTraceMultiByChannel(HitResults, DetectedPlayer->GetActorLocation(), DetectedPlayer->GetActorLocation() + Direction * (DistanceSqr * DistanceSqr), ECC_GameTraceChannel2);
-
-					for (FHitResult Result : HitResults) {
-						GEngine->AddOnScreenDebugMessage(-1, 10.F, FColor::Magenta, FString::Printf(TEXT("Hit Name %s"), *Result.GetActor()->GetActorNameOrLabel()));
+					GetWorld()->LineTraceMultiByChannel(HitResults, DetectedPlayer->GetActorLocation(), DetectedPlayer->GetActorLocation() + Direction * Distance, ECC_GameTraceChannel2);
+					
+					if (HitResults.Num() > 0) {
+						return;
 					}
+					
 
 					GenerateInput();
 					Character->GetStateMachine()->OnAbsorberDetectCharacter(Character, this);

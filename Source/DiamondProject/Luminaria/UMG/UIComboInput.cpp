@@ -48,12 +48,12 @@ void UUIComboInput::AddElement(TEnumAsByte<EInput> Input,UHorizontalBox* Horizon
 
 	UImage* IconImage = NewObject<UImage>(this, UImage::StaticClass());
 
-	UMaterialInstanceDynamic* MaterialImage = UMaterialInstanceDynamic::Create(IconMaterial,this);
-	MaterialImage->SetScalarParameterValue(FName("UOffset"), Offset.X);
-	MaterialImage->SetScalarParameterValue(FName("VOffset"), Offset.Y);
-	MaterialImage->SetScalarParameterValue(FName("UScale"), Scale.X);
-	MaterialImage->SetScalarParameterValue(FName("VScale"), Scale.Y);
-	IconImage->SetBrushFromMaterial(MaterialImage);
+	DynamicMaterial = UMaterialInstanceDynamic::Create(IconMaterial,this);
+	DynamicMaterial->SetScalarParameterValue(FName("UOffset"), Offset.X);
+	DynamicMaterial->SetScalarParameterValue(FName("VOffset"), Offset.Y);
+	DynamicMaterial->SetScalarParameterValue(FName("UScale"), Scale.X);
+	DynamicMaterial->SetScalarParameterValue(FName("VScale"), Scale.Y);
+	IconImage->SetBrushFromMaterial(DynamicMaterial);
 
 	IconImage->Brush.ImageSize = FVector2D(48, 48);
 	

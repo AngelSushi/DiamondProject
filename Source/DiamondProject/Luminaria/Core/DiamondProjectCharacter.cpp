@@ -48,8 +48,6 @@ ADiamondProjectCharacter::ADiamondProjectCharacter() {
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
-
-	CharacterStateMachine = CreateDefaultSubobject<UCharacterStateMachine>(TEXT("StateMachine"));
 }
 
 void ADiamondProjectCharacter::BeginPlay() {
@@ -77,6 +75,7 @@ void ADiamondProjectCharacter::BeginPlay() {
 
 	GetCharacterMovement()->MaxWalkSpeed = GetPlayerAsset()->Speed;
 
+	CharacterStateMachine = NewObject<UCharacterStateMachine>(/*TEXT("StateMachine")*/);
 	CharacterStateMachine->SMInit(this);
 	CharacterStateMachine->SMBegin();
 
