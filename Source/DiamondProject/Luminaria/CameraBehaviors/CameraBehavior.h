@@ -17,6 +17,8 @@ public:
 	 virtual void BeginBehavior(ALuminariaCamera* Owner);
 	 virtual void TickBehavior(float DeltaTime);
 
+
+
 protected:
 	UPROPERTY()
 	TObjectPtr<ALuminariaCamera> OwnerActor;
@@ -32,13 +34,16 @@ protected:
 
 	UPROPERTY()
 	FVector Barycenter;
-public:	
 
+public:	
 	UFUNCTION()
-	virtual void OnPlayerMove(ADiamondProjectCharacter* character, FVector direction, bool& isCanceled);
+	virtual void OnPlayerMove(ADiamondProjectCharacter* character, FVector2D Input, FVector direction, bool& isCanceled);
 
 	UFUNCTION()
 	void SetBarycenter(FVector NewBarycenter) { Barycenter = NewBarycenter; }
+
+	UFUNCTION(BlueprintPure)
+	FVector GetBarycenter() { return Barycenter; }
 
 	UPROPERTY()
 	float DefaultX;
@@ -50,13 +55,19 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class UPlayerManager> PlayerManager;
 
-	UPROPERTY()
-	bool bBlock;
-
 	UFUNCTION()
 	float Approach(float Current, float Target, float Incr);
 
+	UPROPERTY()
+	float MinY;
+
+	UPROPERTY()
+	float MaxY;
+
 private:
 	UFUNCTION()
-	bool IsInFrustum(ADiamondProjectCharacter* Character,FVector Position);
+	FVector CalculateMaxFrustum(ADiamondProjectCharacter* Character,FVector Position,float Direction);
+
+	UPROPERTY()
+	TMap<ADiamondProjectCharacter*, FVector> NextCharacterPosition;
 };

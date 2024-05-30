@@ -14,7 +14,7 @@ public:
 	UFUNCTION()
 	void RegisterPlayer(ADiamondProjectCharacter* character);
 
-	void OnPlayerMove(ADiamondProjectCharacter* character,FVector direction,bool& isCanceled);
+	void OnPlayerMove(ADiamondProjectCharacter* character,FVector2D Input,FVector direction,bool& isCanceled);
 
 	virtual void TickBehavior(float DeltaTime) override;
 };
