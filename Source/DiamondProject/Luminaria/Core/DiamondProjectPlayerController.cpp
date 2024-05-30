@@ -76,11 +76,10 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ADiamondProjectPlayerController::Move);
 			EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::Move);
 			
-			EnhancedInputComponent->BindAction(AbsorberAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::AbsorberInputStarted);
-		
+			
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ADiamondProjectPlayerController::Jump);
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ADiamondProjectPlayerController::OnInputJumpReleased);
-
+			
 			//GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("Keyboard"));
 		//}
 		//else if (GetLocalPlayer()->GetControllerId() == 1) { // Gamepad
@@ -101,10 +100,6 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 
 void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 	GetPlayer()->GetStateMachine()->OnMovement(Value);
-}
-
-void ADiamondProjectPlayerController::AbsorberInputStarted() {
-	GetPlayer()->GetStateMachine()->OnAbsorberInputStarted();
 }
 
 void ADiamondProjectPlayerController::Jump() {

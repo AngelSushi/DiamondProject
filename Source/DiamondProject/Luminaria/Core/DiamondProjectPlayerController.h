@@ -42,9 +42,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PullAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* AbsorberAction;
-
 	UPROPERTY()
 	FVector LastDirection;
 
@@ -127,9 +124,6 @@ private:
 
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
-
-	UFUNCTION()
-	void AbsorberInputStarted();
 
 	UFUNCTION()
 	void Jump();

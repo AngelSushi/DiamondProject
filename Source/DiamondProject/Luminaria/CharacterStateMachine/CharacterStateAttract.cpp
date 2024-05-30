@@ -82,8 +82,21 @@ void UCharacterStateAttract::OnUnDetectPlayer(ADiamondProjectCharacter* Characte
 
 void UCharacterStateAttract::OnJump() {}
 
-void UCharacterStateAttract::OnAbsorberInputStarted() {
-	bIsSpam = true;
-	TimerCountdown = GetWorld()->GetTimeSeconds();
+void UCharacterStateAttract::OnAbsorberInputStarted(FKey Key) {
+	if (ConvertKeyToInput(Key) == CurrentAbsorber->GetCurrentInput()) {
+		bIsSpam = true;
+		TimerCountdown = GetWorld()->GetTimeSeconds();
+	}
 }
 
+EInput UCharacterStateAttract::ConvertKeyToInput(FKey Key) {
+	if (Key == EKeys::A || Key == EKeys::Gamepad_FaceButton_Bottom) {
+		return EInput::A;
+	}
+
+	if (Key == EKeys::B || Key == EKeys::Gamepad_FaceButton_Right) {
+		return EInput::B;
+	}
+
+	return EInput::NO_INPUT;
+}

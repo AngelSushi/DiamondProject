@@ -102,10 +102,10 @@ void UCharacterStateMachine::OnAbsorberDetectCharacter(ADiamondProjectCharacter*
 	CurrentState->OnAbsorberDetectCharacter(DetectedCharacter, Absorber);
 }
 
-void UCharacterStateMachine::OnAbsorberInputStarted() {
+void UCharacterStateMachine::OnAbsorberInputStarted(FKey Key) {
 	if (!CurrentState) {
 		return;
 	}
 
-	CurrentState->OnAbsorberInputStarted();
+	CurrentState->OnAbsorberInputStarted(Key);
 }

@@ -13,7 +13,8 @@ class DIAMONDPROJECT_API UCharacterStateAttract : public UCharacterState {
 
 public:
 	virtual void OnJump() override;
-	virtual void OnAbsorberInputStarted() override;
+	virtual void OnAbsorberInputStarted(FKey Key) override;
+
 
 protected:
 	virtual void OnStateInit() override;
@@ -28,6 +29,9 @@ private:
 
 	UFUNCTION()
 	void OnUnDetectPlayer(ADiamondProjectCharacter* Character, AAbsorber* Absorber);
+
+	UFUNCTION()
+	EInput ConvertKeyToInput(FKey Key);
 
 	UPROPERTY()
 	TObjectPtr<class UAbsorberEventsDispatcher> AbsorberEventsDispatcher;

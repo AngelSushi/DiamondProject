@@ -3,6 +3,7 @@
 #include "../SubSystems/AbsorberEventsDispatcher.h"
 #include "../CharacterStateMachine/CharacterStateMachine.h"
 #include "../UMG/UIComboInput.h"
+#include "../DataAssets/AbsorberDataAsset.h"
 
 AAbsorber::AAbsorber() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -19,6 +20,15 @@ void AAbsorber::BeginPlay() {
 
 	AbsorberEventsDispatcher->OnStunAbsorber.AddDynamic(this, &AAbsorber::OnStunAbsorber);
 	AbsorberEventsDispatcher->OnDeStunAbsorber.AddDynamic(this, &AAbsorber::OnDeStunAbsorber);
+
+	if (!AbsorberAsset) {
+		return;
+	}
+
+	RadiusDetection = AbsorberAsset->RadiusDetection;
+	AbsorberForce = AbsorberAsset->AbsorberForce;
+	PossibleInputs = AbsorberAsset->PossibleInputs;
+	MaxStunTimer = AbsorberAsset->MaxStunTimer;
 }
 
 void AAbsorber::Tick(float DeltaTime) {
@@ -61,6 +71,10 @@ void AAbsorber::Tick(float DeltaTime) {
 }
 
 void AAbsorber::GenerateInput() {
+	if (PossibleInputs.Num() == 0) {
+		return;
+	}
+
 	int RandomInput = FMath::RandRange(0, PossibleInputs.Num() - 1);
 
 	if (RandomInput < 0) {

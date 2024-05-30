@@ -19,6 +19,9 @@ public:
 	UFUNCTION()
 	EInput GetCurrentInput() { return CurrentInput; }
 
+	UFUNCTION()
+	UAbsorberDataAsset* GetAbsorberData() { return AbsorberAsset; }
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -36,11 +39,21 @@ private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> Mesh;
 
-	UPROPERTY(EditAnywhere, meta = (ForceUnits = "cm"))
-	float RadiusDetection = 750.F;
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UAbsorberDataAsset> AbsorberAsset;
 
-	UPROPERTY(EditAnywhere,meta = (ClampMin = "0", ClampMax = "1"))
-	float AbsorberForce = 0.8F;
+	UPROPERTY()
+	float RadiusDetection;
+
+	UPROPERTY()
+	float AbsorberForce;
+
+	UPROPERTY()
+	TArray<TEnumAsByte<EInput>> PossibleInputs;
+
+	UPROPERTY()
+	float MaxStunTimer;
+
 
 	UPROPERTY()
 	TObjectPtr<class UPlayerManager> PlayerManager;
@@ -50,9 +63,6 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<class UAbsorberEventsDispatcher> AbsorberEventsDispatcher;
-
-	UPROPERTY(EditAnywhere)
-	TArray<TEnumAsByte<EInput>> PossibleInputs;
 
 	UPROPERTY(VisibleAnywhere)
 	TEnumAsByte<EInput> CurrentInput;
@@ -65,7 +75,4 @@ private:
 
 	UPROPERTY()
 	float StunTimer;
-
-	UPROPERTY(EditAnywhere)
-	float MaxStunTimer = 5.F;
 };

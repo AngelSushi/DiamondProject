@@ -116,6 +116,24 @@ void ADiamondProjectCharacter::Landed(const FHitResult& Hit) {
 	//}
 }
 
+void ADiamondProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
+	PlayerInputComponent->BindKey(EKeys::A, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+	PlayerInputComponent->BindKey(EKeys::E, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+	
+	
+	PlayerInputComponent->BindKey(EKeys::Gamepad_FaceButton_Bottom, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+	PlayerInputComponent->BindKey(EKeys::Gamepad_FaceButton_Top, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+	PlayerInputComponent->BindKey(EKeys::Gamepad_FaceButton_Right, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+	PlayerInputComponent->BindKey(EKeys::Gamepad_FaceButton_Left, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+
+}
+
+void ADiamondProjectCharacter::AbsorberInputStarted(FKey Key) {
+	GetStateMachine()->OnAbsorberInputStarted(Key);
+}
+
 void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que fait la mort ya ptetre de le faire en respawn
 	PlayerManager->OnPlayerDeath.Broadcast(this,DeathCause);
 
