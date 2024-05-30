@@ -18,6 +18,8 @@ public:
 	void SetJumpMaxDuration(float MaxDuration) { JumpMaxDuration = MaxDuration; }
 
 	virtual void OnDie() override;
+	virtual void OnAbsorberDetectCharacter(ADiamondProjectCharacter* Character, AAbsorber* Absorber);
+
 protected:
 	virtual void OnStateBegin() override;
 	virtual void OnStateTick(float DeltaTime);

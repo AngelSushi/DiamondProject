@@ -66,5 +66,5 @@ public:
 	void OnInputJumpReleased();
 	void OnDie();
 	void OnAbsorberDetectCharacter(ADiamondProjectCharacter* DetectedCharacter,AAbsorber* Absorber);
-	
+	void OnAbsorberInputStarted();
 };

@@ -34,5 +34,6 @@ void UCharacterState::OnJump() {}
 void UCharacterState::OnInputJumpReleased() {}
 void UCharacterState::OnDie() {}
 void UCharacterState::OnAbsorberDetectCharacter(ADiamondProjectCharacter* Character, AAbsorber* Absorber) {}
+void UCharacterState::OnAbsorberInputStarted() {}
 
 

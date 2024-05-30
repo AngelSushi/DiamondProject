@@ -31,6 +31,7 @@ public:
 	virtual void OnInputJumpReleased();
 	virtual void OnDie();
 	virtual void OnAbsorberDetectCharacter(ADiamondProjectCharacter* Character, AAbsorber* Absorber);
+	virtual void OnAbsorberInputStarted();
 
 protected:
 	virtual void OnStateInit();

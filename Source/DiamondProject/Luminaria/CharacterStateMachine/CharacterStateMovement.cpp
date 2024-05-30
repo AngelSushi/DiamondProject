@@ -23,7 +23,7 @@ void UCharacterStateMovement::OnStateBegin() {
 }
 
 void UCharacterStateMovement::OnStateTick(float DeltaTime) {
-	if (GetClass() == UCharacterStateMovement::StaticClass()) {
+	if (GetClass() == UCharacterStateMovement::StaticClass()) { // Pas besoin juste pas mettre de super dans le state jump 
 		if (!GetCharacter()->GetCharacterMovement()->IsMovingOnGround()) {
 			ChangeState(GetStateMachine()->StateFall);
 		}
@@ -41,7 +41,6 @@ void UCharacterStateMovement::OnMovement(const FInputActionValue& Value) {
 	}
 
 	//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, FString::FromInt(GetLocalPlayer()->GetControllerId()));
-	//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Magenta, FString::Printf(TEXT("%s"), *GetLocalPlayer()->GetName()));
 
 	if (Controller->GetLocalPlayer()->GetControllerId() == 0) {
 		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, TEXT("Keyboard & Gamepad"));

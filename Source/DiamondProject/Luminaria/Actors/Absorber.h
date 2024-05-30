@@ -27,6 +27,12 @@ private:
 	UFUNCTION()
 	void GenerateInput();
 
+	UFUNCTION()
+	void OnStunAbsorber(AAbsorber* Absorber);
+
+	UFUNCTION()
+	void OnDeStunAbsorber(AAbsorber* Absorber);
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> Mesh;
 
@@ -53,4 +59,13 @@ private:
 
 	UPROPERTY()
 	TEnumAsByte<EInput> LastInput;
+
+	UPROPERTY()
+	bool bIsStun;
+
+	UPROPERTY()
+	float StunTimer;
+
+	UPROPERTY(EditAnywhere)
+	float MaxStunTimer = 5.F;
 };

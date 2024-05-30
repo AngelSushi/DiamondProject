@@ -16,6 +16,9 @@ void AAbsorber::BeginPlay() {
 
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
 	AbsorberEventsDispatcher = GetWorld()->GetSubsystem<UAbsorberEventsDispatcher>();
+
+	AbsorberEventsDispatcher->OnStunAbsorber.AddDynamic(this, &AAbsorber::OnStunAbsorber);
+	AbsorberEventsDispatcher->OnDeStunAbsorber.AddDynamic(this, &AAbsorber::OnDeStunAbsorber);
 }
 
 void AAbsorber::Tick(float DeltaTime) {
@@ -23,26 +26,35 @@ void AAbsorber::Tick(float DeltaTime) {
 
 	DrawDebugSphere(GetWorld(), GetActorLocation(), RadiusDetection, 16	, FColor::Cyan);
 
-	if (!DetectedPlayer) {
-		for (ADiamondProjectCharacter* Character : PlayerManager->GetAllCharactersRef()) {
-			float Distance = FVector::DistSquared(Character->GetActorLocation(), GetActorLocation());
+	if (!bIsStun) {
+		if (!DetectedPlayer) {
+			for (ADiamondProjectCharacter* Character : PlayerManager->GetAllCharactersRef()) {
+				float Distance = FVector::DistSquared(Character->GetActorLocation(), GetActorLocation());
 
-			if (Distance <= RadiusDetection * RadiusDetection) {
-				GenerateInput();
-				Character->GetStateMachine()->OnAbsorberDetectCharacter(Character, this);
-				DetectedPlayer = Character;
-				AbsorberEventsDispatcher->OnDetectPlayer.Broadcast(Character, this);
-				break;
+				if (Distance <= RadiusDetection * RadiusDetection) {
+					GenerateInput();
+					Character->GetStateMachine()->OnAbsorberDetectCharacter(Character, this);
+					DetectedPlayer = Character;
+					AbsorberEventsDispatcher->OnDetectPlayer.Broadcast(Character, this);
+					break;
+				}
+			}
+		}
+		else {
+			float Distance = FVector::DistSquared(DetectedPlayer->GetActorLocation(), GetActorLocation());
+
+			if (Distance >= RadiusDetection * RadiusDetection) {
+				AbsorberEventsDispatcher->OnUnDetectPlayer.Broadcast(DetectedPlayer, this);
+				DetectedPlayer = nullptr;
+				return;
 			}
 		}
 	}
 	else {
-		float Distance = FVector::DistSquared(DetectedPlayer->GetActorLocation(), GetActorLocation());
-	
-		if (Distance >= RadiusDetection * RadiusDetection) {
-			AbsorberEventsDispatcher->OnUnDetectPlayer.Broadcast(DetectedPlayer, this);
-			DetectedPlayer = nullptr;
-			return;
+		StunTimer += DeltaTime;
+		
+		if (StunTimer >= MaxStunTimer) {
+			AbsorberEventsDispatcher->OnDeStunAbsorber.Broadcast(this);
 		}
 	}
 
@@ -65,5 +77,19 @@ void AAbsorber::GenerateInput() {
 		}
 
 		LastInput = CurrentInput;
+	}
+}
+
+void AAbsorber::OnStunAbsorber(AAbsorber* Absorber) {
+	if (Absorber == this) {
+		bIsStun = true;
+		StunTimer = 0.F;
+		DetectedPlayer = nullptr;
+	}
+}
+
+void AAbsorber::OnDeStunAbsorber(AAbsorber* Absorber) {
+	if (Absorber == this) {
+		bIsStun = false;
 	}
 }

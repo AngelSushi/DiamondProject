@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "CharacterState.h"
+#include "InputCoreTypes.h"
 #include "CharacterStateAttract.generated.h"
 
 class AAbsorber;
@@ -12,6 +13,7 @@ class DIAMONDPROJECT_API UCharacterStateAttract : public UCharacterState {
 
 public:
 	virtual void OnJump() override;
+	virtual void OnAbsorberInputStarted() override;
 
 protected:
 	virtual void OnStateInit() override;
@@ -41,5 +43,17 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<class UUIComboInput> ComboWidget;
+
+	UPROPERTY()
+	bool bIsSpam;
+
+	UPROPERTY()
+	float TimerCountdown;
+
+	UPROPERTY()
+	float SpamTimer;
+
+	UPROPERTY()
+	float SpamMaxTimer = 2.F;
 	
 };
