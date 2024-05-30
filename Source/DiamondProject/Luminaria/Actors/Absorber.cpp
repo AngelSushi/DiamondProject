@@ -21,6 +21,7 @@ void AAbsorber::BeginPlay() {
 	AbsorberEventsDispatcher->OnStunAbsorber.AddDynamic(this, &AAbsorber::OnStunAbsorber);
 	AbsorberEventsDispatcher->OnDeStunAbsorber.AddDynamic(this, &AAbsorber::OnDeStunAbsorber);
 
+	Mesh->OnComponentBeginOverlap.AddDynamic(this, &AAbsorber::OnBeginOverlap);
 	if (!AbsorberAsset) {
 		return;
 	}
@@ -42,9 +43,22 @@ void AAbsorber::Tick(float DeltaTime) {
 				float Distance = FVector::DistSquared(Character->GetActorLocation(), GetActorLocation());
 
 				if (Distance <= RadiusDetection * RadiusDetection) {
+					// Check s'il y a un mur entre les deux 
+					DetectedPlayer = Character;
+					float DistanceSqr = FVector::DistSquared(GetActorLocation(),DetectedPlayer->GetActorLocation());
+
+					FVector Direction = GetActorLocation() - DetectedPlayer->GetActorLocation();
+					Direction.Normalize();
+					TArray<FHitResult> HitResults;
+
+					GetWorld()->LineTraceMultiByChannel(HitResults, DetectedPlayer->GetActorLocation(), DetectedPlayer->GetActorLocation() + Direction * (DistanceSqr * DistanceSqr), ECC_GameTraceChannel2);
+
+					for (FHitResult Result : HitResults) {
+						GEngine->AddOnScreenDebugMessage(-1, 10.F, FColor::Magenta, FString::Printf(TEXT("Hit Name %s"), *Result.GetActor()->GetActorNameOrLabel()));
+					}
+
 					GenerateInput();
 					Character->GetStateMachine()->OnAbsorberDetectCharacter(Character, this);
-					DetectedPlayer = Character;
 					AbsorberEventsDispatcher->OnDetectPlayer.Broadcast(Character, this);
 					break;
 				}
@@ -105,5 +119,13 @@ void AAbsorber::OnStunAbsorber(AAbsorber* Absorber) {
 void AAbsorber::OnDeStunAbsorber(AAbsorber* Absorber) {
 	if (Absorber == this) {
 		bIsStun = false;
+	}
+}
+
+void AAbsorber::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	if (ADiamondProjectCharacter* Character = Cast<ADiamondProjectCharacter>(OtherActor)) {
+		for (ADiamondProjectCharacter* TargetCharacter : PlayerManager->GetAllCharactersRef()) {
+			TargetCharacter->Death(EDeathCause::ABSORBER);
+		}
 	}
 }

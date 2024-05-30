@@ -26,8 +26,8 @@ public:
 
 	UUIComboInput(const FObjectInitializer& Initializer);
 
-	UFUNCTION()
-	void InitComboUI(TArray<TEnumAsByte<EInput>> Inputs, FText ActionName = FText::FromString(TEXT("")));
+	virtual void InitComboUI(TArray<TEnumAsByte<EInput>> Inputs, FText ActionName = FText::FromString(TEXT("")));
+	virtual void AddElement(TEnumAsByte<EInput> Input, UHorizontalBox* HorizontalBox);
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class UCanvasPanel> Canvas;
@@ -36,7 +36,6 @@ public:
 	TObjectPtr<class UHorizontalBox> Box;
 	
 private:
-	void AddElement(TEnumAsByte<EInput> Input,UHorizontalBox* HorizontalBox);
 	void AddText(FText Text, UHorizontalBox* HorizontalBox,float Size);
 
 	FInputData GetDataByInput(TEnumAsByte<EInput> Input);
@@ -44,7 +43,14 @@ private:
 	UPROPERTY()
 	TObjectPtr<class UUIInputDataAsset> InputsIconAsset;
 
+protected:
 	UPROPERTY()
 	TObjectPtr<class UMaterial> IconMaterial;
+
+	UPROPERTY()
+	FVector2D Offset;
+
+	UPROPERTY()
+	FVector2D Scale;
 
 };

@@ -13,5 +13,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUIComboInput> ComboInputClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUIAbsorberInput> AbsorberInputClass;
 	
 };

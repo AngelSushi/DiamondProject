@@ -5,7 +5,7 @@
 #include "../Actors/Absorber.h"
 
 #include "../SubSystems/UISubsystem.h"
-#include "../UMG/UIComboInput.h"
+#include "../UMG/UIAbsorberInput.h"
 #include "../DataAssets/UIDataAsset.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -30,9 +30,15 @@ void UCharacterStateAttract::OnStateTick(float DeltaTime) {
 	}
 
 	if (!ComboWidget) {
-		ComboWidget = CreateWidget<UUIComboInput>(GetCharacter()->GetWorld(), UISystem->GetUIAsset()->ComboInputClass);
+		ComboWidget = CreateWidget<UUIAbsorberInput>(GetCharacter()->GetWorld(), UISystem->GetUIAsset()->AbsorberInputClass);
 		TArray<TEnumAsByte<EInput>> Inputs;
 		Inputs.Add(CurrentAbsorber->GetCurrentInput());
+
+		if (!ComboWidget) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Purple, TEXT("Error Creating Widget"));
+			return;
+		}
+
 		ComboWidget->InitComboUI(Inputs);
 		ComboWidget->AddToViewport();
 	}
@@ -63,12 +69,17 @@ void UCharacterStateAttract::OnStateTick(float DeltaTime) {
 		}
 	}
 
-	GetCharacter()->AddMovementInput(FVector::RightVector,CurrentAbsorber->GetAbsorberForce());
+	FVector Direction = (CurrentAbsorber->GetActorLocation() - DetectedCharacter->GetActorLocation());
+	Direction.Normalize();
+
+	GetCharacter()->AddMovementInput(Direction,CurrentAbsorber->GetAbsorberForce());
 }
 
 void UCharacterStateAttract::OnStateExit() {
-	ComboWidget->RemoveFromViewport();
-	ComboWidget = nullptr;
+	if (ComboWidget) {
+		ComboWidget->RemoveFromViewport();
+		ComboWidget = nullptr;
+	}
 }
 
 void UCharacterStateAttract::OnDetectPlayer(ADiamondProjectCharacter* Character, AAbsorber* Absorber) { // Called twice but not important 
