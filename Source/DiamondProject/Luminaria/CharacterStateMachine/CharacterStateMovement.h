@@ -23,6 +23,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class UPlayerManager> PlayerManager;
 
+	UPROPERTY()
+	TObjectPtr<class UInputUIManager> InputUIManager;
+
 private:
 
 	UPROPERTY()

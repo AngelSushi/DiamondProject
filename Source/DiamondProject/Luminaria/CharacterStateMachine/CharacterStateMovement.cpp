@@ -11,11 +11,13 @@
 #include "../Core/DiamondProjectCharacter.h"
 #include "../Core/DiamondProjectPlayerController.h"
 #include "../SubSystems/PlayerManager.h"
+#include "../SubSystems/InputUIManager.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
 
 void UCharacterStateMovement::OnStateInit() {
 	PlayerManager = GetCharacter()->GetWorld()->GetSubsystem<UPlayerManager>();
+	InputUIManager = GetCharacter()->GetWorld()->GetSubsystem<UInputUIManager>();
 }
 
 void UCharacterStateMovement::OnStateBegin() {
@@ -76,6 +78,12 @@ void UCharacterStateMovement::OnMovement(const FInputActionValue& Value) {
 
 	bool isCanceled = false;
 	PlayerManager->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()), MovementVector, MovementDirection, isCanceled);
+
+	if (!InputUIManager) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("No UI Subsystem"));
+	}
+
+	InputUIManager->OnPlayerMove();
 
 	if (isCanceled) {
 		return;
