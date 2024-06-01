@@ -43,6 +43,10 @@ public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> DeathRespawnParticle;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UPointLightComponent* Light;
 

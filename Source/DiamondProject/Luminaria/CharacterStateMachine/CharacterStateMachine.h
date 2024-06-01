@@ -22,6 +22,8 @@ class UCharacterStateJump;
 class UCharacterStateDie;
 class UCharacterStateFall;
 class UCharacterStateAttract;
+class UCharacterStateRespawn;
+class AAbsorber;
 
 UCLASS()
 class DIAMONDPROJECT_API UCharacterStateMachine : public UObject {
@@ -46,6 +48,7 @@ public:
 	UPROPERTY() TObjectPtr<UCharacterStateDie> StateDie;
 	UPROPERTY() TObjectPtr<UCharacterStateFall> StateFall;
 	UPROPERTY() TObjectPtr<UCharacterStateAttract> StateAttract;
+	UPROPERTY() TObjectPtr<UCharacterStateRespawn> StateRespawn;
 
 	// Fonction Init ? 
 private:
