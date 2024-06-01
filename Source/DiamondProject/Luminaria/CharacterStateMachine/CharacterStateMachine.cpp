@@ -21,12 +21,6 @@ UCharacterStateMachine::UCharacterStateMachine() {
 
 
 void UCharacterStateMachine::SMInit(ADiamondProjectCharacter* StateCharacter) {
-	
-	if (!StateCharacter) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("Bad Player Return Node"));
-		return;
-	}
-
 	Character = StateCharacter;
 
 	StateIdle->StateInit(this);
@@ -57,7 +51,7 @@ void UCharacterStateMachine::ChangeState(UCharacterState* NewState) {
 	CharacterState = NewState->State;
 
 	if (CurrentState) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Cyan, FString::Printf(TEXT("[CharacterStateMachine - %s] NewState : %s"),*GetCharacter()->GetActorNameOrLabel(), *CurrentState->GetName()));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Cyan, FString::Printf(TEXT("[CharacterStateMachine - %s] NewState : %s"),*GetCharacter()->GetActorNameOrLabel(), *CurrentState->GetName()));
 		CurrentState->StateBegin();
 	}
 }

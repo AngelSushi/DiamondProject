@@ -4,6 +4,7 @@
 #include "CharacterStateMovement.h"
 #include "CharacterStateJump.generated.h"
 
+class AAbsorber;
 
 UCLASS()
 class DIAMONDPROJECT_API UCharacterStateJump : public UCharacterStateMovement {

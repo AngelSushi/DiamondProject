@@ -29,6 +29,9 @@
 
 #include "../UMG/UIComboInput.h"
 
+#include "../SubSystems/InputUIManager.h"
+#include "../SubSystems/UISubsystem.h"
+
 ADiamondProjectCharacter::ADiamondProjectCharacter() {
 
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -54,12 +57,17 @@ void ADiamondProjectCharacter::BeginPlay() {
 	Super::BeginPlay();
 	
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
+	UISystem = GetWorld()->GetSubsystem<UUISubsystem>();
+	InputUIManager = GetWorld()->GetSubsystem<UInputUIManager>();
+
+	EnableInputListener();
+	InputUIManager->OnInputComplete.AddDynamic(this, &ADiamondProjectCharacter::CompleteInput);
 
 	FTimerHandle RegisterTimer;
 
 	GetWorld()->GetTimerManager().SetTimer(RegisterTimer,[this]() {
 		PlayerManager->RegisterPlayer(this);
-	},0.1f,false);
+	},0.1f,false); // 0.1f
 
 	PlayerManager->OnPlayerUpdateCheckpoint.AddDynamic(this, &ADiamondProjectCharacter::OnPlayerUpdateCheckpoint);
 
@@ -165,6 +173,38 @@ void ADiamondProjectCharacter::UpdateCheckpoint(ACheckpoint* checkpoint) {
 void ADiamondProjectCharacter::OnPlayerUpdateCheckpoint(ADiamondProjectCharacter* Character, ACheckpoint* Checkpoint) {
 	if (Character != this) {
 		_checkPoint = Checkpoint->checkPoint->GetComponentLocation();
+	}
+}
+
+void ADiamondProjectCharacter::EnableInputListener() {
+	InputUIManager->EnableInput(ADiamondProjectCharacter::StaticClass());
+
+	ComboWidget = CreateWidget<UUIComboInput>(GetWorld(), UISystem->GetUIAsset()->ComboInputClass);
+	ComboWidget->InitComboUI({ EInput::Y }, FText::FromString(TEXT("Sauter")));
+
+	int32 ScreenX;
+	int32 ScreenY;
+
+	GetWorld()->GetFirstPlayerController()->GetViewportSize(ScreenX, ScreenY);
+	ScreenY -= 600.F;
+	ScreenX -= 200.F;
+
+	ComboWidget->SetPositionInViewport(FVector2D(ScreenX / 2, ScreenY / 2));
+	ComboWidget->AddToViewport();
+}
+
+void ADiamondProjectCharacter::DisableInputListener() {
+	if (!ComboWidget) {
+		return;
+	}
+
+	InputUIManager->DisableInput(GetClass());
+	ComboWidget->RemoveFromViewport();
+}
+
+void ADiamondProjectCharacter::CompleteInput(UInputUI* Input) { // Add Event
+	if (Input->GetClass()->GetName().Equals(ADiamondProjectCharacter::StaticClass()->GetName())) {
+		ComboWidget->RemoveFromViewport();
 	}
 }
 

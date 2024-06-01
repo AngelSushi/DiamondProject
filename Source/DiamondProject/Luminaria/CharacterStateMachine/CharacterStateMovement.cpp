@@ -11,6 +11,7 @@
 #include "../Core/DiamondProjectCharacter.h"
 #include "../Core/DiamondProjectPlayerController.h"
 #include "../SubSystems/PlayerManager.h"
+#include "../SubSystems/InputUIManager.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
 
