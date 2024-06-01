@@ -31,6 +31,9 @@ void AMecanism::OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mActi
 		return;
 	}
 
+	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Yellow, FString::Printf(TEXT("Mecanism Name %s"), *mecanism->GetActorNameOrLabel()));
+	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, FString::Printf(TEXT("This Name %s"), *GetActorNameOrLabel()));
+
 	bool isMecanismOn = true;
 
 	if (MecanismActivators.Num() == 0) {
@@ -46,13 +49,13 @@ void AMecanism::OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mActi
 
 	if (isMecanismOn && !_isSolve) {
 		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Solve Mecanism"));
-		_mecanismEventsDispatcher->OnMecanismOn.Broadcast(this);
+		_mecanismEventsDispatcher->OnMecanismOn.Broadcast(mecanism);
 		_isSolve = true;
 	}
 }
 
 void AMecanism::OnMecanismDeactivate(AMecanism* mecanism,AMecanismActivator* mecanismActivator) {
-	_mecanismEventsDispatcher->OnMecanismOff.Broadcast(this);
+	_mecanismEventsDispatcher->OnMecanismOff.Broadcast(mecanism);
 	_isSolve = false;
 }
 
@@ -61,10 +64,10 @@ void AMecanism::OnMecanismOn(AMecanism* TargetMecanism) {
 		return;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Launch Reward"));
-
 	for (AMecanismRewardActor* MecanismRewardActor : MecanismResults) {
-		MecanismRewardActor->Reward();
+		if (MecanismRewardActor) {
+			MecanismRewardActor->Reward();
+		}
 	}
 }
 
@@ -73,7 +76,13 @@ void AMecanism::OnMecanismOff(AMecanism* TargetMecanism) {
 		return;
 	}
 
-	for (AMecanismRewardActor* MecanismRewardActor : MecanismResults) {
+	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Magenta, FString::Printf(TEXT("[CPP] [Mecanism] OnMecanismOff From %s"), *TargetMecanism->GetActorNameOrLabel()));
+
+	for (AMecanismRewardActor* MecanismRewardActor : MecanismResults) {		
+		if (!MecanismRewardActor) {
+			return;
+		}
+
 		MecanismRewardActor->CancelReward();
 	}
 }

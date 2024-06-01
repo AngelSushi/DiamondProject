@@ -2,6 +2,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "TimerManager.h"
+#include "DiamondProject/Luminaria/ActorComponents/DeathComponent.h"
+
 
 APingPongThwomp::APingPongThwomp()
 {
@@ -32,6 +34,9 @@ APingPongThwomp::APingPongThwomp()
     EndWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
     EndWidgetComponent->SetDrawSize(FVector2D(50.f, 50.f));
     
+
+    DeathComponent = CreateDefaultSubobject<UDeathComponent>(TEXT("Death Component"));
+    DeathComponent->SetupAttachment(RootComponent);
 }
 
 void APingPongThwomp::BeginPlay()

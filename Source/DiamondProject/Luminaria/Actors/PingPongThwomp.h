@@ -32,13 +32,13 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* CubeMesh;
+	TObjectPtr<class UStaticMeshComponent> CubeMesh;
 
 	UPROPERTY(EditAnywhere)
-	UWidgetComponent* StartWidgetComponent; // Composant de widget pour le point de départ
+	TObjectPtr<class UWidgetComponent> StartWidgetComponent; // Composant de widget pour le point de départ
 
 	UPROPERTY(EditAnywhere)
-	UWidgetComponent* EndWidgetComponent; 
+	TObjectPtr<class UWidgetComponent> EndWidgetComponent;
 	
 	UPROPERTY(VisibleAnywhere)
 	FVector StartPoint;
@@ -48,6 +48,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float Speed;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UDeathComponent> DeathComponent;
 
 	FVector CurrentTarget;
 

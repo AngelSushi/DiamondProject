@@ -10,16 +10,16 @@ class DIAMONDPROJECT_API UMathUtilities : public USubsystem {
 
 public:
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintPure)
 	static float PingPongFloat(float Value, float Min, float Max);
 
-	UFUNCTION(BlueprintCallable,BlueprintPure)
+	UFUNCTION(BlueprintPure)
 	static float PingPongFloatAscending(float Value, float Min, float Max,bool& IsPing);
 
 	
-	UFUNCTION(BlueprintCallable)
-	static FVector PingPongVec(float Value, FVector& Min, FVector& Max);
+	UFUNCTION(BlueprintPure)
+	static FVector PingPongVec(float Value, FVector Min, FVector Max);
 
-	UFUNCTION(BlueprintCallable)
-	static FVector PingPongVecAscending(float Value, FVector& Min, FVector& Max,bool& IsPing);
+	UFUNCTION(BlueprintPure)
+	static FVector PingPongVecAscending(float Value, FVector Min, FVector Max,bool& IsPing);
 };

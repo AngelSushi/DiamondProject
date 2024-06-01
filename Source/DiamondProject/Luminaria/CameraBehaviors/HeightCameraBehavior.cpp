@@ -5,6 +5,8 @@
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 
 #include "DiamondProject/Luminaria/Actors/LuminariaCamera.h"
+#include "DiamondProject/Luminaria/Actors/CameraArea.h"
+
 // Behavior that Control Z Axis Of the Camera. 
 
 
@@ -33,14 +35,20 @@ void UHeightCameraBehavior::TickBehavior(float DeltaTime) {
 		}
 
 		if (OwnerActor->bDebugCamera) {
-			DrawDebugLine(OwnerActor->GetWorld(), LinePositionTop + FVector::LeftVector * 50000.F, LinePositionTop + FVector::RightVector * 50000.F, FColor::White, false, 1.F, 1, 2.F);
-			DrawDebugLine(OwnerActor->GetWorld(), LinePositionBot + FVector::LeftVector * 50000.F, LinePositionBot + FVector::RightVector * 50000.F, FColor::White, false, 1.F, 1, 2.F);
+			DrawDebugLine(OwnerActor->GetWorld(), LinePositionTop + FVector::LeftVector * 5000000.F, LinePositionTop + FVector::RightVector * 5000000.F, FColor::White, false, 1.F, 1, 2.F);
+			DrawDebugLine(OwnerActor->GetWorld(), LinePositionBot + FVector::LeftVector * 5000000.F, LinePositionBot + FVector::RightVector * 5000000.F, FColor::White, false, 1.F, 1, 2.F);
 		}
 
 		FVector HeightCameraPosition = OwnerActor->GetActorLocation();
 
-		HeightCameraPosition.Z = Approach(HeightCameraPosition.Z, OffsetZ, 350 * DeltaTime);
-		HeightCameraPosition.Z = FMath::Clamp(HeightCameraPosition.Z,OwnerActor->HeightMin,OwnerActor->HeightMax);
+		if (!OwnerActor->CurrentArea) {
+			return;
+		}
+
+		HeightCameraPosition.Z = Approach(HeightCameraPosition.Z, OffsetZ, 700 * DeltaTime);
+		HeightCameraPosition.Z = FMath::Clamp(HeightCameraPosition.Z,OwnerActor->CurrentArea->HeightMin,OwnerActor->CurrentArea->HeightMax);
+
+	//	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, FString::Printf(TEXT("Pos %s"),*HeightCameraPosition.ToString()));
 			 
 		OwnerActor->SetActorLocation(HeightCameraPosition);
 	}

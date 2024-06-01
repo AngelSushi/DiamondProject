@@ -1,5 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,7 +5,6 @@
 #include "GameFramework/PlayerController.h"
 #include "DiamondProjectPlayerController.generated.h"
 
-/** Forward declaration to improve compiling times */
 class UNiagaraSystem;
 class UInputMappingContext;
 class UPlayerManager;
@@ -32,19 +29,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MovementAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* MovementActionGamepad;
+
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* OpenMapAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PushAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PullAction;
-
 
 	UPROPERTY()
 	FVector LastDirection;
@@ -63,7 +59,7 @@ public:
 	UFUNCTION()
 	void SetJumping(bool Jumping) { bIsJumping = Jumping; }
 
-	UPROPERTY() // Mettre privé
+	UPROPERTY() // Mettre privï¿½
 	bool bIsJumping;
 
 	UFUNCTION(BlueprintCallable,BlueprintPure)
@@ -96,12 +92,27 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetIsPulling(bool IsPulling) { bIsPulling = IsPulling; }
 
+	UFUNCTION(BlueprintPure)
+	float GetJumpMinDuration() { return JumpMinDuration; }
+
+	UFUNCTION(BlueprintPure)
+	float GetJumpMaxDuration() { return JumpMaxDuration; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetJumpMinDuration(float NewJumpMinDuration) { JumpMinDuration = NewJumpMinDuration; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetJumpMaxDuration(float NewJumpMaxDuration) { JumpMaxDuration = NewJumpMaxDuration; }
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	ADiamondProjectCharacter* GetPlayer() { return Cast<ADiamondProjectCharacter>(GetCharacter()); }
 
 protected:
 
 	virtual void SetupInputComponent() override;
 	
 	virtual void BeginPlay();
+	virtual void Tick(float DeltaTime) override;
 	
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsPushing;
@@ -111,10 +122,6 @@ protected:
 
 private:
 
-	UFUNCTION(BlueprintCallable,BlueprintPure)
-	ADiamondProjectCharacter* GetPlayer() { return Cast<ADiamondProjectCharacter>(GetCharacter()); }
-
-
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
 
@@ -122,26 +129,10 @@ private:
 	void Jump();
 
 	UFUNCTION()
-	void StopJump();
+	void OnInputJumpReleased();
 
 	UFUNCTION()
 	void OpenMap();
-
-	/*UFUNCTION()
-	void Push();
-
-	UFUNCTION()
-	void StopPush();
-
-	UFUNCTION()
-	void Pull();
-
-	UFUNCTION()
-	void StopPull();
-	*/
-
-	UPROPERTY(EditAnywhere)
-	bool isUsingDepthMovement;
 
 	UPROPERTY()
 	bool bIsMapOpen;
@@ -156,10 +147,10 @@ private:
 	UPROPERTY()
 	bool bIsJumpPressed;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	float FallGravityScale = 1.0F;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	float JumpOffsetPressed = 0.5F;
 
 	UPROPERTY()
@@ -167,6 +158,15 @@ private:
 
 	UPROPERTY()
 	bool bIsFalling;
+
+	UPROPERTY()
+	float JumpMinDuration;
+
+	UPROPERTY()
+	float JumpMaxDuration;
+
+	UPROPERTY()
+	float JumpTimer;
 };
 
 
