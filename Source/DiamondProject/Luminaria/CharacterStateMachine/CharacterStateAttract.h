@@ -30,9 +30,6 @@ private:
 	UFUNCTION()
 	void OnUnDetectPlayer(ADiamondProjectCharacter* Character, AAbsorber* Absorber);
 
-	UFUNCTION()
-	EInput ConvertKeyToInput(FKey Key);
-
 	UPROPERTY()
 	TObjectPtr<class UAbsorberEventsDispatcher> AbsorberEventsDispatcher;
 

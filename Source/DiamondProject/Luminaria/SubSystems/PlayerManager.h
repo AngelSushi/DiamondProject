@@ -56,7 +56,7 @@ public:
 	ADiamondProjectCharacter* GetOtherPlayer(ADiamondProjectCharacter* Character);
 
 	UFUNCTION(BlueprintPure)
-	TArray<ADiamondProjectCharacter*> GetAllCharactersRef() { return Characters; }
+	TArray<ADiamondProjectCharacter*>& GetAllCharactersRef() { return Characters; }
 
 	UFUNCTION(BlueprintCallable)
 	TArray<ADiamondProjectPlayerController*> GetAllControllersRef() {

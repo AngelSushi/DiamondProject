@@ -13,6 +13,10 @@ enum EInput {
 	Y,
 	JOYSTICK_R,
 	JOYSTICK_L,
+	RB,
+	RT,
+	LB,
+	LT
 };
 
 class UHorizontalBox;

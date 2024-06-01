@@ -3,48 +3,145 @@
 #include "../Actors/MecanismActivator.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "../Actors/Link.h"
+#include "../UMG/UIComboInput.h"
+#include "../Interface/InputDrawable.h"
+#include "../Actors/MovableObject.h"
 
-void UInputUIManager::OnWorldBeginPlay(UWorld& InWorld) {
-	PlayerManager = InWorld.GetSubsystem<UPlayerManager>();
-	UGameplayStatics::GetAllActorsWithInterface(GetWorld(), UInputUI::StaticClass(), ActorsInputUI);
+UInputUIManager::UInputUIManager() {
+	InputMovableObject = CreateDefaultSubobject<UInputUI>(TEXT("MovableObjectInput"));
+	InputJump = CreateDefaultSubobject<UInputUI>(TEXT("JumpInput"));
 }
 
-void UInputUIManager::OnPlayerMove() {
+void UInputUIManager::PostInitialize() {
+	Super::PostInitialize();
 
-	for (int i = 0; i < ActorsInputUI.Num(); i++) {
-		AActor* ActorInputUI =ActorsInputUI[i];
-		IInputUI* InputUIInterface = Cast<IInputUI>(ActorInputUI);
+	AddInput(InputMovableObject, AMovableObject::StaticClass(),false);
+	AddInput(InputJump, ADiamondProjectCharacter::StaticClass(), false);
 
-		if (CompletedInputs.Contains(InputUIInterface)) {
-			continue;
-		}
+	FTimerHandle Timer;
 
-		if (ActorInputUI->IsA(AActor::StaticClass())) {
-			ADiamondProjectCharacter* FirstCharacter = PlayerManager->GetAllCharactersRef()[0];
-			ADiamondProjectCharacter* SecondCharacter = PlayerManager->GetAllCharactersRef()[1];
+	GetWorld()->GetTimerManager().SetTimer(Timer, [this]() { // Wait Player To Register	
+		InputMovableObject->Init({EInput::RB,EInput::JOYSTICK_L});
+		InputJump->Init({ EInput::Y });
+	}, 0.3f, false);
+}
 
-			float FirstDistanceSqr = FVector::DistSquared(FirstCharacter->GetActorLocation(), ActorInputUI->GetActorLocation());
-			float SecondDistanceSqr = FVector::DistSquared(FirstCharacter->GetActorLocation(), ActorInputUI->GetActorLocation());
+void UInputUIManager::AddInput(UInputUI* Input, TSubclassOf<class AActor> Class, bool IsEnabled /* = false*/) {
+	Input->Register(this, Class, IsEnabled);
+	
+	if (!Inputs.Contains(Input)) {
+		Inputs.Add(Input);
+	}
+}
 
-			if ((FirstDistanceSqr < 225.F * 225.F || SecondDistanceSqr < 225.F * 225.F)) {
-				if (ActivatedActors.Contains(ActorInputUI)) {
-					continue;
-				}
-
-				InputUIInterface->AddInputUI();
-				ActivatedActors.Add(ActorInputUI);
-			}
-			else {
-				if (ActivatedActors.Contains(ActorInputUI)) {
-					ActivatedActors.Remove(ActorInputUI);
-					InputUIInterface->RemoveInputUI();
-				}
-			}
-			
+void UInputUIManager::EnableInput(TSubclassOf<class AActor> Class) {
+	for (UInputUI* Input : Inputs) {
+		if (Input->GetClass()->GetName().Equals(Class->GetName())) {
+			Input->SetEnabled(true);
+			break;
 		}
 	}
 }
 
-void UInputUIManager::CompleteInput(IInputUI* InputUI) {
-	CompletedInputs.Add(InputUI);
+void UInputUIManager::DisableInput(TSubclassOf<class AActor> Class) {
+	for (UInputUI* Input : Inputs) {
+		if (Input->GetClass() == Class) {
+			Input->SetEnabled(false);
+			break;
+		}
+	}
+}
+
+EInput UInputUIManager::ConvertKeyToInput(FKey Key) {
+	if (Key == EKeys::Gamepad_FaceButton_Bottom) {
+		return EInput::A;
+	}
+
+	if (Key == EKeys::Gamepad_FaceButton_Right) {
+		return EInput::B;
+	}
+
+	if (Key == EKeys::Gamepad_FaceButton_Left) {
+		return EInput::X;
+	}
+
+	if (Key == EKeys::Gamepad_FaceButton_Top) {
+		return EInput::Y;
+	}
+
+	if (Key == EKeys::Gamepad_LeftThumbstick) {
+		return EInput::JOYSTICK_L;
+	}
+
+	if (Key == EKeys::Gamepad_RightThumbstick) {
+		return EInput::JOYSTICK_R;
+	}
+
+	if (Key == EKeys::Gamepad_RightShoulder) {
+		return EInput::RB;
+	}
+
+	if (Key == EKeys::Gamepad_RightTriggerAxis) {
+		return EInput::RT;
+	}
+
+	if (Key == EKeys::Gamepad_LeftShoulder) {
+		return EInput::LB;
+	}
+
+	if (Key == EKeys::Gamepad_LeftTriggerAxis) {
+		return EInput::LT;
+	}
+
+	return EInput::NO_INPUT;
+
+}
+
+FKey UInputUIManager::ConvertInputToKey(EInput Input) { // Doesn't work with keyboard
+	switch (Input) {
+		case EInput::A:
+			return EKeys::Gamepad_FaceButton_Bottom;
+			break;
+
+		case EInput::B:
+			return EKeys::Gamepad_FaceButton_Right;
+			break;
+
+		case EInput::Y:
+			return EKeys::Gamepad_FaceButton_Top;
+			break;
+
+		case EInput::X:
+			return EKeys::Gamepad_FaceButton_Left;
+			break;
+
+		case EInput::JOYSTICK_L:
+			return EKeys::Gamepad_LeftThumbstick;
+			break;
+			
+		case EInput::JOYSTICK_R:
+			return EKeys::Gamepad_RightThumbstick;
+			break;
+
+		case EInput::RB:
+			return EKeys::Gamepad_RightShoulder;
+			break;
+
+		case EInput::RT:
+			return EKeys::Gamepad_RightTriggerAxis;
+			break;
+
+		case EInput::LB:
+			return EKeys::Gamepad_LeftShoulder;
+			break;
+
+		case EInput::LT:
+			return EKeys::Gamepad_LeftTriggerAxis;
+			break;
+
+		default:
+			return EKeys::Zero;
+			break;
+	}
 }

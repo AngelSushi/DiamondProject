@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "DiamondProjectPlayerController.h"
 #include "../Interface/ButtonInteractable.h"
+#include "../Interface/InputDrawable.h"
 #include "DiamondProjectCharacter.generated.h"
 
 class UPlayerManager;
@@ -18,7 +19,7 @@ enum EDeathCause {
 };
 
 UCLASS(Blueprintable)
-class ADiamondProjectCharacter : public ACharacter,public IButtonInteractable {
+class ADiamondProjectCharacter : public ACharacter,public IButtonInteractable, public IInputDrawable {
 	GENERATED_BODY()
 
 public:
@@ -162,6 +163,12 @@ public:
 	UFUNCTION()
 	UCharacterStateMachine* GetStateMachine() { return CharacterStateMachine; }
 	
+	/* IInputDrawable Functions */
+	virtual void EnableInputListener();
+	virtual void DisableInputListener();
+
+	UFUNCTION()
+	virtual void CompleteInput(UInputUI* Input);
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

@@ -7,6 +7,8 @@
 #include "../UMG/UIComboInput.h"
 #include "Components/HorizontalBox.h"
 
+#include "../Interface/InputUI.h"
+
 AMovableObject::AMovableObject() {
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -17,18 +19,19 @@ void AMovableObject::BeginPlay() {
 
 	UISystem = GetWorld()->GetSubsystem<UUISubsystem>();
 	InputUIManager = GetWorld()->GetSubsystem<UInputUIManager>();
+
+	InputUIManager->OnInputComplete.AddDynamic(this, &AMovableObject::CompleteInput);
 }
 
 void AMovableObject::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 }
 
-void AMovableObject::AddInputUI() {
-	ComboWidget = CreateWidget<UUIComboInput>(GetWorld(),UISystem->GetUIAsset()->ComboInputClass);
-	TArray<TEnumAsByte<EInput>> Inputs;
-	Inputs.Add(EInput::A);
-	Inputs.Add(EInput::B);
-	ComboWidget->InitComboUI(Inputs,FText::FromString(TEXT("Pousser/Tirer")));
+void AMovableObject::EnableInputListener() {
+	InputUIManager->EnableInput(GetClass());
+	
+	ComboWidget = CreateWidget<UUIComboInput>(GetWorld(), UISystem->GetUIAsset()->ComboInputClass);
+	ComboWidget->InitComboUI({EInput::JOYSTICK_L,EInput::JOYSTICK_R}, FText::FromString(TEXT("Pousser/Tirer")));
 
 	int32 ScreenX;
 	int32 ScreenY;
@@ -41,10 +44,17 @@ void AMovableObject::AddInputUI() {
 	ComboWidget->AddToViewport();
 }
 
-void AMovableObject::RemoveInputUI() {
+void AMovableObject::DisableInputListener() {
+	if (!ComboWidget) {
+		return;
+	}
+
+	InputUIManager->DisableInput(GetClass());
 	ComboWidget->RemoveFromViewport();
 }
 
-void AMovableObject::CompleteInput() {
-	InputUIManager->CompleteInput(this);
+void AMovableObject::CompleteInput(UInputUI* Input) {
+	if (Input->GetClass() == GetClass()) {
+		ComboWidget->RemoveFromViewport();
+	}
 }

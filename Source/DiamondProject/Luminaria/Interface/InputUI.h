@@ -1,25 +1,47 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/Interface.h"
+#include "../UMG/UIComboInput.h"
 #include "InputUI.generated.h"
 
-UINTERFACE(MinimalAPI)
-class UInputUI : public UInterface {
-	GENERATED_BODY()
-};
+class UInputUIManager;
+enum EInput;
 
-
-class DIAMONDPROJECT_API IInputUI {
+UCLASS()
+class DIAMONDPROJECT_API UInputUI : public UObject {
 	GENERATED_BODY()
 
 public:
-	virtual void AddInputUI() = 0;
-	virtual void RemoveInputUI() = 0;
-	virtual void CompleteInput() = 0;
 
-protected:
-	
-	TObjectPtr<class UUIComboInput> ComboWidget;
+	void Register(UInputUIManager* Manager, TSubclassOf<class AActor> Class, bool IsEnabled = false);
+	void Init(TArray<TEnumAsByte<EInput>> TargetInputs);
 
+	void InputListener(FKey Key);
+	void InputReleasedListener(FKey Key);
+
+	void SetEnabled(bool bEnabled) { bIsEnabled = bEnabled; }
+
+	bool IsEnabled() { return bIsEnabled; }
+	bool HasCompleted() { return bHasCompleted; }
+	TSubclassOf<class AActor> GetClass() { return TargetClass; }
+
+private:
+
+	UPROPERTY()
+	bool bHasCompleted;
+
+	UPROPERTY()
+	bool bIsEnabled;
+
+	UPROPERTY()
+	TSubclassOf<class AActor> TargetClass;
+
+	UPROPERTY()
+	TObjectPtr<class UInputUIManager> InputManager;
+
+	UPROPERTY()
+	TArray<TEnumAsByte<EInput>> Inputs;
+
+	UPROPERTY()
+	TArray<TEnumAsByte<EInput>> PressedInputs;
 };

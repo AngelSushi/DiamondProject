@@ -10,6 +10,11 @@
 #include "CharacterStateDie.h"
 #include <InputActionValue.h>
 
+
+#include "../Interface/InputUI.h"
+#include "../SubSystems/InputUIManager.h"
+#include "../SubSystems/UISubsystem.h"
+
 void UCharacterStateJump::OnStateBegin() {
 	Super::OnStateBegin();
 
@@ -17,8 +22,7 @@ void UCharacterStateJump::OnStateBegin() {
 	bIsJumping = true;
 	bIsJumpPressed = true;
 
-	//GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Magenta, FString::Printf(TEXT("Jump From %s"), *GetActorNameOrLabel()));
-
+	//EnableInputListener();
 	GetCharacter()->GetCharacterMovement()->GravityScale = 0.F;
 	JumpTimer = 0.F;
 
