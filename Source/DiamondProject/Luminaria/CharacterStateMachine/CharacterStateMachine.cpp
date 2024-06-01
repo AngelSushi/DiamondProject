@@ -6,6 +6,7 @@
 #include "CharacterStateDie.h"
 #include "CharacterStateFall.h"
 #include "CharacterStateAttract.h"
+#include "CharacterStateRespawn.h"
 
 #include "InputActionValue.h"
 #include "../Core/DiamondProjectCharacter.h"
@@ -17,6 +18,7 @@ UCharacterStateMachine::UCharacterStateMachine() {
 	StateDie = CreateDefaultSubobject<UCharacterStateDie>(TEXT("StateDie"));
 	StateFall = CreateDefaultSubobject<UCharacterStateFall>(TEXT("StateFall"));
 	StateAttract = CreateDefaultSubobject<UCharacterStateAttract>(TEXT("StateAttract"));
+	StateRespawn = CreateDefaultSubobject<UCharacterStateRespawn>(TEXT("StateRespawn"));
 }
 
 
@@ -29,6 +31,7 @@ void UCharacterStateMachine::SMInit(ADiamondProjectCharacter* StateCharacter) {
 	StateDie->StateInit(this);
 	StateFall->StateInit(this);
 	StateAttract->StateInit(this);
+	StateRespawn->StateInit(this);
 
 }
 

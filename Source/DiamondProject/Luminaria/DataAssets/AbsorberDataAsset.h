@@ -6,6 +6,8 @@
 #include "Engine/DataAsset.h"
 #include "AbsorberDataAsset.generated.h"
 
+enum EInput;
+
 UCLASS()
 class DIAMONDPROJECT_API UAbsorberDataAsset : public UDataAsset {
 	GENERATED_BODY()

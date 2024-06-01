@@ -32,6 +32,8 @@
 #include "../SubSystems/InputUIManager.h"
 #include "../SubSystems/UISubsystem.h"
 
+#include "NiagaraComponent.h"
+
 ADiamondProjectCharacter::ADiamondProjectCharacter() {
 
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -51,6 +53,9 @@ ADiamondProjectCharacter::ADiamondProjectCharacter() {
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	DeathRespawnParticle = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DeathRespawnParticle"));
+	DeathRespawnParticle->SetupAttachment(GetMesh());
 }
 
 void ADiamondProjectCharacter::BeginPlay() {
@@ -154,7 +159,7 @@ void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que f
 
 	GetWorld()->GetTimerManager().SetTimer(RespawnHandle, [&]() {
 		Respawn(DeathCause);
-	}, 2.2F, false);
+	},3.F, false);
 }
 
 void ADiamondProjectCharacter::Respawn(EDeathCause DeathCause) {

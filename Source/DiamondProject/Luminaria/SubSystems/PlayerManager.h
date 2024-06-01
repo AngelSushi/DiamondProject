@@ -31,7 +31,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintAssignable)
 	FOnPlayerDeath OnPlayerDeath;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere,BlueprintAssignable)
 	FOnPlayerRespawn OnPlayerRespawn;
 
 	UPROPERTY(VisibleAnywhere,BlueprintAssignable)

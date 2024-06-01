@@ -114,13 +114,15 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathC
 		return;
 	}
 
-	if (bHasDead) {
-		return;
-	}
+	//if (bHasDead) {
+		//return;
+	//}
 	
-	bHasDead = true;
+	//bHasDead = true;
 
 	BehaviorState = ECameraBehavior::GOTO;
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("[CAMERA] DeathPlayer On Camera"));
 
 	FTimerHandle Timer;
 	

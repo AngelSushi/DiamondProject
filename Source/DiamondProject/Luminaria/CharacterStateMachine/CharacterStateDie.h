@@ -11,6 +11,8 @@ class DIAMONDPROJECT_API UCharacterStateDie : public UCharacterState {
 
 protected:
 	virtual void OnStateInit() override;
+	virtual void OnStateBegin() override;
+	virtual void OnStateTick(float DeltaTime) override;
 
 private:
 	UPROPERTY()
@@ -19,4 +21,9 @@ private:
 	UFUNCTION()
 	void OnPlayerRespawn(ADiamondProjectCharacter* Character,EDeathCause DeathCause,FVector RespawnPoint);
 
+	UPROPERTY()
+	float DieTimer = 3.F;
+
+	UPROPERTY()
+	float DieTickTimer;
 };
