@@ -78,12 +78,6 @@ public:
 	float GetJumpOffsetPressed() { return JumpOffsetPressed; }
 
 	UFUNCTION(BlueprintCallable,BlueprintPure)
-	bool HasAugmentedHeight() { return bHasAugmentedHeight; }
-
-	UFUNCTION(BlueprintCallable)
-	void SetHasAugmentedHeight(bool HasAugmentedHeight) { bHasAugmentedHeight = HasAugmentedHeight; }
-
-	UFUNCTION(BlueprintCallable,BlueprintPure)
 	FVector2D GetMoveValue() { return MoveValue; }
 
 	UFUNCTION(BlueprintCallable)
@@ -152,9 +146,6 @@ private:
 
 	UPROPERTY()
 	float JumpOffsetPressed = 0.5F;
-
-	UPROPERTY()
-	bool bHasAugmentedHeight;
 
 	UPROPERTY()
 	bool bIsFalling;

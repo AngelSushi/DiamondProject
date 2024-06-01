@@ -46,6 +46,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UNiagaraComponent> DeathRespawnParticle;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> LandOnGroundParticle;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UPointLightComponent* Light;

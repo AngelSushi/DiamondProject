@@ -56,6 +56,9 @@ ADiamondProjectCharacter::ADiamondProjectCharacter() {
 
 	DeathRespawnParticle = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DeathRespawnParticle"));
 	DeathRespawnParticle->SetupAttachment(GetMesh());
+
+	LandOnGroundParticle = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LandOnGroundParticle"));
+	LandOnGroundParticle->SetupAttachment(GetMesh());
 }
 
 void ADiamondProjectCharacter::BeginPlay() {
@@ -122,6 +125,22 @@ void ADiamondProjectCharacter::Landed(const FHitResult& Hit) {
 	bIsOnGround = true;
 	PlayerManager->OnPlayerLandOnGround.Broadcast(this);
 	GroundActor = Hit.GetActor();
+	
+	FTimerHandle AnimationTimer;
+
+//	FVector ParticlePosition = GetActorLocation();
+//	ParticlePosition.Z = Hit.GetActor()->GetActorLocation().Z + (Hit.GetActor()->GetActorScale3D().Z * 100);
+
+	GetWorld()->GetTimerManager().SetTimer(AnimationTimer, [this]() {
+		FVector Position = GetActorLocation();
+		Position.Z -= GetSimpleCollisionHalfHeight();
+
+		LandOnGroundParticle->SetWorldLocation(Position);
+		LandOnGroundParticle->ActivateSystem();
+
+	}, 0.1f, false);
+
+
 
 	//if (GetLuminariaController() && GetLuminariaController()->IsJumping()) {
 		//GetLuminariaController()->SetJumping(false);
