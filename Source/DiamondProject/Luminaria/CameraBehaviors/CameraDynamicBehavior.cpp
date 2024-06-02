@@ -57,16 +57,13 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 			Barycenter.Y = ToApproachY;
 		}
 			
-		DefaultZ = OwnerActor->GetActorLocation().Z;
 		Barycenter.Y = Approach(Barycenter.Y, ToApproachY, 700 * DeltaTime); // 350 de base 
-
-		//if (ToApproachY >= MinY && ToApproachY <= MaxY) { // We Clamp Only If Camera Is Inside The Bounds To Let Transition Between Areas
-			Barycenter.Y = FMath::Clamp(Barycenter.Y, MinY, MaxY);
-		//}
+		Barycenter.Y = FMath::Clamp(Barycenter.Y, MinY, MaxY);
+		
 
 		DefaultZ = OwnerActor->GetActorLocation().Z;
 
-		Barycenter.Z = /*DefaultZ*/ Approach(Barycenter.Z,DefaultZ,700 * DeltaTime);
+		Barycenter.Z = DefaultZ; //Approach(Barycenter.Z,DefaultZ,700 * DeltaTime);
 
 			
 

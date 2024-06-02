@@ -27,8 +27,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	uint16 ZoomMax;
 
-	UPROPERTY(EditAnywhere)
-	uint16 HeightMin;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int HeightMin;
 
 	UPROPERTY(EditAnywhere)
 	uint16 HeightMax;
