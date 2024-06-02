@@ -27,7 +27,7 @@ private:
 	void CalculateBarycenter();
 
 	UFUNCTION()
-	void OnPlayerMove(ADiamondProjectCharacter* Character, FVector Direction, bool& IsCanceled);
+	void OnPlayerMove(ADiamondProjectCharacter* Character,FVector2D Input, FVector Direction, bool& IsCanceled);
 
 	UPROPERTY()
 	FVector _barycenter;

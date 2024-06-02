@@ -44,6 +44,8 @@ public:
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	ACameraArea* GetCurrentArea() { return CurrentArea; }
 
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentArea(ACameraArea* NewArea) { CurrentArea = NewArea; }
 
 
 	UFUNCTION()
@@ -60,7 +62,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<class UCameraBehavior> CameraBehavior;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class UCameraDynamicBehavior> DynamicBehavior;
 
 	UPROPERTY()

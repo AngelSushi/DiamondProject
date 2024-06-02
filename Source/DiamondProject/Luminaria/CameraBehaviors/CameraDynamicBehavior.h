@@ -33,7 +33,7 @@ class DIAMONDPROJECT_API UCameraDynamicBehavior : public UCameraBehavior {
 public:
 	virtual void BeginBehavior(ALuminariaCamera* Owner) override;
 
-	virtual void OnPlayerMove(ADiamondProjectCharacter* character, FVector direction, bool& isCanceled) override;
+	virtual void OnPlayerMove(ADiamondProjectCharacter* character, FVector2D Input, FVector direction, bool& isCanceled) override;
 	
 	virtual void TickBehavior(float DeltaTime) override;
 
