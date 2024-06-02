@@ -98,9 +98,20 @@ void ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavio
 		LeaderBehavior = NewObject<UCameraLeaderBehavior>();
 		CameraBehavior = LeaderBehavior;
 		break;
+
+	case ECameraBehavior::NO_BEHAVIOR:
+	default:
+		DynamicBehavior = nullptr;
+		DefaultBehavior = nullptr;
+		HeightBehavior = nullptr;
+		GoToBehavior = nullptr;
+		CameraBehavior = nullptr;
+		break;
 	}
 
-	CameraBehavior->BeginBehavior(this);
+	if (CameraBehavior) {
+		CameraBehavior->BeginBehavior(this);
+	}
 
 	if (HeightBehavior) {
 		HeightBehavior->BeginBehavior(this);
