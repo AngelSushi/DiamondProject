@@ -36,7 +36,7 @@ void ADialogSpawner::Tick(float DeltaTime) {
 		float DistanceX = FMath::Abs(PointToPlayer.X);
 		
 		if (Angle < 0 && DistanceX < 50.F && !bHasChecked) {
-			GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Black, TEXT("Display Text"));
+			//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Black, TEXT("Display Text"));
 			OnDisplayDialog();
 			bHasChecked = true;	
 		}	

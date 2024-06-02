@@ -16,7 +16,6 @@ void UCameraDynamicBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	Barycenter.Y = OwnerActor->GetActorLocation().Y;
 	Barycenter.Z = OwnerActor->GetActorLocation().Z;
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Magenta, TEXT("Begin Dynamic Behavior"));
 }
 
 
@@ -145,8 +144,7 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 				}
 
 				OffsetX -= Offset;
-				GEngine->AddOnScreenDebugMessage(-1, 10.F, FColor::Red, FString::Printf(TEXT("NewOffsetX %f"), OffsetX));
-
+				
 				_extendPositions.Add(FExtendData(Center, direction, _extendPositions.Num(),Offset));
 			}
 		}
