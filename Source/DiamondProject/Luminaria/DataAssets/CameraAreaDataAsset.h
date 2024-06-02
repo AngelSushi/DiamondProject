@@ -28,10 +28,10 @@ public:
 	uint16 ZoomMax;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly)
-	int HeightMin;
+	float HeightMin;
 
 	UPROPERTY(EditAnywhere)
-	uint16 HeightMax;
+	float HeightMax;
 
 	UPROPERTY(EditAnywhere)
 	float PlayerSpeedMin = 600.F;
