@@ -58,12 +58,12 @@ void UCharacterStateMachine::ChangeState(UCharacterState* NewState) {
 	}
 }
 
-void UCharacterStateMachine::OnMovement(const FInputActionValue& Value) {
+void UCharacterStateMachine::OnMovement(const FInputActionValue& MovementValue) {
 	if (!CurrentState) {
 		return;
 	}
 
-	CurrentState->OnMovement(Value);
+	CurrentState->OnMovement(MovementValue);
 }
 
 void UCharacterStateMachine::OnJump() {

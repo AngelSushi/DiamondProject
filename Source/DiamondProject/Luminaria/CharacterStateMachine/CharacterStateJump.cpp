@@ -15,13 +15,13 @@
 #include "../SubSystems/InputUIManager.h"
 #include "../SubSystems/UISubsystem.h"
 
-//#include "Kismet/GameplayStatics.h"
-//#include "../Actors/Link.h"
+#include "Kismet/GameplayStatics.h"
+#include "../Actors/Link.h"
 
 void UCharacterStateJump::OnStateInit() {
 	Super::OnStateInit();
 
-	//LinkRef = Cast<ALink>(UGameplayStatics::GetActorOfClass(GetWorld(), ALink::StaticClass()));
+	LinkRef = Cast<ALink>(UGameplayStatics::GetActorOfClass(GetWorld(), ALink::StaticClass()));
 }
 
 void UCharacterStateJump::OnStateBegin() {
@@ -38,13 +38,13 @@ void UCharacterStateJump::OnStateBegin() {
 	if (PlayerManager) {
 		PlayerManager->OnPlayerLandOnGround.AddDynamic(this, &UCharacterStateJump::OnPlayerLandOnGround);
 
-		/*float DistanceBetweenPlayers = FVector::Distance(PlayerManager->GetAllCharactersRef()[0]->GetActorLocation(), PlayerManager->GetAllCharactersRef()[1]->GetActorLocation());
+		float DistanceBetweenPlayers = FVector::Distance(PlayerManager->GetAllCharactersRef()[0]->GetActorLocation(), PlayerManager->GetAllCharactersRef()[1]->GetActorLocation());
 
-		if (DistanceBetweenPlayers >= LinkRef->GetDistanceMax()) {
+		if (LinkRef && DistanceBetweenPlayers >= LinkRef->GetDistanceMax()) {
 			ChangeState(GetStateMachine()->StateIdle);
 			return;
 		}
-		*/
+		
 	}
 
 }
@@ -79,7 +79,7 @@ void UCharacterStateJump::OnPlayerLandOnGround(ADiamondProjectCharacter* Charact
 }
 
 void UCharacterStateJump::StopJump() {
-	GetCharacter()->GetCharacterMovement()->GravityScale = GetCharacter()->GetGravityScaleSaved();
+	GetCharacter()->GetCharacterMovement()->GravityScale = 5.F;
 }
 
 void UCharacterStateJump::OnDie() {

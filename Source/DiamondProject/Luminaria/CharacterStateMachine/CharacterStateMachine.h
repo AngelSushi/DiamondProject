@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "InputActionValue.h"
 #include "CharacterStateMachine.generated.h"
 
 class UCharacterStateIdle;
@@ -49,7 +50,7 @@ public:
 	void SMTick(float DeltaTime);
 	void ChangeState(UCharacterState* NewState);
 
-	void OnMovement(const FInputActionValue& Value);
+	void OnMovement(const FInputActionValue& MovementValue);
 	void OnJump();
 	void OnInputJumpReleased();
 	void OnDie();

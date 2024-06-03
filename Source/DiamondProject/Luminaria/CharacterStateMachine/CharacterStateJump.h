@@ -51,6 +51,6 @@ private:
 	UPROPERTY()
 	float JumpMaxDuration;
 
-	//UPROPERTY()
-	//TObjectPtr<class ALink> LinkRef;
+	UPROPERTY()
+	TObjectPtr<class ALink> LinkRef;
 };
