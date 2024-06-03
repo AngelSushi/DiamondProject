@@ -11,6 +11,9 @@ class DIAMONDPROJECT_API AMecanismRewardActor : public AActor {
 public:	
 	AMecanismRewardActor();
 
+	UPROPERTY()
+	TObjectPtr<class AMecanism> TargetMecanism;
+
 	virtual void Reward();
 	virtual void CancelReward();
 
