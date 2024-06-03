@@ -51,7 +51,6 @@ void UCharacterStateMachine::ChangeState(UCharacterState* NewState) {
 	}
 
 	CurrentState = NewState;
-	CharacterState = NewState->State;
 
 	if (CurrentState) {
 		//GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Cyan, FString::Printf(TEXT("[CharacterStateMachine - %s] NewState : %s"),*GetCharacter()->GetActorNameOrLabel(), *CurrentState->GetName()));

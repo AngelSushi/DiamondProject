@@ -4,18 +4,6 @@
 #include "UObject/NoExportTypes.h"
 #include "CharacterStateMachine.generated.h"
 
-
-UENUM(BlueprintType)
-enum ECharacterState {
-	NO_STATE,
-	IDLE,
-	MOVING,
-	JUMPING,
-	FALLING,
-	ATTRACT, // For Absorbers
-	DIE,
-};
-
 class UCharacterStateIdle;
 class UCharacterStateMovement;
 class UCharacterStateJump;
@@ -32,9 +20,6 @@ class DIAMONDPROJECT_API UCharacterStateMachine : public UObject {
 public:
 
 	UCharacterStateMachine();
-
-	UPROPERTY()
-	TEnumAsByte<ECharacterState> CharacterState;
 
 	UFUNCTION()
 	UCharacterState* GetCurrentState() const { return CurrentState; }
