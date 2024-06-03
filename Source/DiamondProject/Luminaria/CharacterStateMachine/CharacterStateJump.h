@@ -4,6 +4,7 @@
 #include "CharacterStateMovement.h"
 #include "CharacterStateJump.generated.h"
 
+class AAbsorber;
 
 UCLASS()
 class DIAMONDPROJECT_API UCharacterStateJump : public UCharacterStateMovement {
@@ -18,6 +19,8 @@ public:
 	void SetJumpMaxDuration(float MaxDuration) { JumpMaxDuration = MaxDuration; }
 
 	virtual void OnDie() override;
+	virtual void OnAbsorberDetectCharacter(ADiamondProjectCharacter* Character, AAbsorber* Absorber);
+
 protected:
 	virtual void OnStateBegin() override;
 	virtual void OnStateTick(float DeltaTime);

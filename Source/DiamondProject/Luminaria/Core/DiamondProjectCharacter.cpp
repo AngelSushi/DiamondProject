@@ -26,39 +26,56 @@
 
 #include "DiamondProject/Luminaria/CharacterStateMachine/CharacterStateMachine.h"
 
-ADiamondProjectCharacter::ADiamondProjectCharacter(){
-	
+
+#include "../UMG/UIComboInput.h"
+
+#include "../SubSystems/InputUIManager.h"
+#include "../SubSystems/UISubsystem.h"
+
+#include "NiagaraComponent.h"
+
+ADiamondProjectCharacter::ADiamondProjectCharacter() {
+
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-	
+
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Rotate character to moving direction
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 	//GetCharacterMovement()->bNotifyApex = true;
-	
+
 	Light = CreateDefaultSubobject<UPointLightComponent>(TEXT("Energy"));
 	Light->SetupAttachment(RootComponent);
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
-	CharacterStateMachine = CreateDefaultSubobject<UCharacterStateMachine>(TEXT("StateMachine"));
+	DeathRespawnParticle = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DeathRespawnParticle"));
+	DeathRespawnParticle->SetupAttachment(GetMesh());
+
+	LandOnGroundParticle = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LandOnGroundParticle"));
+	LandOnGroundParticle->SetupAttachment(GetMesh());
 }
 
 void ADiamondProjectCharacter::BeginPlay() {
 	Super::BeginPlay();
 	
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
+	UISystem = GetWorld()->GetSubsystem<UUISubsystem>();
+	InputUIManager = GetWorld()->GetSubsystem<UInputUIManager>();
+
+	EnableInputListener();
+	InputUIManager->OnInputComplete.AddDynamic(this, &ADiamondProjectCharacter::CompleteInput);
 
 	FTimerHandle RegisterTimer;
 
 	GetWorld()->GetTimerManager().SetTimer(RegisterTimer,[this]() {
 		PlayerManager->RegisterPlayer(this);
-	},0.1f,false);
+	},0.1f,false); // 0.1f
 
 	PlayerManager->OnPlayerUpdateCheckpoint.AddDynamic(this, &ADiamondProjectCharacter::OnPlayerUpdateCheckpoint);
 
@@ -74,8 +91,10 @@ void ADiamondProjectCharacter::BeginPlay() {
 
 	GetCharacterMovement()->MaxWalkSpeed = GetPlayerAsset()->Speed;
 
+	CharacterStateMachine = NewObject<UCharacterStateMachine>(/*TEXT("StateMachine")*/);
 	CharacterStateMachine->SMInit(this);
 	CharacterStateMachine->SMBegin();
+
 }
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
@@ -106,10 +125,35 @@ void ADiamondProjectCharacter::Landed(const FHitResult& Hit) {
 	bIsOnGround = true;
 	PlayerManager->OnPlayerLandOnGround.Broadcast(this);
 	GroundActor = Hit.GetActor();
+	
+	FTimerHandle AnimationTimer;
 
-	//if (GetLuminariaController() && GetLuminariaController()->IsJumping()) {
-		//GetLuminariaController()->SetJumping(false);
-	//}
+	GetWorld()->GetTimerManager().SetTimer(AnimationTimer, [this]() {
+		FVector Position = GetActorLocation();
+		Position.Z -= GetSimpleCollisionHalfHeight();
+
+		LandOnGroundParticle->SetWorldLocation(Position);
+		LandOnGroundParticle->ActivateSystem();
+
+	}, 0.1f, false);
+}
+
+void ADiamondProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
+	PlayerInputComponent->BindKey(EKeys::A, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+	PlayerInputComponent->BindKey(EKeys::E, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+	
+	
+	PlayerInputComponent->BindKey(EKeys::Gamepad_FaceButton_Bottom, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+	PlayerInputComponent->BindKey(EKeys::Gamepad_FaceButton_Top, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+	PlayerInputComponent->BindKey(EKeys::Gamepad_FaceButton_Right, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+	PlayerInputComponent->BindKey(EKeys::Gamepad_FaceButton_Left, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
+
+}
+
+void ADiamondProjectCharacter::AbsorberInputStarted(FKey Key) {
+	GetStateMachine()->OnAbsorberInputStarted(Key);
 }
 
 void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que fait la mort ya ptetre de le faire en respawn
@@ -125,7 +169,7 @@ void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que f
 
 	GetWorld()->GetTimerManager().SetTimer(RespawnHandle, [&]() {
 		Respawn(DeathCause);
-	}, 2.2F, false);
+	},3.F, false);
 }
 
 void ADiamondProjectCharacter::Respawn(EDeathCause DeathCause) {
@@ -144,6 +188,38 @@ void ADiamondProjectCharacter::UpdateCheckpoint(ACheckpoint* checkpoint) {
 void ADiamondProjectCharacter::OnPlayerUpdateCheckpoint(ADiamondProjectCharacter* Character, ACheckpoint* Checkpoint) {
 	if (Character != this) {
 		_checkPoint = Checkpoint->checkPoint->GetComponentLocation();
+	}
+}
+
+void ADiamondProjectCharacter::EnableInputListener() {
+	InputUIManager->EnableInput(ADiamondProjectCharacter::StaticClass());
+
+	ComboWidget = CreateWidget<UUIComboInput>(GetWorld(), UISystem->GetUIAsset()->ComboInputClass);
+	ComboWidget->InitComboUI({ EInput::Y }, FText::FromString(TEXT("Sauter")));
+
+	int32 ScreenX;
+	int32 ScreenY;
+
+	GetWorld()->GetFirstPlayerController()->GetViewportSize(ScreenX, ScreenY);
+	ScreenY -= 600.F;
+	ScreenX -= 200.F;
+
+	ComboWidget->SetPositionInViewport(FVector2D(ScreenX / 2, ScreenY / 2));
+	ComboWidget->AddToViewport();
+}
+
+void ADiamondProjectCharacter::DisableInputListener() {
+	if (!ComboWidget) {
+		return;
+	}
+
+	InputUIManager->DisableInput(GetClass());
+	ComboWidget->RemoveFromViewport();
+}
+
+void ADiamondProjectCharacter::CompleteInput(UInputUI* Input) { // Add Event
+	if (Input->GetClass()->GetName().Equals(ADiamondProjectCharacter::StaticClass()->GetName())) {
+		ComboWidget->RemoveFromViewport();
 	}
 }
 

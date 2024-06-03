@@ -5,6 +5,8 @@
 #include "CharacterStateJump.h"
 #include "CharacterStateDie.h"
 #include "CharacterStateFall.h"
+#include "CharacterStateAttract.h"
+#include "CharacterStateRespawn.h"
 
 #include "InputActionValue.h"
 #include "../Core/DiamondProjectCharacter.h"
@@ -15,6 +17,8 @@ UCharacterStateMachine::UCharacterStateMachine() {
 	StateJump = CreateDefaultSubobject<UCharacterStateJump>(TEXT("StateJump"));
 	StateDie = CreateDefaultSubobject<UCharacterStateDie>(TEXT("StateDie"));
 	StateFall = CreateDefaultSubobject<UCharacterStateFall>(TEXT("StateFall"));
+	StateAttract = CreateDefaultSubobject<UCharacterStateAttract>(TEXT("StateAttract"));
+	StateRespawn = CreateDefaultSubobject<UCharacterStateRespawn>(TEXT("StateRespawn"));
 }
 
 
@@ -26,6 +30,8 @@ void UCharacterStateMachine::SMInit(ADiamondProjectCharacter* StateCharacter) {
 	StateJump->StateInit(this);
 	StateDie->StateInit(this);
 	StateFall->StateInit(this);
+	StateAttract->StateInit(this);
+	StateRespawn->StateInit(this);
 
 }
 
@@ -48,7 +54,7 @@ void UCharacterStateMachine::ChangeState(UCharacterState* NewState) {
 	CharacterState = NewState->State;
 
 	if (CurrentState) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Cyan, FString::Printf(TEXT("[CharacterStateMachine - %s] NewState : %s"),*GetCharacter()->GetActorNameOrLabel(), *CurrentState->GetName()));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Cyan, FString::Printf(TEXT("[CharacterStateMachine - %s] NewState : %s"),*GetCharacter()->GetActorNameOrLabel(), *CurrentState->GetName()));
 		CurrentState->StateBegin();
 	}
 }
@@ -83,4 +89,20 @@ void UCharacterStateMachine::OnDie() {
 	}
 
 	CurrentState->OnDie();
+}
+
+void UCharacterStateMachine::OnAbsorberDetectCharacter(ADiamondProjectCharacter* DetectedCharacter, AAbsorber* Absorber) {
+	if (!CurrentState) {
+		return;
+	}
+
+	CurrentState->OnAbsorberDetectCharacter(DetectedCharacter, Absorber);
+}
+
+void UCharacterStateMachine::OnAbsorberInputStarted(FKey Key) {
+	if (!CurrentState) {
+		return;
+	}
+
+	CurrentState->OnAbsorberInputStarted(Key);
 }

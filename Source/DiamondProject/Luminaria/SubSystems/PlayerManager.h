@@ -31,7 +31,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintAssignable)
 	FOnPlayerDeath OnPlayerDeath;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere,BlueprintAssignable)
 	FOnPlayerRespawn OnPlayerRespawn;
 
 	UPROPERTY(VisibleAnywhere,BlueprintAssignable)
@@ -56,7 +56,7 @@ public:
 	ADiamondProjectCharacter* GetOtherPlayer(ADiamondProjectCharacter* Character);
 
 	UFUNCTION(BlueprintPure)
-	TArray<ADiamondProjectCharacter*> GetAllCharactersRef() { return Characters; }
+	TArray<ADiamondProjectCharacter*>& GetAllCharactersRef() { return Characters; }
 
 	UFUNCTION(BlueprintCallable)
 	TArray<ADiamondProjectPlayerController*> GetAllControllersRef() {

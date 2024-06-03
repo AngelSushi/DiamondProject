@@ -37,14 +37,10 @@ public:
 	UInputAction* JumpAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* OpenMapAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PushAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PullAction;
-
 
 	UPROPERTY()
 	FVector LastDirection;
@@ -80,12 +76,6 @@ public:
 
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	float GetJumpOffsetPressed() { return JumpOffsetPressed; }
-
-	UFUNCTION(BlueprintCallable,BlueprintPure)
-	bool HasAugmentedHeight() { return bHasAugmentedHeight; }
-
-	UFUNCTION(BlueprintCallable)
-	void SetHasAugmentedHeight(bool HasAugmentedHeight) { bHasAugmentedHeight = HasAugmentedHeight; }
 
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	FVector2D GetMoveValue() { return MoveValue; }
@@ -156,9 +146,6 @@ private:
 
 	UPROPERTY()
 	float JumpOffsetPressed = 0.5F;
-
-	UPROPERTY()
-	bool bHasAugmentedHeight;
 
 	UPROPERTY()
 	bool bIsFalling;

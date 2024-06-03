@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "DiamondProjectPlayerController.h"
 #include "../Interface/ButtonInteractable.h"
+#include "../Interface/InputDrawable.h"
 #include "DiamondProjectCharacter.generated.h"
 
 class UPlayerManager;
@@ -18,7 +19,7 @@ enum EDeathCause {
 };
 
 UCLASS(Blueprintable)
-class ADiamondProjectCharacter : public ACharacter,public IButtonInteractable {
+class ADiamondProjectCharacter : public ACharacter,public IButtonInteractable, public IInputDrawable {
 	GENERATED_BODY()
 
 public:
@@ -32,10 +33,22 @@ public:
 
 	virtual void Landed(const FHitResult& Hit) override;
 
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION()
+	void AbsorberInputStarted(FKey Key);
+
 	/** Returns TopDownCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> DeathRespawnParticle;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> LandOnGroundParticle;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UPointLightComponent* Light;
@@ -156,6 +169,13 @@ public:
 
 	UFUNCTION()
 	UCharacterStateMachine* GetStateMachine() { return CharacterStateMachine; }
+	
+	/* IInputDrawable Functions */
+	virtual void EnableInputListener();
+	virtual void DisableInputListener();
+
+	UFUNCTION()
+	virtual void CompleteInput(UInputUI* Input);
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

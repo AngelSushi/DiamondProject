@@ -21,6 +21,9 @@ class UCharacterStateMovement;
 class UCharacterStateJump;
 class UCharacterStateDie;
 class UCharacterStateFall;
+class UCharacterStateAttract;
+class UCharacterStateRespawn;
+class AAbsorber;
 
 UCLASS()
 class DIAMONDPROJECT_API UCharacterStateMachine : public UObject {
@@ -44,6 +47,8 @@ public:
 	UPROPERTY() TObjectPtr<UCharacterStateJump> StateJump;
 	UPROPERTY() TObjectPtr<UCharacterStateDie> StateDie;
 	UPROPERTY() TObjectPtr<UCharacterStateFall> StateFall;
+	UPROPERTY() TObjectPtr<UCharacterStateAttract> StateAttract;
+	UPROPERTY() TObjectPtr<UCharacterStateRespawn> StateRespawn;
 
 	// Fonction Init ? 
 private:
@@ -63,5 +68,6 @@ public:
 	void OnJump();
 	void OnInputJumpReleased();
 	void OnDie();
-	
+	void OnAbsorberDetectCharacter(ADiamondProjectCharacter* DetectedCharacter,AAbsorber* Absorber);
+	void OnAbsorberInputStarted(FKey Key);
 };

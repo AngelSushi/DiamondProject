@@ -13,6 +13,8 @@ public:
 	virtual void OnMovement(const FInputActionValue& Value) override;
 	virtual void OnJump() override;
 	virtual void OnDie() override;
+	virtual void OnAbsorberDetectCharacter(ADiamondProjectCharacter* Character, AAbsorber* Absorber);
+
 
 private:
 	virtual void OnStateBegin() override;
