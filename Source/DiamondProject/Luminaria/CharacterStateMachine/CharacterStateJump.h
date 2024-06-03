@@ -5,6 +5,8 @@
 #include "CharacterStateJump.generated.h"
 
 class AAbsorber;
+class ALink;
+class PlayerManager;
 
 UCLASS()
 class DIAMONDPROJECT_API UCharacterStateJump : public UCharacterStateMovement {
@@ -22,6 +24,7 @@ public:
 	virtual void OnAbsorberDetectCharacter(ADiamondProjectCharacter* Character, AAbsorber* Absorber);
 
 protected:
+	virtual void OnStateInit() override;
 	virtual void OnStateBegin() override;
 	virtual void OnStateTick(float DeltaTime);
 
@@ -47,4 +50,7 @@ private:
 
 	UPROPERTY()
 	float JumpMaxDuration;
+
+	//UPROPERTY()
+	//TObjectPtr<class ALink> LinkRef;
 };

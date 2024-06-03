@@ -8,12 +8,21 @@
 #include "../SubSystems/PlayerManager.h"
 #include "CharacterStateIdle.h"
 #include "CharacterStateDie.h"
-#include <InputActionValue.h>
+#include "InputActionValue.h"
 
 
 #include "../Interface/InputUI.h"
 #include "../SubSystems/InputUIManager.h"
 #include "../SubSystems/UISubsystem.h"
+
+//#include "Kismet/GameplayStatics.h"
+//#include "../Actors/Link.h"
+
+void UCharacterStateJump::OnStateInit() {
+	Super::OnStateInit();
+
+	//LinkRef = Cast<ALink>(UGameplayStatics::GetActorOfClass(GetWorld(), ALink::StaticClass()));
+}
 
 void UCharacterStateJump::OnStateBegin() {
 	Super::OnStateBegin();
@@ -28,7 +37,16 @@ void UCharacterStateJump::OnStateBegin() {
 
 	if (PlayerManager) {
 		PlayerManager->OnPlayerLandOnGround.AddDynamic(this, &UCharacterStateJump::OnPlayerLandOnGround);
+
+		/*float DistanceBetweenPlayers = FVector::Distance(PlayerManager->GetAllCharactersRef()[0]->GetActorLocation(), PlayerManager->GetAllCharactersRef()[1]->GetActorLocation());
+
+		if (DistanceBetweenPlayers >= LinkRef->GetDistanceMax()) {
+			ChangeState(GetStateMachine()->StateIdle);
+			return;
+		}
+		*/
 	}
+
 }
 
 void UCharacterStateJump::OnStateTick(float DeltaTime) {

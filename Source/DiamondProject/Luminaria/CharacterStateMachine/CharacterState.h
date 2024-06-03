@@ -22,7 +22,7 @@ public:
 	void StateExit();
 
 
-	virtual void OnMovement(const FInputActionValue& Value);
+	virtual void OnMovement(const FInputActionValue& MovementValue);
 	virtual void OnJump();
 	virtual void OnInputJumpReleased();
 	virtual void OnDie();
