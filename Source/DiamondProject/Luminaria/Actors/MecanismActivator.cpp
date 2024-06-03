@@ -47,6 +47,10 @@ void AMecanismActivator::BeginPlay() {
 void AMecanismActivator::SetActivatorActivate(bool IsActive) {
 	isActivatorActivate = IsActive;
 
+	if (!targetMecanism) {
+		return;
+	}
+
 	if (IsActive) {
 		_mecanismEventsDispatcher->OnMecanismActivate.Broadcast(targetMecanism, this);
 	}

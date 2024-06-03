@@ -15,46 +15,70 @@ public:
 	ACameraArea();
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class USceneComponent> Root;
+	TObjectPtr<class UCameraAreaDataAsset> CameraAsset;
+
+	UFUNCTION(BlueprintPure)
+	UCameraAreaDataAsset* GetDataAsset() { return CameraAsset; }
 
 	UPROPERTY(EditAnywhere)
+	TObjectPtr<class USceneComponent> Root;
+
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	TObjectPtr<class USceneComponent> GoTo;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<class UBoxComponent> BoxCollision;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TObjectPtr<class USceneComponent> SpawnPoint;
+
+	UPROPERTY(BlueprintReadOnly)
+	int64 Id;
+
+	UPROPERTY(BlueprintReadWrite)
 	TEnumAsByte<ECameraBehavior> AreaBehavior;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	uint8 PlayerNeeded;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	uint16 ZoomMin;
 
-	UPROPERTY(EditAnywhere)
+	UFUNCTION(BlueprintPure)
+	int GetZoomMin() { return ZoomMin; }
+
+	UPROPERTY()
 	uint16 ZoomMax;
 
-	UPROPERTY(EditAnywhere)
-	float PlayerSpeed = 600.F;
+	UPROPERTY()
+	uint16 HeightMin;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
+	uint16 HeightMax;
+
+	UPROPERTY()
+	float PlayerSpeedMin = 600.F;
+
+	UPROPERTY()
+	float PlayerSpeedMax = 600.F;
+
+	UPROPERTY()
 	float TransitionDuration = 50.F;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	float ZoomDuration = 8.F;
 
-	UPROPERTY(VisibleAnywhere)
-	FVector2D MinPosition;
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
+	FVector MinPosition;
 
-	UPROPERTY(VisibleAnywhere)
-	FVector2D MaxPosition;
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
+	FVector MaxPosition;
 
 	UFUNCTION()
 	bool HasVisited() { return bHasVisited; }
 
-	UFUNCTION(BlueprintCallable)
-	bool CanGrow() { return bCanGrow; }
+	//UFUNCTION(BlueprintCallable)
+	//bool CanGrow() { return bCanGrow; }
 
 	UFUNCTION(BlueprintCallable)
 	void TickArea(float DeltaTime);
@@ -64,12 +88,16 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	bool bHasVisited;
 
-	UPROPERTY(EditAnywhere)
-	bool bCanGrow;
+	//UPROPERTY(EditAnywhere)
+	//bool bCanGrow;
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;

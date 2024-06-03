@@ -46,7 +46,7 @@ void ALuminariaCamera::Tick(float DeltaTime) {
 	}
 
 	if (HeightBehavior) {
-		HeightBehavior->TickBehavior(DeltaTime);
+		//HeightBehavior->TickBehavior(DeltaTime);
 	}
 
 	if (CameraBehavior) {
@@ -59,53 +59,63 @@ void ALuminariaCamera::OnPlayerRegister(ADiamondProjectCharacter* Character) {
 }
 
 void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc /*= [](UCameraBehavior* CameraBehavior) {}*/) {
+	SwitchBehaviorFromBlueprint(SwitchBehavior);
+	ResultFunc(CameraBehavior);
+}
 
+void ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavior) {
 	if (CameraBehavior && BehaviorState == SwitchBehavior) {
 		UE_LOG(LogTemp, Error, TEXT("The camera has already this behavior."));
 		return;
 	}
 
 	//CameraBehavior = NewObject<UCameraBehavior>(Behavior); Doesn't work with child functions
-	GEngine->AddOnScreenDebugMessage(-1, 3.F, FColor::Orange, TEXT("Ask For Switch"));
 	BehaviorState = SwitchBehavior;
 
 	switch (SwitchBehavior) {
-		case ECameraBehavior::DEFAULT:
-			GoToBehavior = nullptr;
-			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Yellow, TEXT("Reset GoTo"));
-			DefaultBehavior = NewObject<UCameraDefaultBehavior>();
-			CameraBehavior = DefaultBehavior;
-			break;
+	case ECameraBehavior::DEFAULT:
+		GoToBehavior = nullptr;
+		DefaultBehavior = NewObject<UCameraDefaultBehavior>();
+		CameraBehavior = DefaultBehavior;
+		break;
 
-		case ECameraBehavior::DYNAMIC:
-			GoToBehavior = nullptr;
-			DynamicBehavior = NewObject<UCameraDynamicBehavior>();
-			HeightBehavior = NewObject<UHeightCameraBehavior>();
-			CameraBehavior = DynamicBehavior;
-			break;
+	case ECameraBehavior::DYNAMIC:
+		GoToBehavior = nullptr;
+		DynamicBehavior = NewObject<UCameraDynamicBehavior>();
+		HeightBehavior = NewObject<UHeightCameraBehavior>();
+		CameraBehavior = DynamicBehavior;
+		break;
 
-		case ECameraBehavior::GOTO:
-			DynamicBehavior = nullptr;
-			DefaultBehavior = nullptr;
-			HeightBehavior = nullptr;
-			GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Black, TEXT("Add GoTo Behavior"));
-			GoToBehavior = NewObject<UGoToBehavior>();
-			CameraBehavior = GoToBehavior;
-			break;
+	case ECameraBehavior::GOTO:
+		DynamicBehavior = nullptr;
+		DefaultBehavior = nullptr;
+		HeightBehavior = nullptr;
+		GoToBehavior = NewObject<UGoToBehavior>();
+		CameraBehavior = GoToBehavior;
+		break;
 
-		case ECameraBehavior::LEADER:
-			LeaderBehavior = NewObject<UCameraLeaderBehavior>();
-			CameraBehavior = LeaderBehavior;
-			break;
+	case ECameraBehavior::LEADER:
+		LeaderBehavior = NewObject<UCameraLeaderBehavior>();
+		CameraBehavior = LeaderBehavior;
+		break;
+
+	case ECameraBehavior::NO_BEHAVIOR:
+	default:
+		DynamicBehavior = nullptr;
+		DefaultBehavior = nullptr;
+		HeightBehavior = nullptr;
+		GoToBehavior = nullptr;
+		CameraBehavior = nullptr;
+		break;
 	}
 
-	CameraBehavior->BeginBehavior(this);
+	if (CameraBehavior) {
+		CameraBehavior->BeginBehavior(this);
+	}
 
 	if (HeightBehavior) {
 		HeightBehavior->BeginBehavior(this);
 	}
-
-	ResultFunc(CameraBehavior);
 }
 
 void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathCause DeathCause) {
@@ -115,13 +125,15 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathC
 		return;
 	}
 
-	if (bHasDead) {
-		return;
-	}
+	//if (bHasDead) {
+		//return;
+	//}
 	
-	bHasDead = true;
+	//bHasDead = true;
 
 	BehaviorState = ECameraBehavior::GOTO;
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("[CAMERA] DeathPlayer On Camera"));
 
 	FTimerHandle Timer;
 	
@@ -137,6 +149,7 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathC
 			GoTo.X = StartPosition.X;
 			GoTo.Z = StartPosition.Z;
 
+			
 			GoToBehaviorComponent->GoTo = GoTo;
 			GoToBehaviorComponent->NextBehavior = CurrentBehavior;
 		}

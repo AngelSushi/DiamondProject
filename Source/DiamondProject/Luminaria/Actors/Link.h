@@ -8,10 +8,14 @@ class UPlayerManager;
 UCLASS()
 class DIAMONDPROJECT_API ALink : public AActor{
 	GENERATED_BODY()
-	
-private:
+
+public:
 	UPROPERTY(EditAnywhere)
+	TObjectPtr<class USceneComponent> Root;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<class UStaticMeshComponent> _mesh;
+private:
 
 	UPROPERTY()
 	TArray<ADiamondProjectCharacter*> _characters;
@@ -23,7 +27,7 @@ private:
 	void CalculateBarycenter();
 
 	UFUNCTION()
-	void OnPlayerMove(ADiamondProjectCharacter* Character, FVector Direction, bool& IsCanceled);
+	void OnPlayerMove(ADiamondProjectCharacter* Character,FVector2D Input, FVector Direction, bool& IsCanceled);
 
 	UPROPERTY()
 	FVector _barycenter;

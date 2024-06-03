@@ -2,6 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "DiamondProjectPlayerController.h"
+#include "../Interface/ButtonInteractable.h"
+#include "../Interface/InputDrawable.h"
 #include "DiamondProjectCharacter.generated.h"
 
 class UPlayerManager;
@@ -16,8 +19,7 @@ enum EDeathCause {
 };
 
 UCLASS(Blueprintable)
-class ADiamondProjectCharacter : public ACharacter
-{
+class ADiamondProjectCharacter : public ACharacter,public IButtonInteractable, public IInputDrawable {
 	GENERATED_BODY()
 
 public:
@@ -31,10 +33,22 @@ public:
 
 	virtual void Landed(const FHitResult& Hit) override;
 
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION()
+	void AbsorberInputStarted(FKey Key);
+
 	/** Returns TopDownCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> DeathRespawnParticle;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> LandOnGroundParticle;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UPointLightComponent* Light;
@@ -126,9 +140,42 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetButtonPushPressed(bool ButtonPushPressed) { bButtonPushPressed = ButtonPushPressed; }
 
+	UFUNCTION(BlueprintCallable)
+	bool CanGrow() { return bCanGrow; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetCanGrow(bool CanGrow) { bCanGrow = CanGrow; }
+
+	UFUNCTION(BlueprintPure)
+	float GetJumpDurationIncrease() { return JumpDurationIncrease; }
+
+	UFUNCTION(BlueprintPure)
+	float GetSpeedIncrease() { return SpeedIncrease; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float LightEnergy = 50000.F;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	ADiamondProjectPlayerController* GetLuminariaController() {
+		if (GetController()) {
+			return Cast<ADiamondProjectPlayerController>(GetController());
+		}
+
+		return nullptr;
+	}
+
+	UFUNCTION(BlueprintPure)
+	UPlayerAsset* GetPlayerAsset() { return PlayerAsset; }
+
+	UFUNCTION()
+	UCharacterStateMachine* GetStateMachine() { return CharacterStateMachine; }
+	
+	/* IInputDrawable Functions */
+	virtual void EnableInputListener();
+	virtual void DisableInputListener();
+
+	UFUNCTION()
+	virtual void CompleteInput(UInputUI* Input);
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -137,6 +184,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UPlayerAsset> PlayerAsset;
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;
@@ -155,10 +204,10 @@ private:
 
 	/* Light Variables */
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	float MinEnergy = 0.F;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	float MaxEnergy = 100000.F;
 
 	UPROPERTY(EditAnywhere)
@@ -173,8 +222,17 @@ private:
 	UPROPERTY()
 	float LastLightValue = 50.F;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	float GravityScaleSaved = 1.5F;
+
+	UPROPERTY()
+	float JumpDurationIncrease = 0.05f;
+
+	UPROPERTY()
+	float SpeedIncrease = 40.F;
+
+	UPROPERTY()
+	bool bCanGrow = false;
 
 	/* Push/Pull Variables */
 	UPROPERTY(VisibleAnywhere)
@@ -183,13 +241,13 @@ private:
 	UPROPERTY()
 	bool bButtonPushPressed;
 
+	UPROPERTY()
+	TObjectPtr<class UCharacterStateMachine> CharacterStateMachine;
+
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
 	void OnLandOnGround(ADiamondProjectCharacter* Character);
-
-	UFUNCTION(BlueprintCallable,BlueprintPure)
-	ADiamondProjectPlayerController* GetLuminariaController() { return Cast<ADiamondProjectPlayerController>(GetController()); }
 };
 
