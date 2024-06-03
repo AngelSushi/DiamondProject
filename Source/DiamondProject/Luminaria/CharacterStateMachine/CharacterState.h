@@ -5,7 +5,6 @@
 #include "CharacterStateMachine.h"
 #include "CharacterState.generated.h"
 
-enum ECharacterState;
 class UCharacterStateMachine;
 class ADiamondProjectCharacter;
 
@@ -14,9 +13,6 @@ class DIAMONDPROJECT_API UCharacterState : public UObject {
 	GENERATED_BODY()
 
 public:
-
-	UPROPERTY()
-	TEnumAsByte<ECharacterState> State;
 
 	void StateInit(UCharacterStateMachine* CharacterStateMachine);
 	
