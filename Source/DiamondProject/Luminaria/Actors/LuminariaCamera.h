@@ -13,6 +13,7 @@ enum ECameraBehavior : uint8
 	LEADER,
 	DYNAMIC,
 	GOTO,
+	FOLLOW_PATH,
 };
 
 enum EDeathCause;
@@ -44,6 +45,8 @@ public:
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	ACameraArea* GetCurrentArea() { return CurrentArea; }
 
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentArea(ACameraArea* NewArea) { CurrentArea = NewArea; }
 
 
 	UFUNCTION()
@@ -60,24 +63,18 @@ public:
 	UPROPERTY()
 	TObjectPtr<class UCameraBehavior> CameraBehavior;
 
-	UPROPERTY()
-	TObjectPtr<class UCameraDynamicBehavior> DynamicBehavior;
-
-	UPROPERTY()
-	TObjectPtr<class UCameraDefaultBehavior> DefaultBehavior;
-
-	UPROPERTY()
-	TObjectPtr<class UGoToBehavior> GoToBehavior;
-
-	UPROPERTY()
-	TObjectPtr<class UCameraLeaderBehavior> LeaderBehavior;
-
-	UPROPERTY()
-	TObjectPtr<class UHeightCameraBehavior> HeightBehavior;
+	UPROPERTY(BlueprintReadOnly) TObjectPtr<class UCameraDynamicBehavior> DynamicBehavior;
+	UPROPERTY() TObjectPtr<class UCameraDefaultBehavior> DefaultBehavior;
+	UPROPERTY() TObjectPtr<class UGoToBehavior> GoToBehavior;
+	UPROPERTY() TObjectPtr<class UCameraLeaderBehavior> LeaderBehavior;
+	UPROPERTY() TObjectPtr<class UHeightCameraBehavior> HeightBehavior;
+	UPROPERTY() TObjectPtr<class UCameraFollowBehavior> FollowBehavior;
 
 	/* State Machine Functions */
-
 	void SwitchBehavior(ECameraBehavior SwitchBehavior,TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc = [](UCameraBehavior* CameraBehavior) {});
+
+	UFUNCTION(BlueprintCallable)
+	void SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavior);
 
 	void InitBehavior();
 

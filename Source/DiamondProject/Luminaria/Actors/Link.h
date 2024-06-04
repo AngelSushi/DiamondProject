@@ -15,6 +15,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<class UStaticMeshComponent> _mesh;
+
+	UFUNCTION()
+	float GetDistanceMax() const { return DistanceMax; }
 private:
 
 	UPROPERTY()
@@ -27,7 +30,7 @@ private:
 	void CalculateBarycenter();
 
 	UFUNCTION()
-	void OnPlayerMove(ADiamondProjectCharacter* Character, FVector Direction, bool& IsCanceled);
+	void OnPlayerMove(ADiamondProjectCharacter* Character,FVector2D Input, FVector Direction, bool& IsCanceled);
 
 	UPROPERTY()
 	FVector _barycenter;

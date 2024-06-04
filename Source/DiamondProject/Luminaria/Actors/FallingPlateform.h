@@ -20,10 +20,10 @@ public:
 
 
     UPROPERTY(EditAnywhere)
-    class UStaticMeshComponent* PlatformMesh;
+    TObjectPtr<class UStaticMeshComponent> PlatformMesh;
 
     UPROPERTY(EditAnywhere)
-    class UBoxComponent* DetectionBox;
+    TObjectPtr<class UBoxComponent> DetectionBox;
 
     UPROPERTY(EditAnywhere)
     float TimeBeforeFall;

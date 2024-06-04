@@ -9,7 +9,7 @@
 class ADiamondProjectCharacter;
 class ACheckpoint;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPlayerMove,ADiamondProjectCharacter*,Character, FVector,Direction,bool&,isCanceled);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnPlayerMove,ADiamondProjectCharacter*,Character,FVector2D,Input,FVector,Direction,bool&,isCanceled);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerRegister,ADiamondProjectCharacter*,Character);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerDeath,ADiamondProjectCharacter*,Character,EDeathCause, DeathCause);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPlayerRespawn, ADiamondProjectCharacter*, Character, EDeathCause, DeathCause, FVector, RespawnPosition);
@@ -31,7 +31,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintAssignable)
 	FOnPlayerDeath OnPlayerDeath;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere,BlueprintAssignable)
 	FOnPlayerRespawn OnPlayerRespawn;
 
 	UPROPERTY(VisibleAnywhere,BlueprintAssignable)
@@ -56,7 +56,7 @@ public:
 	ADiamondProjectCharacter* GetOtherPlayer(ADiamondProjectCharacter* Character);
 
 	UFUNCTION(BlueprintPure)
-	TArray<ADiamondProjectCharacter*> GetAllCharactersRef() { return Characters; }
+	TArray<ADiamondProjectCharacter*>& GetAllCharactersRef() { return Characters; }
 
 	UFUNCTION(BlueprintCallable)
 	TArray<ADiamondProjectPlayerController*> GetAllControllersRef() {
