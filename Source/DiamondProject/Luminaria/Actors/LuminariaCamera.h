@@ -13,6 +13,7 @@ enum ECameraBehavior : uint8
 	LEADER,
 	DYNAMIC,
 	GOTO,
+	FOLLOW_PATH,
 };
 
 enum EDeathCause;
@@ -62,20 +63,12 @@ public:
 	UPROPERTY()
 	TObjectPtr<class UCameraBehavior> CameraBehavior;
 
-	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<class UCameraDynamicBehavior> DynamicBehavior;
-
-	UPROPERTY()
-	TObjectPtr<class UCameraDefaultBehavior> DefaultBehavior;
-
-	UPROPERTY()
-	TObjectPtr<class UGoToBehavior> GoToBehavior;
-
-	UPROPERTY()
-	TObjectPtr<class UCameraLeaderBehavior> LeaderBehavior;
-
-	UPROPERTY()
-	TObjectPtr<class UHeightCameraBehavior> HeightBehavior;
+	UPROPERTY(BlueprintReadOnly) TObjectPtr<class UCameraDynamicBehavior> DynamicBehavior;
+	UPROPERTY() TObjectPtr<class UCameraDefaultBehavior> DefaultBehavior;
+	UPROPERTY() TObjectPtr<class UGoToBehavior> GoToBehavior;
+	UPROPERTY() TObjectPtr<class UCameraLeaderBehavior> LeaderBehavior;
+	UPROPERTY() TObjectPtr<class UHeightCameraBehavior> HeightBehavior;
+	UPROPERTY() TObjectPtr<class UCameraFollowBehavior> FollowBehavior;
 
 	/* State Machine Functions */
 	void SwitchBehavior(ECameraBehavior SwitchBehavior,TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc = [](UCameraBehavior* CameraBehavior) {});

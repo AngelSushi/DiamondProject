@@ -8,6 +8,7 @@
 #include "DiamondProject/Luminaria/CameraBehaviors/CameraDynamicBehavior.h"
 #include "DiamondProject/Luminaria/CameraBehaviors/GoToBehavior.h"
 #include "DiamondProject/Luminaria/CameraBehaviors/HeightCameraBehavior.h"
+#include "../CameraBehaviors/CameraFollowBehavior.h"
 
 #include "DiamondProject/Luminaria/Actors/CameraArea.h"
 
@@ -75,12 +76,14 @@ void ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavio
 	switch (SwitchBehavior) {
 	case ECameraBehavior::DEFAULT:
 		GoToBehavior = nullptr;
+		FollowBehavior = nullptr;
 		DefaultBehavior = NewObject<UCameraDefaultBehavior>();
 		CameraBehavior = DefaultBehavior;
 		break;
 
 	case ECameraBehavior::DYNAMIC:
 		GoToBehavior = nullptr;
+		FollowBehavior = nullptr;
 		DynamicBehavior = NewObject<UCameraDynamicBehavior>();
 		HeightBehavior = NewObject<UHeightCameraBehavior>();
 		CameraBehavior = DynamicBehavior;
@@ -90,6 +93,7 @@ void ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavio
 		DynamicBehavior = nullptr;
 		DefaultBehavior = nullptr;
 		HeightBehavior = nullptr;
+		FollowBehavior = nullptr;
 		GoToBehavior = NewObject<UGoToBehavior>();
 		CameraBehavior = GoToBehavior;
 		break;
@@ -99,12 +103,20 @@ void ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavio
 		CameraBehavior = LeaderBehavior;
 		break;
 
+	case ECameraBehavior::FOLLOW_PATH:
+		FollowBehavior = NewObject<UCameraFollowBehavior>();
+		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Blue, TEXT("His Follow"));
+
+		CameraBehavior = FollowBehavior;
+		break;
+
 	case ECameraBehavior::NO_BEHAVIOR:
 	default:
 		DynamicBehavior = nullptr;
 		DefaultBehavior = nullptr;
 		HeightBehavior = nullptr;
 		GoToBehavior = nullptr;
+		FollowBehavior = nullptr;
 		CameraBehavior = nullptr;
 		break;
 	}

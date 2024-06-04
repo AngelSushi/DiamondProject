@@ -51,7 +51,6 @@ void UCharacterStateMachine::ChangeState(UCharacterState* NewState) {
 	}
 
 	CurrentState = NewState;
-	CharacterState = NewState->State;
 
 	if (CurrentState) {
 		//GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Cyan, FString::Printf(TEXT("[CharacterStateMachine - %s] NewState : %s"),*GetCharacter()->GetActorNameOrLabel(), *CurrentState->GetName()));
@@ -59,12 +58,12 @@ void UCharacterStateMachine::ChangeState(UCharacterState* NewState) {
 	}
 }
 
-void UCharacterStateMachine::OnMovement(const FInputActionValue& Value) {
+void UCharacterStateMachine::OnMovement(const FInputActionValue& MovementValue) {
 	if (!CurrentState) {
 		return;
 	}
 
-	CurrentState->OnMovement(Value);
+	CurrentState->OnMovement(MovementValue);
 }
 
 void UCharacterStateMachine::OnJump() {
