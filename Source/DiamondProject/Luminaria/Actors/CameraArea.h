@@ -32,6 +32,9 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<class USceneComponent> SpawnPoint;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class USplineComponent> Spline;
+
 	UPROPERTY(BlueprintReadOnly)
 	int64 Id;
 

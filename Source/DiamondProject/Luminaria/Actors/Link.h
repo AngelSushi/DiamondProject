@@ -15,6 +15,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<class UStaticMeshComponent> _mesh;
+
+	UFUNCTION()
+	float GetDistanceMax() const { return DistanceMax; }
 private:
 
 	UPROPERTY()

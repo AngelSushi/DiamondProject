@@ -5,7 +5,6 @@
 #include "CharacterStateMachine.h"
 #include "CharacterState.generated.h"
 
-enum ECharacterState;
 class UCharacterStateMachine;
 class ADiamondProjectCharacter;
 
@@ -15,9 +14,6 @@ class DIAMONDPROJECT_API UCharacterState : public UObject {
 
 public:
 
-	UPROPERTY()
-	TEnumAsByte<ECharacterState> State;
-
 	void StateInit(UCharacterStateMachine* CharacterStateMachine);
 	
 	void StateBegin();
@@ -26,7 +22,7 @@ public:
 	void StateExit();
 
 
-	virtual void OnMovement(const FInputActionValue& Value);
+	virtual void OnMovement(const FInputActionValue& MovementValue);
 	virtual void OnJump();
 	virtual void OnInputJumpReleased();
 	virtual void OnDie();

@@ -29,7 +29,7 @@ void UCharacterState::OnStateInit() {}
 void UCharacterState::OnStateBegin() {}
 void UCharacterState::OnStateTick(float DeltaTime) {}
 void UCharacterState::OnStateExit() {}
-void UCharacterState::OnMovement(const FInputActionValue& Value) {}
+void UCharacterState::OnMovement(const FInputActionValue& MovementValue) {}
 void UCharacterState::OnJump() {}
 void UCharacterState::OnInputJumpReleased() {}
 void UCharacterState::OnDie() {}

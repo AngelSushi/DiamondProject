@@ -123,12 +123,6 @@ public:
 	void SetLastLightValue(float NewLastLightValue) { LastLightValue = NewLastLightValue; }
 
 	UFUNCTION(BlueprintCallable,BlueprintPure)
-	float GetGravityScaleSaved() { return GravityScaleSaved; }
-
-	UFUNCTION(BlueprintCallable)
-	void SetGravityScaleSaved(float NewGravityScaleSaved) { GravityScaleSaved = NewGravityScaleSaved; }
-
-	UFUNCTION(BlueprintCallable,BlueprintPure)
 	bool CanPush() { return bCanPush; }
 
 	UFUNCTION(BlueprintCallable)
@@ -221,9 +215,6 @@ private:
 
 	UPROPERTY()
 	float LastLightValue = 50.F;
-
-	UPROPERTY(EditAnywhere)
-	float GravityScaleSaved = 1.5F;
 
 	UPROPERTY()
 	float JumpDurationIncrease = 0.05f;

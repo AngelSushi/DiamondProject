@@ -10,7 +10,7 @@ class DIAMONDPROJECT_API UCharacterStateIdle : public UCharacterState {
 	
 public:
 
-	virtual void OnMovement(const FInputActionValue& Value) override;
+	virtual void OnMovement(const FInputActionValue& MovementValue) override;
 	virtual void OnJump() override;
 	virtual void OnDie() override;
 	virtual void OnAbsorberDetectCharacter(ADiamondProjectCharacter* Character, AAbsorber* Absorber);
