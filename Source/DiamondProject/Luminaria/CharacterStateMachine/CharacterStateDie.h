@@ -4,6 +4,8 @@
 #include "CharacterState.h"
 #include "CharacterStateDie.generated.h"
 
+class ADiamondProjectCharacter;
+enum EDeathCause;
 
 UCLASS()
 class DIAMONDPROJECT_API UCharacterStateDie : public UCharacterState {
