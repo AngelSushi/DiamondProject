@@ -75,6 +75,8 @@ void UCharacterStateMovement::OnMovement(const FInputActionValue& MovementValue)
 		MovementDirection = FVector(MovementVector.X, 0.F, 0.F);
 	}
 
+	GetCharacter()->GetLuminariaController()->SetMovevalue(MovementVector);
+
 	bool isCanceled = false;
 	PlayerManager->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()), MovementVector, MovementDirection, isCanceled);
 
