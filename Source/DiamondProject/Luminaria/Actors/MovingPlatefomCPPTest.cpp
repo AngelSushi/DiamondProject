@@ -129,18 +129,14 @@ void AMovingPlatefomCPPTest::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
 
             float Value = 1.F - 0.25F * (PlayerOn / 2);
 
-            if (PlayerOn % 2 == 0) {
-                GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Magenta, TEXT("Full"));
+            if (PlayerOn % 2 == 0) { // If The Two Players Are On The Plateform
                 InstanceMaterial->SetVectorParameterValue("FirstColor", CrystalsColor[0]);
                 InstanceMaterial->SetVectorParameterValue("SecondColor", CrystalsColor[1]);
             }
             else {
-                GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Magenta, TEXT("Not Full"));
                 InstanceMaterial->SetVectorParameterValue("FirstColor", CrystalsColor[0]);
                 InstanceMaterial->SetVectorParameterValue("SecondColor", CrystalsColor[0]);
             }
-
-            GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Magenta, FString::Printf(TEXT("Value %f"),Value));
 
             InstanceMaterial->SetScalarParameterValue("Value", Value);
         }
@@ -174,7 +170,17 @@ void AMovingPlatefomCPPTest::OnEndOverlap(UPrimitiveComponent* OverlappedComp, A
         }
         else {
             UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[0];
-            InstanceMaterial->SetScalarParameterValue("BlendAlpha", 0.5 * PlayerOn);
+
+            InstanceMaterial->SetScalarParameterValue("Value", 1.F);
+
+            if (PlayerOn == 0) {
+                InstanceMaterial->SetVectorParameterValue("FirstColor",FColor::Black);
+                InstanceMaterial->SetVectorParameterValue("SecondColor",FColor::Black);
+            }
+            else {
+                InstanceMaterial->SetVectorParameterValue("FirstColor",CrystalsColor[0]);
+                InstanceMaterial->SetVectorParameterValue("SecondColor",CrystalsColor[0]);
+            }
         }
     }
 }
