@@ -63,4 +63,7 @@ private:
     UPROPERTY()
     TArray<UMaterialInstanceDynamic*> CrystalsMat;
 
+    UPROPERTY()
+    bool bIsGroundPlateform;
+
 };
