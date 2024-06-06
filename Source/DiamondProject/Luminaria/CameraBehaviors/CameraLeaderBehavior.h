@@ -4,6 +4,8 @@
 #include "CameraBehavior.h"
 #include "CameraLeaderBehavior.generated.h"
 
+enum EDeathCause;
+
 UCLASS()
 class DIAMONDPROJECT_API UCameraLeaderBehavior : public UCameraBehavior {
 	GENERATED_BODY()

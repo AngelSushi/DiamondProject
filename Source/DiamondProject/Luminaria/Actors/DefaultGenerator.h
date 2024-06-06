@@ -17,7 +17,7 @@ public:
 
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UMaterial> activeMaterial;
+	TObjectPtr<class UMaterial> CrystalMaterial;
 
 protected:
 
@@ -45,4 +45,13 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class UMaterial> basicMaterial;
 
+private:
+	UPROPERTY()
+	TObjectPtr<class UMaterialInstanceDynamic> InstanceCrystalMaterial;
+
+	UPROPERTY()
+	float CrystalTimer;
+
+	UPROPERTY()
+	float MaxCrystalTimer = 1.F;
 };
