@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
-	<object class="AudioFile" id="{fc6f1f23-8d39-4899-9fcb-6f08598215ac}">
+	<object class="AudioFile" id="{a2adc59f-1bc0-4183-b795-b5bc00aa7eb8}">
 		<property name="assetPath">
-			<value>UI/UI_Menu_Select/UI_Menu_Select_03.wav</value>
+			<value>UI/UI_Menu_Select/UI_Menu_Select_02.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>48</value>
 		</property>
 		<property name="channelCount">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<property name="length">
 			<value>0.96666666666666667</value>
