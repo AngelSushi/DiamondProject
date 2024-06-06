@@ -29,6 +29,8 @@ private:
 
     UPROPERTY(EditAnywhere)
     class UStaticMeshComponent* StaticMeshComponent;
+
+
     UPROPERTY(VisibleAnywhere)
     bool bIsFalling = false;
 
@@ -52,6 +54,15 @@ private:
     UPROPERTY(EditAnywhere)
     TObjectPtr<class UDeathComponent> DeathComponent;
 
+
+    void ShakeBox();
+
+    bool bIsShaking;
+
+    float ShakeTime;
+
+    UPROPERTY(EditAnywhere)
+    float ShakeDuration;
 
     UFUNCTION()
     void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
