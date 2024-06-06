@@ -87,6 +87,9 @@ public:
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	bool IsGrounded() { return bIsOnGround; }
 
+	UFUNCTION()
+	FColor GetPlayerColor() { return PlayerColor; }
+
 	/* Light Functions */
 
 	UFUNCTION(BlueprintCallable,BlueprintPure)
@@ -195,6 +198,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<class ACameraArea> LastHitArea;
+
+	UPROPERTY(EditAnywhere)
+	FColor PlayerColor;
 
 	/* Light Variables */
 

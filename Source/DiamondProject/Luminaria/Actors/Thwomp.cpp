@@ -93,7 +93,7 @@ void AThwomp::Tick(float DeltaTime)
 void AThwomp::ShakeBox()
 {
     FVector NewLocation = InitialLocation;
-    NewLocation.X += FMath::RandRange(-5.0f, 5.0f);
+    //NewLocation.X += FMath::RandRange(-5.0f, 5.0f);
     NewLocation.Y += FMath::RandRange(-5.0f, 5.0f);
     SetActorLocation(NewLocation);
 }
