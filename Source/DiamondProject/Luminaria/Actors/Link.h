@@ -15,6 +15,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<class UStaticMeshComponent> _mesh;
+
+	UFUNCTION()
+	float GetDistanceMax() const { return DistanceMax; }
+
+	UFUNCTION(BlueprintPure)
+	float GetDistanceAlpha() { return DistanceAlpha; }
 private:
 
 	UPROPERTY()
@@ -34,6 +40,18 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float DistanceMax;
+
+	UPROPERTY()
+	float CrushMin = 0.1F;
+
+	UPROPERTY()
+	float CrushMax = 0.05F;
+
+	UPROPERTY()
+	float DistanceAlpha;
+
+	UPROPERTY()
+	FVector LastDirection;
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;

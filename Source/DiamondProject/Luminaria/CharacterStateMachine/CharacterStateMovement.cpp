@@ -31,8 +31,8 @@ void UCharacterStateMovement::OnStateTick(float DeltaTime) {
 	}
 }
 
-void UCharacterStateMovement::OnMovement(const FInputActionValue& Value) {
-	FVector2D MovementVector = Value.Get<FVector2D>();
+void UCharacterStateMovement::OnMovement(const FInputActionValue& MovementValue) {
+	FVector2D MovementVector = MovementValue.Get<FVector2D>();
 	
 	if ((MovementVector.X >= 0.0F && MovementVector.X < 0.2F) || (MovementVector.X <= 0.0F && MovementVector.X > -0.2F)) {
 		if (GetClass() == UCharacterStateMovement::StaticClass()) {
@@ -74,6 +74,8 @@ void UCharacterStateMovement::OnMovement(const FInputActionValue& Value) {
 	else if (ForwardDirection.Y != 0) {
 		MovementDirection = FVector(MovementVector.X, 0.F, 0.F);
 	}
+
+	GetCharacter()->GetLuminariaController()->SetMovevalue(MovementVector);
 
 	bool isCanceled = false;
 	PlayerManager->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()), MovementVector, MovementDirection, isCanceled);

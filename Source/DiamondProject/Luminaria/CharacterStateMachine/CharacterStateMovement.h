@@ -9,7 +9,7 @@ class DIAMONDPROJECT_API UCharacterStateMovement : public UCharacterState {
 	GENERATED_BODY()
 
 public: 
-	virtual void OnMovement(const FInputActionValue& Value) override;
+	virtual void OnMovement(const FInputActionValue& MovementValue) override;
 	virtual void OnJump() override;
 	virtual void OnDie() override;
 	virtual void OnAbsorberDetectCharacter(ADiamondProjectCharacter* Character, AAbsorber* Absorber) override;

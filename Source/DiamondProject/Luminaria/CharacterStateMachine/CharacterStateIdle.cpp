@@ -16,7 +16,7 @@ void UCharacterStateIdle::OnStateTick(float DeltaTime) {
 	}
 }
 
-void UCharacterStateIdle::OnMovement(const FInputActionValue& Value) {
+void UCharacterStateIdle::OnMovement(const FInputActionValue& MovementValue) {
 	ChangeState(GetStateMachine()->StateMovement);
 }
 

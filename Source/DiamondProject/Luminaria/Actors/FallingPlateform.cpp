@@ -19,6 +19,10 @@ AFallingPlateform::AFallingPlateform()
 
 	TimeBeforeFall = 5.0f; // Default time before falling
 	ResetDelay = 2.0f;     // Default delay before resetting platform to initial position
+
+	bIsShaking = false;
+	ShakeDuration = 2.0f;
+	ShakeTime = 0.0f;
 }
 
 // Called when the game starts or when spawned
@@ -34,6 +38,20 @@ void AFallingPlateform::BeginPlay()
 void AFallingPlateform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (bIsShaking)
+	{
+		ShakeTime += DeltaTime;
+		if (ShakeTime >= ShakeDuration)
+		{
+			SetActorLocation(InitialLocation);
+			bIsShaking = false;
+		}
+		else
+		{
+			ShakeBox();
+		}
+	}
 
 	if (bCharacterOnPlatform)
 	{
@@ -55,21 +73,31 @@ void AFallingPlateform::Tick(float DeltaTime)
 	}
 }
 
+void AFallingPlateform::ShakeBox()
+{
+	FVector NewLocation = InitialLocation;
+	//NewLocation.X += FMath::RandRange(-5.0f, 5.0f);
+	NewLocation.Y += FMath::RandRange(-5.0f, 5.0f);
+	SetActorLocation(NewLocation);
+}
+
 void AFallingPlateform::FallPlatform()
 {
 	// Simule la gravité pour faire tomber la plateforme
 	PlatformMesh->SetSimulatePhysics(true);
 	bPlateformFall = true;
 
+
 }
 void AFallingPlateform::ResetPlatform()
 {
 	// Remet la plateforme à sa position d'origine
 	PlatformMesh->SetSimulatePhysics(false);
-	SetActorLocation(InitialLocation);
+	SetActorLocation(InitialLocation, true, nullptr, ETeleportType::TeleportPhysics);
 	bPlateformFall = false;
 	TimeSinceCharacterOnPlatform = 0.0f;
 	TimePlateformFall = 0.0f;
+	ShakeTime = 0.0f;
 }
 
 
@@ -82,7 +110,9 @@ void AFallingPlateform::OnCharacterOverlapBegin(class UPrimitiveComponent* Overl
 		if (!bCharacterOnPlatform)
 		{
 			bCharacterOnPlatform = true;
+			bIsShaking = true;
 			TimeSinceCharacterOnPlatform = 0.0f;
+			ShakeTime = 0.0f;
 		}
 		
 	}
@@ -97,6 +127,8 @@ void AFallingPlateform::OnCharacterOverlapEnd(class UPrimitiveComponent* Overlap
 		if (numPlayersInside <= 0)
 		{
 			bCharacterOnPlatform = false;
+			bIsShaking = false;
+
 		}
 	}
 }

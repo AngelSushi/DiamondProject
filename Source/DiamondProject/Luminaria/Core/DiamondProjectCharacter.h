@@ -87,6 +87,9 @@ public:
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	bool IsGrounded() { return bIsOnGround; }
 
+	UFUNCTION()
+	FColor GetPlayerColor() { return PlayerColor; }
+
 	/* Light Functions */
 
 	UFUNCTION(BlueprintCallable,BlueprintPure)
@@ -121,12 +124,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetLastLightValue(float NewLastLightValue) { LastLightValue = NewLastLightValue; }
-
-	UFUNCTION(BlueprintCallable,BlueprintPure)
-	float GetGravityScaleSaved() { return GravityScaleSaved; }
-
-	UFUNCTION(BlueprintCallable)
-	void SetGravityScaleSaved(float NewGravityScaleSaved) { GravityScaleSaved = NewGravityScaleSaved; }
 
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	bool CanPush() { return bCanPush; }
@@ -202,6 +199,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<class ACameraArea> LastHitArea;
 
+	UPROPERTY(EditAnywhere)
+	FColor PlayerColor;
+
 	/* Light Variables */
 
 	UPROPERTY()
@@ -221,9 +221,6 @@ private:
 
 	UPROPERTY()
 	float LastLightValue = 50.F;
-
-	UPROPERTY(EditAnywhere)
-	float GravityScaleSaved = 1.5F;
 
 	UPROPERTY()
 	float JumpDurationIncrease = 0.05f;
