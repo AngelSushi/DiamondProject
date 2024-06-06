@@ -12,6 +12,8 @@
 
 #include "DiamondProject/Luminaria/Actors/CameraArea.h"
 
+#include "../CameraBehaviors/CameraShakeBehavior.h"
+
 ALuminariaCamera::ALuminariaCamera() {
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -53,10 +55,28 @@ void ALuminariaCamera::Tick(float DeltaTime) {
 	if (CameraBehavior) {
 		CameraBehavior->TickBehavior(DeltaTime);
 	}
+
+	if (ShakeBehavior) {
+		ShakeBehavior->TickBehavior(DeltaTime);
+	}
 }
 
 void ALuminariaCamera::OnPlayerRegister(ADiamondProjectCharacter* Character) {
 	Characters.Add(Character);
+}
+
+void ALuminariaCamera::InitCameraShake() {
+	ShakeBehavior = NewObject<UCameraShakeBehavior>();
+
+	ShakeBehavior->BeginBehavior(this);
+
+	FTimerHandle ShakeTimer;
+
+	GetWorld()->GetTimerManager().SetTimer(ShakeTimer, [this]() {
+		ShakeBehavior = nullptr;	
+	}, 3.F, false);
+
+	
 }
 
 void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc /*= [](UCameraBehavior* CameraBehavior) {}*/) {
