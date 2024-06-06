@@ -57,6 +57,7 @@ private:
 
     bool bIsShaking;
 
+    UPROPERTY(VisibleAnywhere)
     float ShakeTime;
 
     UPROPERTY(EditAnywhere)
