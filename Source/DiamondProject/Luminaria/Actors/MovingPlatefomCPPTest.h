@@ -58,10 +58,13 @@ private:
     void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
     UPROPERTY()
-    float PlayerOn = 0;
+    int8 PlayerOn = 0;
 
     UPROPERTY()
     TArray<UMaterialInstanceDynamic*> CrystalsMat;
+
+    UPROPERTY()
+    TArray<FColor> CrystalsColor;
 
     UPROPERTY()
     bool bIsGroundPlateform;
