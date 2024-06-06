@@ -47,7 +47,7 @@ void ALuminariaCamera::Tick(float DeltaTime) {
 	}
 
 	if (HeightBehavior) {
-		//HeightBehavior->TickBehavior(DeltaTime);
+		HeightBehavior->TickBehavior(DeltaTime);
 	}
 
 	if (CameraBehavior) {
@@ -105,7 +105,6 @@ void ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavio
 
 	case ECameraBehavior::FOLLOW_PATH:
 		FollowBehavior = NewObject<UCameraFollowBehavior>();
-		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Blue, TEXT("His Follow"));
 
 		CameraBehavior = FollowBehavior;
 		break;
