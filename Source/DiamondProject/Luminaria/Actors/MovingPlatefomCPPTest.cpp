@@ -2,12 +2,22 @@
 #include "DiamondProject/Luminaria/SubSystems/MecanismEventsDispatcher.h"
 #include "DiamondProject/Luminaria/DataAssets/PlateformDataAsset.h"
 
+#include "Components/BoxComponent.h"
+
 AMovingPlatefomCPPTest::AMovingPlatefomCPPTest(){
     PrimaryActorTick.bCanEverTick = true;
+
+    Cube = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube"));
+    Cube->SetupAttachment(RootComponent);
+
+    BoxBlock = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxBlock"));
+    BoxBlock->SetupAttachment(Cube);
+
+    BoxOverlap = CreateDefaultSubobject<UBoxComponent>(TEXT("BlockOverlap"));
+    BoxOverlap->SetupAttachment(Cube);
 }
 
-void AMovingPlatefomCPPTest::BeginPlay()
-{
+void AMovingPlatefomCPPTest::BeginPlay() {
     Super::BeginPlay();
 
     StartLocation = GetActorLocation();
@@ -18,6 +28,28 @@ void AMovingPlatefomCPPTest::BeginPlay()
 
     MecanismDispatcher->OnMecanismOn.AddDynamic(this, &AMovingPlatefomCPPTest::OnMecanismOn);
     MecanismDispatcher->OnMecanismOff.AddDynamic(this, &AMovingPlatefomCPPTest::OnMecanismOff);
+
+    bIsGroundPlateform = Cube->GetMaterials().Num() == 8;
+
+    GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Orange, FString::FromInt(Cube->GetMaterials().Num()));
+
+    if (!bIsGroundPlateform) {
+        for (int i = 0; i < 4; i++) {
+            UMaterialInstanceDynamic* InstanceDynamic = UMaterialInstanceDynamic::Create(CrystalMaterialRef, this);
+            InstanceDynamic->SetScalarParameterValue("BlendAlpha", 0.F);
+            CrystalsMat.Add(InstanceDynamic);
+            Cube->SetMaterial(5 + i, InstanceDynamic);
+        }
+    }
+    else {
+        UMaterialInstanceDynamic* InstanceDynamic = UMaterialInstanceDynamic::Create(CrystalMaterialRef, this);
+        InstanceDynamic->SetScalarParameterValue("BlendAlpha", 0.F);
+        CrystalsMat.Add(InstanceDynamic);
+        Cube->SetMaterial(1, InstanceDynamic);
+    }
+
+    BoxOverlap->OnComponentBeginOverlap.AddDynamic(this, &AMovingPlatefomCPPTest::OnBeginOverlap);
+    BoxOverlap->OnComponentEndOverlap.AddDynamic(this, &AMovingPlatefomCPPTest::OnEndOverlap);
 }
 
 
@@ -28,7 +60,7 @@ void AMovingPlatefomCPPTest::Tick(float DeltaTime) {
         return;
 
     if (!TargetMecanism || (TargetMecanism && bEnable)) {
-
+        
         FVector TargetLocation = Waypoints[CurrentWaypointIndex]->GetActorLocation();
         FVector CurrentLocation = GetActorLocation();
 
@@ -56,6 +88,7 @@ void AMovingPlatefomCPPTest::Tick(float DeltaTime) {
             }
         }
     }
+
 }
 
 void AMovingPlatefomCPPTest::OnMecanismOn(AMecanism* Mecanism) {
@@ -67,5 +100,53 @@ void AMovingPlatefomCPPTest::OnMecanismOn(AMecanism* Mecanism) {
 void AMovingPlatefomCPPTest::OnMecanismOff(AMecanism* Mecanism) {
     if (Mecanism == TargetMecanism) {
         bEnable = false;
+    }
+}
+
+void AMovingPlatefomCPPTest::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+    GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Begin Overlap"));
+
+    PlayerOn++;
+    PlayerOn = FMath::Clamp(PlayerOn, 0, 2);
+
+    if (!bIsGroundPlateform) {
+        int PlayerMaxIndex = PlayerOn * 2;
+
+        for (int i = 0; i < PlayerMaxIndex; i++) {
+            UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[i];
+            InstanceMaterial->SetScalarParameterValue("BlendAlpha", 1.0F);
+        }
+    }
+    else {
+        UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[0];
+        InstanceMaterial->SetScalarParameterValue("BlendAlpha",0.5 * PlayerOn);
+    }
+}
+
+void AMovingPlatefomCPPTest::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+    GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("End Overlap"));
+
+    PlayerOn--;
+    PlayerOn = FMath::Clamp(PlayerOn, 0, 2);
+
+    if (!bIsGroundPlateform) {
+        int PlayerMaxIndex = PlayerOn * 2;
+
+        if (PlayerOn == 0) {
+            for (UMaterialInstanceDynamic* InstanceMaterial : CrystalsMat) {
+                InstanceMaterial->SetScalarParameterValue("BlendAlpha", 0.F);
+            }
+            return;
+        }
+
+        for (int i = 0; i < PlayerMaxIndex; i++) {
+            int Index = 3 - i;
+            UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[Index];
+            InstanceMaterial->SetScalarParameterValue("BlendAlpha", 0.0F);
+        }
+    }
+    else {
+        UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[0];
+        InstanceMaterial->SetScalarParameterValue("BlendAlpha", 0.5 * PlayerOn);
     }
 }

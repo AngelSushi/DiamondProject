@@ -38,9 +38,13 @@ void ALink::Tick(float DeltaTime) {
 	if (_characters.Num() == 2) {
 		CalculateBarycenter();
 		float distance = FVector::Distance(_characters[0]->GetActorLocation(), _characters[1]->GetActorLocation());
+		float ScaleZ = FMath::Lerp(CrushMin, CrushMax, DistanceAlpha);
 		
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Magenta, FString::Printf(TEXT("DistanceAlpha %f"), DistanceAlpha));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Cyan, FString::Printf(TEXT("ScaleZ %f"), ScaleZ));
+
 		SetActorLocation(_barycenter);
-		SetActorScale3D(FVector(distance / 100,0.05f,0.1f));
+		SetActorScale3D(FVector(distance / 100,0.05f, ScaleZ));
 
 		FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(_characters[0]->GetActorLocation(),_characters[1]->GetActorLocation());
 		SetActorRotation(Rotation);
@@ -71,20 +75,22 @@ void ALink::CalculateBarycenter() {
 }
 
 void ALink::OnPlayerMove(ADiamondProjectCharacter* Character,FVector2D Input,FVector Direction,bool& IsCanceled) {
-	if (FMath::IsNearlyEqual(GetActorScale3D().X, DistanceMax / 100, 1.F)) {
-		
-		// Pas sur du fonctionnement a 100%
-
-		FVector NextPosition = Character->GetActorLocation() + Direction * Character->GetCharacterMovement()->GetMaxSpeed();
-		AActor* OtherPlayer = PlayerManager->GetOtherPlayer(Character);
-
-		float NewDistance = FVector::Distance(NextPosition, OtherPlayer->GetActorLocation());
 	
-		if (NewDistance >= DistanceMax) {
+	if (LastDirection == FVector::Zero()) {
+		LastDirection = Direction;
+	}
+
+	AActor* OtherPlayer = PlayerManager->GetOtherPlayer(Character);
+	float Distance = FVector::Distance(Character->GetActorLocation(), OtherPlayer->GetActorLocation());
+	DistanceAlpha = Distance / DistanceMax;
+
+	if (Direction == LastDirection) {
+		if (Distance >= DistanceMax) {
 			IsCanceled = true;
 		}
-		else {
-			IsCanceled = false;
-		}
+	}
+	else {
+		IsCanceled = false;
+		Direction = LastDirection;
 	}
 }

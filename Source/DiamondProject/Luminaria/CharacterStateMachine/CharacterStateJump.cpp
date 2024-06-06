@@ -38,11 +38,13 @@ void UCharacterStateJump::OnStateBegin() {
 	if (PlayerManager) {
 		PlayerManager->OnPlayerLandOnGround.AddDynamic(this, &UCharacterStateJump::OnPlayerLandOnGround);
 
-		float DistanceBetweenPlayers = FVector::Distance(PlayerManager->GetAllCharactersRef()[0]->GetActorLocation(), PlayerManager->GetAllCharactersRef()[1]->GetActorLocation());
+		if (PlayerManager->GetAllCharactersRef().Num() >= 2) {
+			float DistanceBetweenPlayers = FVector::Distance(PlayerManager->GetAllCharactersRef()[0]->GetActorLocation(), PlayerManager->GetAllCharactersRef()[1]->GetActorLocation());
 
-		if (LinkRef && DistanceBetweenPlayers >= LinkRef->GetDistanceMax()) {
-			ChangeState(GetStateMachine()->StateIdle);
-			return;
+			if (LinkRef && DistanceBetweenPlayers >= LinkRef->GetDistanceMax()) {
+				ChangeState(GetStateMachine()->StateIdle);
+				return;
+			}
 		}
 		
 	}
