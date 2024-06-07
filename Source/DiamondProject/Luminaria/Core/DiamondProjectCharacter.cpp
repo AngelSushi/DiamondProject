@@ -236,10 +236,13 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 
 		ADiamondProjectCharacter* OtherPlayer = PlayerManager->GetOtherPlayer(this);
 
+		if (!OtherPlayer) {
+			return;
+		}
+
 		if (HitArea->PlayerNeeded == 2) {	
 			if (OtherPlayer->LastHitArea == HitArea) {
 				GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Yellow, TEXT("Switch"));
-
 				// Faire le switch
 				MainCamera->CurrentArea = HitArea;
 
