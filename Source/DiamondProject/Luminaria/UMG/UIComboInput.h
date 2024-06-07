@@ -58,6 +58,9 @@ protected:
 	TObjectPtr<class UMaterialInstanceDynamic> DynamicMaterial;
 
 	UPROPERTY()
+	TObjectPtr<class UFont> TextFont;
+
+	UPROPERTY()
 	FVector2D Offset;
 
 	UPROPERTY()

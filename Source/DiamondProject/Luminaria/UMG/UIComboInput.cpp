@@ -7,12 +7,24 @@
 #include "Components/TextBlock.h"
 #include "Components/CanvasPanelSlot.h"
 
+#include "Engine/Font.h"
+#include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
+
 UUIComboInput::UUIComboInput(const FObjectInitializer& Initializer) : Super(Initializer) {
 	InputsIconAsset = LoadObject<UUIInputDataAsset>(nullptr, TEXT("/Game/Luminaria/DataAssets/InputsIcon"));
 	IconMaterial = LoadObject<UMaterial>(nullptr, TEXT("/Game/Luminaria/Materials/M_InputsIconAtlas"));
 	
 	if (GEngine) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Blue, TEXT("Creation"));
+
+		ConstructorHelpers::FObjectFinder<UFont> Font(TEXT("/Game/Luminaria/Fonts/AMGDT_IV50_Font"));
+		if (Font.Succeeded()) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Green, TEXT("Load Font"));
+			TextFont = Font.Object;
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("Dont Load Font"));
+		}
 	}
 }
 
@@ -66,18 +78,18 @@ void UUIComboInput::AddElement(TEnumAsByte<EInput> Input,UHorizontalBox* Horizon
 void UUIComboInput::AddText(FText Text, UHorizontalBox* HorizontalBox, float Size) {
 	UTextBlock* TextBlock = NewObject<UTextBlock>(this, UTextBlock::StaticClass());
 	TextBlock->SetText(Text);
-
-	FSlateFontInfo FontInfo = TextBlock->Font;
-	FontInfo.Size = Size;
+	
+	FSlateFontInfo FontInfo(TextFont, 18);
+	
 	TextBlock->SetFont(FontInfo);
-
+	TextBlock->ColorAndOpacity = FSlateColor(FColor(121.F, 121.F, 121.F));
 	HorizontalBox->AddChild(TextBlock);
 
 	UHorizontalBoxSlot* SlotText = HorizontalBox->AddChildToHorizontalBox(TextBlock);
 
 	SlotText->HorizontalAlignment = HAlign_Center;
 	SlotText->VerticalAlignment = VAlign_Center;
-	SlotText->SetPadding(FMargin(0, 3, 0, 0));
+	SlotText->SetPadding(FMargin(0, 0, 0, 0));
 }
 
 FInputData UUIComboInput::GetDataByInput(TEnumAsByte<EInput> Input) {
