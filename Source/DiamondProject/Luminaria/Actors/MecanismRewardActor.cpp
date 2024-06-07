@@ -16,15 +16,13 @@ void AMecanismRewardActor::BeginPlay(){
 	for (AActor* MecanismActor : MecanismArray) {
 		if (AMecanism* Mecanism = Cast<AMecanism>(MecanismActor)) {
 			if (Mecanism->MecanismResults.Contains(this)) {
-				TargetMecanism = Mecanism;
-				break;
+				TargetMecanisms.Add(Mecanism);
 			}
 		}
 	}
 }
 
 void AMecanismRewardActor::Reward() {
-	GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Reward From CPP"));
 	RewardFunction();
 }
 
