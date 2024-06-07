@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -17,6 +15,14 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Platform Settings")
     TArray<AActor*> Waypoints;
 
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<class UStaticMeshComponent> Cube;
+
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<class UBoxComponent> BoxBlock;
+
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<class UBoxComponent> BoxOverlap;
   
 
     UFUNCTION(BlueprintPure)
@@ -42,5 +48,25 @@ private:
     void OnMecanismOn(AMecanism* Mecanism);
     void OnMecanismOff(AMecanism* Mecanism);
 
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<class UMaterial> CrystalMaterialRef;
+
+    UFUNCTION()
+    void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+    UFUNCTION()
+    void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+    UPROPERTY()
+    int8 PlayerOn = 0;
+
+    UPROPERTY()
+    TArray<UMaterialInstanceDynamic*> CrystalsMat;
+
+    UPROPERTY()
+    TArray<FColor> CrystalsColor;
+
+    UPROPERTY()
+    bool bIsGroundPlateform;
 
 };

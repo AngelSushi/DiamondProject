@@ -25,6 +25,10 @@ AThwomp::AThwomp()
     DeathComponent = CreateDefaultSubobject<UDeathComponent>(TEXT("Death Component"));
     DeathComponent->SetupAttachment(RootComponent);
 
+    bIsShaking = false;
+    ShakeDuration = 2.0f;
+    ShakeTime = 0.0f;
+
 }
 void AThwomp::BeginPlay()
 {
@@ -39,6 +43,21 @@ void AThwomp::BeginPlay()
 void AThwomp::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+
+    if (bIsShaking)
+    {
+        ShakeTime += DeltaTime;
+        if (ShakeTime >= ShakeDuration)
+        {
+            bIsShaking = false;
+            bIsFalling = true;
+            ShakeTime = 0.0f;
+        }
+        else
+        {
+            ShakeBox();
+        }
+    }
 
     if (bIsFalling && !bIsTouchingSomething)
     {
@@ -71,6 +90,13 @@ void AThwomp::Tick(float DeltaTime)
 
 
 }
+void AThwomp::ShakeBox()
+{
+    FVector NewLocation = InitialLocation;
+    //NewLocation.X += FMath::RandRange(-5.0f, 5.0f);
+    NewLocation.Y += FMath::RandRange(-5.0f, 5.0f);
+    SetActorLocation(NewLocation);
+}
 
 
 void AThwomp::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -78,7 +104,8 @@ void AThwomp::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* O
     ADiamondProjectCharacter* Character = Cast<ADiamondProjectCharacter>(OtherActor);
     if (Character)
     {
-        bIsFalling = true;
+        bIsShaking = true;
+        //bIsFalling = true;
     }
 }
 

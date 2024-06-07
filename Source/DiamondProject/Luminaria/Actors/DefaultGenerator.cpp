@@ -21,11 +21,25 @@ void ADefaultGenerator::BeginPlay() {
 	boxCollision->OnComponentEndOverlap.AddDynamic(this, &ADefaultGenerator::OnEndOverlap);
 
 	basicMaterial = mesh->GetMaterial(0)->GetMaterial();
+
+	InstanceCrystalMaterial = UMaterialInstanceDynamic::Create(CrystalMaterial, this);
+	mesh->SetMaterial(1, InstanceCrystalMaterial);
 }
 
 void ADefaultGenerator::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
+	if (IsActivatorActive()) {
+		CrystalTimer += DeltaTime;
+
+		float Alpha = (0.6 + CrystalTimer) / MaxCrystalTimer;
+		Alpha = FMath::Clamp(Alpha, 0.6F, 1.0F);
+		// 0.6 = 0; 1 = 1
+		InstanceCrystalMaterial->SetScalarParameterValue("BlendAlpha", Alpha);
+	}
+	else {
+		InstanceCrystalMaterial->SetScalarParameterValue("BlendAlpha", 0.6f);
+	}
 }
 
 void ADefaultGenerator::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
@@ -49,7 +63,8 @@ void ADefaultGenerator::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor
 
 void ADefaultGenerator::OnMecanismActivate(AMecanism* mecanism,AMecanismActivator* mecanismActivator) {
 	if (mecanismActivator == this) {
-		mesh->SetMaterial(0, activeMaterial);
+		//mesh->SetMaterial(0, activeMaterial);
+		CrystalTimer = 0.F;
 	}
 }
 

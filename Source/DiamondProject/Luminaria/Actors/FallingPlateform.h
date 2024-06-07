@@ -52,6 +52,18 @@ private:
 
     FVector InitialLocation;
 
+
+    void ShakeBox();
+
+    bool bIsShaking;
+
+    UPROPERTY(VisibleAnywhere)
+    float ShakeTime;
+
+    UPROPERTY(EditAnywhere)
+    float ShakeDuration;
+
+
     UFUNCTION()
     void OnCharacterOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
         class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
