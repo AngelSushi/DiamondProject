@@ -75,22 +75,27 @@ void ALink::CalculateBarycenter() {
 }
 
 void ALink::OnPlayerMove(ADiamondProjectCharacter* Character,FVector2D Input,FVector Direction,bool& IsCanceled) {
-	
-	if (LastDirection == FVector::Zero()) {
-		LastDirection = Direction;
-	}
-
 	AActor* OtherPlayer = PlayerManager->GetOtherPlayer(Character);
 	float Distance = FVector::Distance(Character->GetActorLocation(), OtherPlayer->GetActorLocation());
 	DistanceAlpha = Distance / DistanceMax;
 
-	if (Direction == LastDirection) {
-		if (Distance >= DistanceMax) {
+	if (Distance >= DistanceMax) {
+		IsCanceled = true;
+
+		if (LastDirection == FVector::Zero()) {
+			LastDirection = Direction;
+			return;
+		}
+
+		if (Direction != LastDirection) {
+			IsCanceled = false;
+		}
+		else {
 			IsCanceled = true;
 		}
 	}
 	else {
 		IsCanceled = false;
-		Direction = LastDirection;
+		LastDirection = FVector::Zero();
 	}
 }
