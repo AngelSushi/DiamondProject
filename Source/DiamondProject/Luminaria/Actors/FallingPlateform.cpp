@@ -44,9 +44,8 @@ void AFallingPlateform::Tick(float DeltaTime)
 		ShakeTime += DeltaTime;
 		if (ShakeTime >= ShakeDuration)
 		{
-			bIsShaking = false;
 			SetActorLocation(InitialLocation);
-			ShakeTime = 0.0f;
+			bIsShaking = false;
 		}
 		else
 		{
@@ -77,7 +76,7 @@ void AFallingPlateform::Tick(float DeltaTime)
 void AFallingPlateform::ShakeBox()
 {
 	FVector NewLocation = InitialLocation;
-	NewLocation.X += FMath::RandRange(-5.0f, 5.0f);
+	//NewLocation.X += FMath::RandRange(-5.0f, 5.0f);
 	NewLocation.Y += FMath::RandRange(-5.0f, 5.0f);
 	SetActorLocation(NewLocation);
 }
@@ -88,15 +87,17 @@ void AFallingPlateform::FallPlatform()
 	PlatformMesh->SetSimulatePhysics(true);
 	bPlateformFall = true;
 
+
 }
 void AFallingPlateform::ResetPlatform()
 {
 	// Remet la plateforme à sa position d'origine
 	PlatformMesh->SetSimulatePhysics(false);
-	SetActorLocation(InitialLocation);
+	SetActorLocation(InitialLocation, true, nullptr, ETeleportType::TeleportPhysics);
 	bPlateformFall = false;
 	TimeSinceCharacterOnPlatform = 0.0f;
 	TimePlateformFall = 0.0f;
+	ShakeTime = 0.0f;
 }
 
 
@@ -111,6 +112,7 @@ void AFallingPlateform::OnCharacterOverlapBegin(class UPrimitiveComponent* Overl
 			bCharacterOnPlatform = true;
 			bIsShaking = true;
 			TimeSinceCharacterOnPlatform = 0.0f;
+			ShakeTime = 0.0f;
 		}
 		
 	}

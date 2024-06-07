@@ -4,6 +4,8 @@
 
 #include "Components/BoxComponent.h"
 
+#include "../Core/DiamondProjectCharacter.h"
+
 AMovingPlatefomCPPTest::AMovingPlatefomCPPTest(){
     PrimaryActorTick.bCanEverTick = true;
 
@@ -43,7 +45,7 @@ void AMovingPlatefomCPPTest::BeginPlay() {
     }
     else {
         UMaterialInstanceDynamic* InstanceDynamic = UMaterialInstanceDynamic::Create(CrystalMaterialRef, this);
-        InstanceDynamic->SetScalarParameterValue("BlendAlpha", 0.F);
+        InstanceDynamic->SetScalarParameterValue("Value", 0.F);
         CrystalsMat.Add(InstanceDynamic);
         Cube->SetMaterial(1, InstanceDynamic);
     }
@@ -104,49 +106,81 @@ void AMovingPlatefomCPPTest::OnMecanismOff(AMecanism* Mecanism) {
 }
 
 void AMovingPlatefomCPPTest::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-    GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, TEXT("Begin Overlap"));
-
-    PlayerOn++;
-    PlayerOn = FMath::Clamp(PlayerOn, 0, 2);
-
-    if (!bIsGroundPlateform) {
-        int PlayerMaxIndex = PlayerOn * 2;
-
-        for (int i = 0; i < PlayerMaxIndex; i++) {
-            UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[i];
-            InstanceMaterial->SetScalarParameterValue("BlendAlpha", 1.0F);
+    if (ADiamondProjectCharacter* Character = Cast<ADiamondProjectCharacter>(OtherActor)) {
+        if (!CrystalsColor.Contains(Character->GetPlayerColor())) {
+            CrystalsColor.Add(Character->GetPlayerColor());
         }
-    }
-    else {
-        UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[0];
-        InstanceMaterial->SetScalarParameterValue("BlendAlpha",0.5 * PlayerOn);
+
+        PlayerOn++;
+        PlayerOn = FMath::Clamp(PlayerOn, 0, 2);
+
+        if (!bIsGroundPlateform) {
+            int PlayerMaxIndex = PlayerOn * 2;
+
+            for (int i = 0; i < PlayerMaxIndex; i++) {
+                int ColorIndex = i / 2;
+                UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[i];
+                InstanceMaterial->SetScalarParameterValue("BlendAlpha", 1.0F);
+                InstanceMaterial->SetVectorParameterValue("Color", CrystalsColor[ColorIndex]);
+            }
+        }
+        else {
+            UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[0];
+
+            float Value = 1.F - 0.25F * (PlayerOn / 2);
+
+            if (PlayerOn % 2 == 0) { // If The Two Players Are On The Plateform
+                InstanceMaterial->SetVectorParameterValue("FirstColor", CrystalsColor[0]);
+                InstanceMaterial->SetVectorParameterValue("SecondColor", CrystalsColor[1]);
+            }
+            else {
+                InstanceMaterial->SetVectorParameterValue("FirstColor", CrystalsColor[0]);
+                InstanceMaterial->SetVectorParameterValue("SecondColor", CrystalsColor[0]);
+            }
+
+            InstanceMaterial->SetScalarParameterValue("Value", Value);
+        }
     }
 }
 
 void AMovingPlatefomCPPTest::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
-    GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Red, TEXT("End Overlap"));
+    if (ADiamondProjectCharacter* Character = Cast<ADiamondProjectCharacter>(OtherActor)) {
+        PlayerOn--;
+        PlayerOn = FMath::Clamp(PlayerOn, 0, 2);
 
-    PlayerOn--;
-    PlayerOn = FMath::Clamp(PlayerOn, 0, 2);
+        if (CrystalsColor.Contains(Character->GetPlayerColor())) {
+            CrystalsColor.Remove(Character->GetPlayerColor());
+        }
 
-    if (!bIsGroundPlateform) {
-        int PlayerMaxIndex = PlayerOn * 2;
+        if (!bIsGroundPlateform) {
+            int PlayerMaxIndex = PlayerOn * 2;
 
-        if (PlayerOn == 0) {
-            for (UMaterialInstanceDynamic* InstanceMaterial : CrystalsMat) {
-                InstanceMaterial->SetScalarParameterValue("BlendAlpha", 0.F);
+            if (PlayerOn == 0) {
+                for (UMaterialInstanceDynamic* InstanceMaterial : CrystalsMat) {
+                    InstanceMaterial->SetScalarParameterValue("BlendAlpha", 0.F);
+                }
+                return;
             }
-            return;
-        }
 
-        for (int i = 0; i < PlayerMaxIndex; i++) {
-            int Index = 3 - i;
-            UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[Index];
-            InstanceMaterial->SetScalarParameterValue("BlendAlpha", 0.0F);
+            for (int i = 0; i < PlayerMaxIndex; i++) {
+                int Index = 3 - i;
+                UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[Index];
+                InstanceMaterial->SetScalarParameterValue("BlendAlpha", 0.0F);
+            }
         }
-    }
-    else {
-        UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[0];
-        InstanceMaterial->SetScalarParameterValue("BlendAlpha", 0.5 * PlayerOn);
+        else {
+            UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[0];
+
+            InstanceMaterial->SetScalarParameterValue("Value", 1.F);
+
+            if (PlayerOn == 0) {
+                InstanceMaterial->SetVectorParameterValue("FirstColor",FColor::Black);
+                InstanceMaterial->SetVectorParameterValue("SecondColor",FColor::Black);
+            }
+            else {
+                InstanceMaterial->SetVectorParameterValue("FirstColor",CrystalsColor[0]);
+                InstanceMaterial->SetVectorParameterValue("SecondColor",CrystalsColor[0]);
+            }
+        }
     }
 }

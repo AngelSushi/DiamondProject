@@ -43,7 +43,7 @@ private:
 	TObjectPtr<class USceneComponent> Root;
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UStaticMeshComponent> Mesh;
+	TObjectPtr<class USkeletalMeshComponent> Mesh;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UAbsorberDataAsset> AbsorberAsset;
