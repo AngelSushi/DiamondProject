@@ -195,15 +195,17 @@ void ADiamondProjectCharacter::EnableInputListener() {
 	InputUIManager->EnableInput(ADiamondProjectCharacter::StaticClass());
 
 	ComboWidget = CreateWidget<UUIComboInput>(GetWorld(), UISystem->GetUIAsset()->ComboInputClass);
-	ComboWidget->InitComboUI({ EInput::Y }, FText::FromString(TEXT("Sauter")));
+	ComboWidget->InitComboUI({ EInput::Y }, FText::FromString(TEXT("SAUTER")));
 
+	
 	int32 ScreenX;
 	int32 ScreenY;
 
 	GetWorld()->GetFirstPlayerController()->GetViewportSize(ScreenX, ScreenY);
-	ScreenY -= 600.F;
-	ScreenX -= 200.F;
 
+	ScreenY -= 200.F;
+	ScreenX -= 200.F;
+	
 	ComboWidget->SetPositionInViewport(FVector2D(ScreenX / 2, ScreenY / 2));
 	ComboWidget->AddToViewport();
 }
