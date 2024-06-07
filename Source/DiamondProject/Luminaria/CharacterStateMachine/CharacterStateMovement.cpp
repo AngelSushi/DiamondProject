@@ -69,10 +69,10 @@ void UCharacterStateMovement::OnMovement(const FInputActionValue& MovementValue)
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
 	if (ForwardDirection.X != 0) {
-		MovementDirection = FVector(0.F, MovementVector.X, 0.f);
+		MovementDirection = FVector(0.F,MovementVector.X > 0 ? 1.0F : -1.0F, 0.f);
 	}
 	else if (ForwardDirection.Y != 0) {
-		MovementDirection = FVector(MovementVector.X, 0.F, 0.F);
+		MovementDirection = FVector(MovementVector.Y > 0 ? 1.0F : -1.0F, 0.F, 0.F);
 	}
 
 	GetCharacter()->GetLuminariaController()->SetMovevalue(MovementVector);
