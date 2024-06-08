@@ -98,12 +98,18 @@
 		<relationship name="modulators">
 			<destination>{99665fed-1b1a-4007-8d34-502dd35f168d}</destination>
 		</relationship>
+		<relationship name="fadeInCurve">
+			<destination>{bb0ad935-bd77-4058-ab5d-8068c1fe483d}</destination>
+		</relationship>
 		<relationship name="sounds">
 			<destination>{1f68008a-3a82-4804-8e3c-2c0f4b234f9f}</destination>
 			<destination>{88bda7de-384b-4fa1-949b-57c483874e17}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{4f7384ba-5ac0-4c57-9059-37bb41ad5b6d}">
+		<property name="volume">
+			<value>-16.5</value>
+		</property>
 		<property name="name">
 			<value>Audio 1</value>
 		</property>
@@ -132,6 +138,14 @@
 			<value>8</value>
 		</property>
 	</object>
+	<object class="FadeCurve" id="{bb0ad935-bd77-4058-ab5d-8068c1fe483d}">
+		<relationship name="startPoint">
+			<destination>{603d3d90-f6f3-444b-913e-2ab418baac92}</destination>
+		</relationship>
+		<relationship name="endPoint">
+			<destination>{2819e8be-0e5f-42c0-bcbd-2987e43aee3c}</destination>
+		</relationship>
+	</object>
 	<object class="SingleSound" id="{1f68008a-3a82-4804-8e3c-2c0f4b234f9f}">
 		<relationship name="audioFile">
 			<destination>{ff1056f4-05b3-4606-b172-3f826918cf0d}</destination>
@@ -150,6 +164,25 @@
 	</object>
 	<object class="MixerBusPanner" id="{675ffca8-ec19-41ea-a912-8e6f8eee8fc0}" />
 	<object class="MixerBusFader" id="{825d03d5-3935-4c61-8041-afeeb3b0fbe2}" />
+	<object class="AutomationPoint" id="{603d3d90-f6f3-444b-913e-2ab418baac92}">
+		<property name="position">
+			<value>0</value>
+		</property>
+		<property name="value">
+			<value>0</value>
+		</property>
+		<property name="curveShape">
+			<value>-0.2547189</value>
+		</property>
+	</object>
+	<object class="AutomationPoint" id="{2819e8be-0e5f-42c0-bcbd-2987e43aee3c}">
+		<property name="position">
+			<value>0.0625</value>
+		</property>
+		<property name="value">
+			<value>1</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{6310b8ee-6782-471c-8397-0a39dd340559}" />
 	<object class="MultibandEqEffect" id="{048e7f6e-c000-43e9-a2b1-f4bbcfae6107}">
 		<property name="filterTypeA">
