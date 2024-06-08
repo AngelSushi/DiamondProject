@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
 	<object class="AudioFile" id="{34ad8d79-00b9-404f-8539-ea350503e6ab}">
+		<property name="color">
+			<value>Purple</value>
+		</property>
 		<property name="assetPath">
 			<value>SFX/GPE/SFX_GPE_Balance_lp.wav</value>
 		</property>

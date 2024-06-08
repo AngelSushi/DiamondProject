@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
 	<object class="EncodableAsset" id="{26cf396e-e1be-4b46-b83a-17a72506dcf7}">
+		<property name="color">
+			<value>Purple</value>
+		</property>
 		<property name="assetPath">
 			<value>SFX/GPE/SFX_GPE_Box_Fall/</value>
 		</property>

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
 	<object class="AudioFile" id="{c16755f2-b96d-4358-bd8c-b071fe22f4ea}">
+		<property name="color">
+			<value>Purple</value>
+		</property>
 		<property name="assetPath">
 			<value>SFX/GPE/SFX_GPE_Smoke_lp.wav</value>
 		</property>
