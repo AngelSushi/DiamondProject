@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="AudioFile" id="{a6d0a12e-4280-473b-87d4-3ea3586bcbde}">
 		<property name="assetPath">
-			<value>SFX/GPE/SFX_MC_Death/SFX_MC_Death_01.wav</value>
+			<value>SFX/MC/SFX_MC_Death/SFX_MC_Death_01.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>48</value>
