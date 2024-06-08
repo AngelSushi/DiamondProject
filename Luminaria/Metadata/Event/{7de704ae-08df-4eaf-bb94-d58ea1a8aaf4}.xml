@@ -128,6 +128,16 @@
 	</object>
 	<object class="MixerBusPanner" id="{f6d14949-60eb-46a3-a5d4-e7c08df9554a}" />
 	<object class="MixerBusFader" id="{526d6573-3beb-4c57-9f78-f71e4abf5baa}" />
-	<object class="SpatialiserEffect" id="{46f09da1-3dbc-492b-83ad-78fe6849844c}" />
+	<object class="SpatialiserEffect" id="{46f09da1-3dbc-492b-83ad-78fe6849844c}">
+		<property name="overrideRange">
+			<value>true</value>
+		</property>
+		<property name="userPanDirection">
+			<value>7.33182383</value>
+		</property>
+		<property name="userPanExtent">
+			<value>65.1143188</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{022ebb0d-62d4-43ba-868d-d0c20353a750}" />
 </objects>
