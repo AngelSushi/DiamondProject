@@ -40,7 +40,7 @@ public:
 	float PlayerSpeedMax = 600.F;
 
 	UPROPERTY(EditAnywhere)
-	float TransitionDuration = 500.F;
+	float TransitionDuration = 900.F;
 
 	UPROPERTY(EditAnywhere)
 	float ZoomDuration = 8.F;
