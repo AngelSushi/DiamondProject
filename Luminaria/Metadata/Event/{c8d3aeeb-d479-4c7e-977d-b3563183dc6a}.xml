@@ -86,6 +86,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{9c244596-efcb-407e-9d74-dd0a4aa52ef8}">
+		<relationship name="modulators">
+			<destination>{e37dd855-d346-473f-bf1e-d6b767a3ae28}</destination>
+		</relationship>
 		<relationship name="effectChain">
 			<destination>{f0175091-3a8b-4db5-97f8-13e8e05e0cdf}</destination>
 		</relationship>
@@ -170,10 +173,10 @@
 	</object>
 	<object class="TransitionDestinationSound" id="{fb710442-3740-480c-83c5-826f5ae1a418}">
 		<property name="start">
-			<value>0.8214285714285714</value>
+			<value>0.5714285714285714</value>
 		</property>
 		<property name="length">
-			<value>1.464285714285714</value>
+			<value>1.714285714285714</value>
 		</property>
 		<relationship name="fadeInCurve">
 			<destination>{ab00c28d-70c8-4404-b200-f4552d2dad82}</destination>
@@ -254,6 +257,26 @@
 		<relationship name="markerTrack">
 			<destination>{d9757942-8f3e-47d1-ad05-78ccb38b9a50}</destination>
 		</relationship>
+	</object>
+	<object class="ADSRModulator" id="{e37dd855-d346-473f-bf1e-d6b767a3ae28}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>volume</value>
+		</property>
+		<property name="initialValue">
+			<value>-80</value>
+		</property>
+		<property name="attackTime">
+			<value>102.564133</value>
+		</property>
+		<property name="peakValue">
+			<value>-1.15555573</value>
+		</property>
+		<property name="releaseTime">
+			<value>1600</value>
+		</property>
+		<property name="finalValue">
+			<value>-80</value>
+		</property>
 	</object>
 	<object class="MixerBusEffectChain" id="{f0175091-3a8b-4db5-97f8-13e8e05e0cdf}">
 		<relationship name="effects">
@@ -409,13 +432,13 @@
 	</object>
 	<object class="AutomationPoint" id="{9b86b3f4-48c5-4654-bf50-0e016bcee008}">
 		<property name="position">
-			<value>0.8214285714285714</value>
+			<value>0.5714285714285714</value>
 		</property>
 		<property name="value">
 			<value>0</value>
 		</property>
 		<property name="curveShape">
-			<value>0.446847051</value>
+			<value>0.519175947</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{71618ce9-0342-4f3c-aa2a-9add86ace5af}">
