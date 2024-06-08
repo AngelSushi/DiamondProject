@@ -30,6 +30,7 @@ void ALink::BeginPlay() {
 
 void ALink::RegisterPlayer(ADiamondProjectCharacter* character) {
 	_characters.Add(character);
+	PlayersLastDirection.Add(character, FVector::Zero());
 }
 
 void ALink::Tick(float DeltaTime) {
@@ -79,23 +80,22 @@ void ALink::OnPlayerMove(ADiamondProjectCharacter* Character,FVector2D Input,FVe
 	float Distance = FVector::Distance(Character->GetActorLocation(), OtherPlayer->GetActorLocation());
 	DistanceAlpha = Distance / DistanceMax;
 
+	FVector LastDirection = PlayersLastDirection[Character];
+
+	FVector OtherPlayerPosition = OtherPlayer->GetActorLocation();
+
+	float FirstOrderPlayerIndex = PlayerManager->GetOrderedPlayers()[0];
+
 	if (Distance >= DistanceMax) {
-		IsCanceled = true;
-
-		if (LastDirection == FVector::Zero()) {
-			LastDirection = Direction;
-			return;
-		}
-
-		if (Direction != LastDirection) {
-			IsCanceled = false;
+		if (Character == PlayerManager->GetAllCharactersRef()[FirstOrderPlayerIndex]) {
+			if (Direction != FVector(0, 1, 0)) {
+				IsCanceled = true;
+			}
 		}
 		else {
-			IsCanceled = true;
+			if (Direction != FVector(0, -1, 0)) {
+				IsCanceled = true;
+			}
 		}
-	}
-	else {
-		IsCanceled = false;
-		LastDirection = FVector::Zero();
 	}
 }

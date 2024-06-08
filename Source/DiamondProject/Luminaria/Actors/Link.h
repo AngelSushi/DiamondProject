@@ -51,7 +51,7 @@ private:
 	float DistanceAlpha;
 
 	UPROPERTY()
-	FVector LastDirection;
+	TMap<ADiamondProjectCharacter*, FVector> PlayersLastDirection;
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;

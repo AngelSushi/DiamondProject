@@ -63,7 +63,7 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 
 		DefaultZ = OwnerActor->GetActorLocation().Z;
 
-		Barycenter.Z = DefaultZ; //Approach(Barycenter.Z,DefaultZ,700 * DeltaTime);
+		Barycenter.Z = DefaultZ;
 
 			
 
