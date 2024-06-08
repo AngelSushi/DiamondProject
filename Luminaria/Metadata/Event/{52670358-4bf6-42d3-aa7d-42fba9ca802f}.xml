@@ -77,9 +77,6 @@
 		<relationship name="modules">
 			<destination>{399753b1-f96f-4765-8f20-5110a2cb272e}</destination>
 		</relationship>
-		<relationship name="markers">
-			<destination>{57b8ecb3-b51d-4192-9400-2d715e6caebf}</destination>
-		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{c251f1e7-a6b6-46fd-a4a2-3be41c51ab19}">
 		<relationship name="modulators">
@@ -124,20 +121,6 @@
 		</relationship>
 		<relationship name="output">
 			<destination>{c251f1e7-a6b6-46fd-a4a2-3be41c51ab19}</destination>
-		</relationship>
-	</object>
-	<object class="LoopRegion" id="{57b8ecb3-b51d-4192-9400-2d715e6caebf}">
-		<property name="position">
-			<value>2</value>
-		</property>
-		<property name="length">
-			<value>2</value>
-		</property>
-		<relationship name="timeline">
-			<destination>{9e8b36a3-26a9-4b87-b0ca-f85b1f4a9f3b}</destination>
-		</relationship>
-		<relationship name="markerTrack">
-			<destination>{4afe05a0-0df9-42fc-a79f-1078b3671a5d}</destination>
 		</relationship>
 	</object>
 	<object class="RandomizerModulator" id="{4651a99b-28a5-47ca-b35a-54836519161a}">

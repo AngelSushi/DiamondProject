@@ -61,7 +61,7 @@
 	</object>
 	<object class="EventAutomatableProperties" id="{b3d8e691-1fdb-448b-a4e5-f7dc758756c8}">
 		<property name="maxVoices">
-			<value>3</value>
+			<value>1</value>
 		</property>
 	</object>
 	<object class="MarkerTrack" id="{7faaa238-ffe7-4a13-8206-80374af0ea57}" />
@@ -79,6 +79,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{4dbcdc3f-fd77-4fa2-ba8f-e45ff97a2067}">
+		<property name="volume">
+			<value>-5.5</value>
+		</property>
 		<relationship name="modulators">
 			<destination>{1851d8ba-004e-4aeb-a882-f39cda3e5551}</destination>
 		</relationship>
