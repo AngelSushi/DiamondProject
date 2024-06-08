@@ -519,6 +519,9 @@
 		<property name="length">
 			<value>30</value>
 		</property>
+		<property name="triggerConditionMode">
+			<value>1</value>
+		</property>
 		<relationship name="timeline">
 			<destination>{a28ef674-dac3-404f-aed1-a10dd30d5cc1}</destination>
 		</relationship>
@@ -542,6 +545,9 @@
 		<property name="length">
 			<value>30</value>
 		</property>
+		<property name="triggerConditionMode">
+			<value>1</value>
+		</property>
 		<relationship name="timeline">
 			<destination>{a28ef674-dac3-404f-aed1-a10dd30d5cc1}</destination>
 		</relationship>
@@ -564,6 +570,9 @@
 		</property>
 		<property name="length">
 			<value>30</value>
+		</property>
+		<property name="triggerConditionMode">
+			<value>1</value>
 		</property>
 		<relationship name="timeline">
 			<destination>{a28ef674-dac3-404f-aed1-a10dd30d5cc1}</destination>
@@ -589,6 +598,9 @@
 		<property name="length">
 			<value>30</value>
 		</property>
+		<property name="triggerConditionMode">
+			<value>1</value>
+		</property>
 		<relationship name="timeline">
 			<destination>{a28ef674-dac3-404f-aed1-a10dd30d5cc1}</destination>
 		</relationship>
@@ -613,6 +625,9 @@
 		<property name="length">
 			<value>30</value>
 		</property>
+		<property name="triggerConditionMode">
+			<value>1</value>
+		</property>
 		<relationship name="timeline">
 			<destination>{a28ef674-dac3-404f-aed1-a10dd30d5cc1}</destination>
 		</relationship>
@@ -635,6 +650,9 @@
 		</property>
 		<property name="length">
 			<value>30</value>
+		</property>
+		<property name="triggerConditionMode">
+			<value>1</value>
 		</property>
 		<relationship name="timeline">
 			<destination>{a28ef674-dac3-404f-aed1-a10dd30d5cc1}</destination>

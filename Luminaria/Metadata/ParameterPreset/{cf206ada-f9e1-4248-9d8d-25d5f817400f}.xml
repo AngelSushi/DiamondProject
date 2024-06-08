@@ -21,10 +21,13 @@
 		<property name="enumerationLabels">
 			<value>FT_Grass</value>
 			<value>FT_Stone</value>
-			<value>FT_Dirt</value>
+			<value>FT_Gravel</value>
 		</property>
 		<property name="initialValue">
 			<value>0</value>
+		</property>
+		<property name="isExposedRecursively">
+			<value>false</value>
 		</property>
 	</object>
 </objects>
