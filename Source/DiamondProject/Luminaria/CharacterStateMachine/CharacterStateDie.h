@@ -28,4 +28,7 @@ private:
 
 	UPROPERTY()
 	float DieTickTimer;
+
+	UPROPERTY()
+	TObjectPtr<class ALink> LinkRef;
 };

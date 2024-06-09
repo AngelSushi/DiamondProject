@@ -13,18 +13,10 @@
 UUIComboInput::UUIComboInput(const FObjectInitializer& Initializer) : Super(Initializer) {
 	InputsIconAsset = LoadObject<UUIInputDataAsset>(nullptr, TEXT("/Game/Luminaria/DataAssets/InputsIcon"));
 	IconMaterial = LoadObject<UMaterial>(nullptr, TEXT("/Game/Luminaria/Materials/M_InputsIconAtlas"));
-	
-	if (GEngine) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Blue, TEXT("Creation"));
+	ConstructorHelpers::FObjectFinder<UFont> Font(TEXT("/Game/Luminaria/Fonts/AMGDT_IV50_Font"));
 
-		ConstructorHelpers::FObjectFinder<UFont> Font(TEXT("/Game/Luminaria/Fonts/AMGDT_IV50_Font"));
-		if (Font.Succeeded()) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Green, TEXT("Load Font"));
-			TextFont = Font.Object;
-		}
-		else {
-			GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("Dont Load Font"));
-		}
+	if (Font.Succeeded()) {
+		TextFont = Font.Object;
 	}
 }
 
@@ -76,7 +68,8 @@ void UUIComboInput::AddElement(TEnumAsByte<EInput> Input,UHorizontalBox* Horizon
 }
 
 void UUIComboInput::AddText(FText Text, UHorizontalBox* HorizontalBox, float Size) {
-	UTextBlock* TextBlock = NewObject<UTextBlock>(this, UTextBlock::StaticClass());
+	TextBlock = NewObject<UTextBlock>(this, UTextBlock::StaticClass());
+	
 	TextBlock->SetText(Text);
 	
 	FSlateFontInfo FontInfo(TextFont, 18);

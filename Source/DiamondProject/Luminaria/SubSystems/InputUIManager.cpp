@@ -7,50 +7,88 @@
 #include "../UMG/UIComboInput.h"
 #include "../Interface/InputDrawable.h"
 #include "../Actors/MovableObject.h"
+#include "../Actors/Lever.h"
 
 UInputUIManager::UInputUIManager() {
 	InputMovableObject = CreateDefaultSubobject<UInputUI>(TEXT("MovableObjectInput"));
 	InputJump = CreateDefaultSubobject<UInputUI>(TEXT("JumpInput"));
+	InputMegaJump = CreateDefaultSubobject<UInputUI>(TEXT("MegaJumpInput"));
+	InputLever = CreateDefaultSubobject<UInputUI>(TEXT("LeverInput"));
+	InputTransfer = CreateDefaultSubobject<UInputUI>(TEXT("TransferInput"));
 }
 
 void UInputUIManager::PostInitialize() {
 	Super::PostInitialize();
 
 	AddInput(InputMovableObject, AMovableObject::StaticClass(),false);
-	AddInput(InputJump, ADiamondProjectCharacter::StaticClass(), false);
+	AddInput(InputJump, ADiamondProjectCharacter::StaticClass(), false,0);
+	AddInput(InputMegaJump, ADiamondProjectCharacter::StaticClass(), false, 1);
+	AddInput(InputLever, ALever::StaticClass(), false);
+	AddInput(InputTransfer, ALink::StaticClass(), false);
 
 	FTimerHandle Timer;
 
 	GetWorld()->GetTimerManager().SetTimer(Timer, [this]() { // Wait Player To Register	
-		InputMovableObject->Init({EInput::RB,EInput::JOYSTICK_L});
+		InputMovableObject->Init({EInput::RT,EInput::JOYSTICK_L});
 		InputJump->Init({ EInput::Y });
+		InputMegaJump->Init({ EInput::Y });
+		InputLever->Init({ EInput::X });
+		InputLever->Init({ EInput::B });
 	}, 0.3f, false);
 }
 
-void UInputUIManager::AddInput(UInputUI* Input, TSubclassOf<class AActor> Class, bool IsEnabled /* = false*/) {
-	Input->Register(this, Class, IsEnabled);
+void UInputUIManager::AddInput(UInputUI* Input, TSubclassOf<class AActor> Class, bool IsEnabled /* = false*/, int InputIndex /*= -1*/) {
+	Input->Register(this, Class, IsEnabled,InputIndex);
 	
 	if (!Inputs.Contains(Input)) {
 		Inputs.Add(Input);
 	}
 }
 
-void UInputUIManager::EnableInput(TSubclassOf<class AActor> Class) {
+void UInputUIManager::EnableInput(TSubclassOf<class AActor> Class, int Index /*= -1*/) {
 	for (UInputUI* Input : Inputs) {
 		if (Input->GetClass()->GetName().Equals(Class->GetName())) {
-			Input->SetEnabled(true);
-			break;
+			if (Index != -1) {
+				if (Index == Input->GetIndex()) {
+					Input->SetEnabled(true);
+					break;
+				}
+			}
+			else {
+				Input->SetEnabled(true);
+				break;
+			}
 		}
 	}
 }
 
-void UInputUIManager::DisableInput(TSubclassOf<class AActor> Class) {
+void UInputUIManager::DisableInput(TSubclassOf<class AActor> Class, int Index /*= -1*/) {
 	for (UInputUI* Input : Inputs) {
-		if (Input->GetClass() == Class) {
-			Input->SetEnabled(false);
-			break;
+		if (Input->GetClass() == Class) { // Check if True
+			if (Index != -1) {
+				if (Index == Input->GetIndex()) {
+					Input->SetEnabled(false);
+					Input->Reset();
+					break;
+				}
+			}
+			else {
+				Input->SetEnabled(false);
+				Input->Reset();
+				break;
+			}
 		}
 	}
+}
+
+UInputUI* UInputUIManager::GetInputWithClass(TSubclassOf<class AActor> Class) {
+	for (UInputUI* Input : Inputs) {
+		if (Input->GetClass() == Class) {
+			return Input;
+		}
+	}
+
+	return nullptr;
 }
 
 EInput UInputUIManager::ConvertKeyToInput(FKey Key) {
@@ -70,11 +108,11 @@ EInput UInputUIManager::ConvertKeyToInput(FKey Key) {
 		return EInput::Y;
 	}
 
-	if (Key == EKeys::Gamepad_LeftThumbstick) {
+	if (Key == EKeys::Gamepad_LeftX) {
 		return EInput::JOYSTICK_L;
 	}
 
-	if (Key == EKeys::Gamepad_RightThumbstick) {
+	if (Key == EKeys::Gamepad_RightX) { // Gamepad_RightThumbstick
 		return EInput::JOYSTICK_R;
 	}
 
@@ -117,11 +155,11 @@ FKey UInputUIManager::ConvertInputToKey(EInput Input) { // Doesn't work with key
 			break;
 
 		case EInput::JOYSTICK_L:
-			return EKeys::Gamepad_LeftThumbstick;
+			return EKeys::Gamepad_LeftX; // LeftThumbstick
 			break;
 			
 		case EInput::JOYSTICK_R:
-			return EKeys::Gamepad_RightThumbstick;
+			return EKeys::Gamepad_RightX; // RightTHumbstick
 			break;
 
 		case EInput::RB:
