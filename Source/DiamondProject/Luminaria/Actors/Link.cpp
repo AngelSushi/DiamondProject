@@ -16,6 +16,9 @@ ALink::ALink() {
 
 	_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	_mesh->SetupAttachment(RootComponent);
+
+	DeathParticleSystem = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Death"));
+	DeathParticleSystem->SetupAttachment(_mesh);
 }
 
 void ALink::BeginPlay() {

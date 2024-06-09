@@ -24,8 +24,6 @@ void UHeightCameraBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 void UHeightCameraBehavior::TickBehavior(float DeltaTime) {
 	Super::TickBehavior(DeltaTime);
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, TEXT("Tick Height Behavior"));
-
 	if (PlayerManager->Characters.Num() >= 2) {
 		if (LinePositionTop == FVector::Zero() || bChangeLimit) {
 			LinePositionTop = PlayerManager->Characters[0]->GetActorLocation();
