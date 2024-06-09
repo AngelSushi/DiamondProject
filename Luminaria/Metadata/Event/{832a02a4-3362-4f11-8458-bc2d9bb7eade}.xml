@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
 	<object class="Event" id="{832a02a4-3362-4f11-8458-bc2d9bb7eade}">
+		<property name="color">
+			<value>Purple</value>
+		</property>
 		<property name="name">
 			<value>MC_LightAbsorbed</value>
 		</property>
