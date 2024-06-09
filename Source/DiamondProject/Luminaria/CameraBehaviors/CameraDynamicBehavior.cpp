@@ -6,6 +6,7 @@
 #include "DiamondProject/Luminaria/Actors/CameraArea.h"
 #include "DiamondProject/Luminaria/CameraBehaviors/HeightCameraBehavior.h"
 
+#include "../DataAssets/CameraAreaDataAsset.h"
 void UCameraDynamicBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	Super::BeginBehavior(Owner);
 	
@@ -60,6 +61,8 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 		Barycenter.Y = Approach(Barycenter.Y, ToApproachY, 700 * DeltaTime); // 350 de base 
 		Barycenter.Y = FMath::Clamp(Barycenter.Y, MinY, MaxY);
 		
+
+		float ToApproachZ = (PlayerManager->Characters[0]->GetActorLocation().Z + PlayerManager->Characters[1]->GetActorLocation().Z) / 2;
 
 		DefaultZ = OwnerActor->GetActorLocation().Z;
 
@@ -141,6 +144,8 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 				}
 
 				OffsetX -= Offset;
+
+				GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Yellow, FString::Printf(TEXT("Calcul OffsetX %f"), Offset));
 				
 				_extendPositions.Add(FExtendData(Center, direction, _extendPositions.Num(),Offset));
 			}
