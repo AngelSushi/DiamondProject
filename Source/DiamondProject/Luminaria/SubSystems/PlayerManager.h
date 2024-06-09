@@ -17,7 +17,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerUpdateCheckpoint, ADiamond
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerLandOnGround, ADiamondProjectCharacter*, Character);
 
 UCLASS()	
-class DIAMONDPROJECT_API UPlayerManager : public UWorldSubsystem {
+class DIAMONDPROJECT_API UPlayerManager : public UTickableWorldSubsystem {
 	GENERATED_BODY()
 
 public:
@@ -73,4 +73,16 @@ public:
 
 	UPROPERTY() // PASSER SA EN PRIVE
 	TArray<ADiamondProjectCharacter*> Characters;
+
+	UFUNCTION()
+	TArray<int>& GetOrderedPlayers() { return OrderedPlayers; }
+
+	virtual void Tick(float DeltaTime) override;
+	
+	virtual TStatId GetStatId() const override {
+		return TStatId();
+	}
+
+private:
+	TArray<int> OrderedPlayers;
 };

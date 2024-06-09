@@ -81,6 +81,9 @@ public:
 
 	void InitBehavior();
 
+	UFUNCTION()
+	void OnMecanismOn(AMecanism* Mecanism);
+
 private:
 	UPROPERTY()
 	TArray<ADiamondProjectCharacter*> Characters;

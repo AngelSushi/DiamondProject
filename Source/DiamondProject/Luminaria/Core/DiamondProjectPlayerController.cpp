@@ -103,7 +103,9 @@ void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
 }
 
 void ADiamondProjectPlayerController::Jump() {
-	GetPlayer()->GetStateMachine()->OnJump();
+	if (GetPlayer()->GetCharacterMovement()->IsMovingOnGround()) {
+		GetPlayer()->GetStateMachine()->OnJump();
+	}
 }
 
 void ADiamondProjectPlayerController::OnInputJumpReleased() {

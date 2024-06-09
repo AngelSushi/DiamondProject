@@ -28,16 +28,28 @@ void AMovableObject::Tick(float DeltaTime) {
 }
 
 void AMovableObject::EnableInputListener() {
-	InputUIManager->EnableInput(GetClass());
+	
+	UInputUI* Input = InputUIManager->GetInputWithClass(AMovableObject::StaticClass());
+
+	if (!Input) {
+		return;
+	}
+
+	InputUIManager->EnableInput(AMovableObject::StaticClass());
+
+	if (Input->HasCompleted()) {
+		return;
+	}
 	
 	ComboWidget = CreateWidget<UUIComboInput>(GetWorld(), UISystem->GetUIAsset()->ComboInputClass);
-	ComboWidget->InitComboUI({EInput::JOYSTICK_L,EInput::JOYSTICK_R}, FText::FromString(TEXT("Pousser/Tirer")));
+	ComboWidget->InitComboUI({EInput::JOYSTICK_L,EInput::RT}, FText::FromString(TEXT("POUSSER / TIRER")));
 
 	int32 ScreenX;
 	int32 ScreenY;
 
 	GetWorld()->GetFirstPlayerController()->GetViewportSize(ScreenX, ScreenY);
-	ScreenY -= 600.F;
+	
+	ScreenY -= 200.F;
 	ScreenX -= 200.F;
 
 	ComboWidget->SetPositionInViewport(FVector2D(ScreenX / 2, ScreenY / 2));
@@ -49,12 +61,12 @@ void AMovableObject::DisableInputListener() {
 		return;
 	}
 
-	InputUIManager->DisableInput(GetClass());
+	InputUIManager->DisableInput(AMovableObject::StaticClass());
 	ComboWidget->RemoveFromViewport();
 }
 
 void AMovableObject::CompleteInput(UInputUI* Input) {
-	if (Input->GetClass() == GetClass()) {
+	if (Input->GetClass() == AMovableObject::StaticClass() && ComboWidget) {
 		ComboWidget->RemoveFromViewport();
 	}
 }

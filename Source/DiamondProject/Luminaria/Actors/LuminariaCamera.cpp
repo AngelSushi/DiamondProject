@@ -14,6 +14,8 @@
 
 #include "../CameraBehaviors/CameraShakeBehavior.h"
 
+#include "../SubSystems/MecanismEventsDispatcher.h"
+
 ALuminariaCamera::ALuminariaCamera() {
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -24,6 +26,9 @@ void ALuminariaCamera::BeginPlay() {
 	UPlayerManager* PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
 	PlayerManager->OnPlayerRegister.AddDynamic(this, &ALuminariaCamera::OnPlayerRegister);
 	PlayerManager->OnPlayerDeath.AddDynamic(this, &ALuminariaCamera::OnPlayerDeath);
+
+	UMecanismEventsDispatcher* MecanismEventsDispatcher = GetWorld()->GetSubsystem<UMecanismEventsDispatcher>();
+	MecanismEventsDispatcher->OnMecanismOn.AddDynamic(this, &ALuminariaCamera::OnMecanismOn);
 
 	StartPosition = GetActorLocation();
 
@@ -38,8 +43,6 @@ void ALuminariaCamera::BeginPlay() {
 void ALuminariaCamera::InitBehavior() {
 	SwitchBehavior(BehaviorState);
 }
-
-// Utiliser Lerp et InverseLerp pour faire le zoomMax et la distanceMax du lien
 
 void ALuminariaCamera::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
@@ -185,4 +188,7 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathC
 			GoToBehaviorComponent->NextBehavior = CurrentBehavior;
 		}
 	});
+}
+
+void ALuminariaCamera::OnMecanismOn(AMecanism* Mecanism) {
 }
