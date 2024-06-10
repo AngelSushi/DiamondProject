@@ -5,6 +5,8 @@
 #include "DiamondProjectPlayerController.h"
 #include "../Interface/ButtonInteractable.h"
 #include "../Interface/InputDrawable.h"
+#include "../CharacterStateMachine/CharacterStateMachine.h"
+#include "../CharacterStateMachine/CharacterStateJump.h"
 #include "DiamondProjectCharacter.generated.h"
 
 class UPlayerManager;
@@ -148,6 +150,28 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	float GetSpeedIncrease() { return SpeedIncrease; }
+
+
+	UFUNCTION(BlueprintPure)
+	float GetJumpMinDuration() {
+		return GetStateMachine()->StateJump->GetJumpMinDuration();
+	}
+
+	UFUNCTION(BlueprintPure)
+	float GetJumpMaxDuration() { 
+		return GetStateMachine()->StateJump->GetJumpMaxDuration(); 
+	}
+
+	UFUNCTION(BlueprintCallable)
+	void SetJumpMinDuration(float NewJumpMinDuration) {
+		//JumpMinDuration = NewJumpMinDuration; 
+		GetStateMachine()->StateJump->SetJumpMinDuration(NewJumpMinDuration);
+	}
+
+	UFUNCTION(BlueprintCallable)
+	void SetJumpMaxDuration(float NewJumpMaxDuration) {
+		GetStateMachine()->StateJump->SetJumpMaxDuration(NewJumpMaxDuration);
+	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float LightEnergy = 50000.F;

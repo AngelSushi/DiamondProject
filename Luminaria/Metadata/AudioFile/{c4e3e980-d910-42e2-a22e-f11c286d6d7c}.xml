@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{c4e3e980-d910-42e2-a22e-f11c286d6d7c}">
+		<property name="assetPath">
+			<value>SFX/GPE/SFX_GPE_Thwomp/SFX_GPE_Thwomp_01.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>3.1000000000000001</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{9770f1ba-763d-4a07-a99d-0700eaaf3b3b}</destination>
+		</relationship>
+	</object>
+</objects>
