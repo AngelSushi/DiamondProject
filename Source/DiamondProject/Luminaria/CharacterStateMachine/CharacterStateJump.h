@@ -20,6 +20,12 @@ public:
 	UFUNCTION()
 	void SetJumpMaxDuration(float MaxDuration) { JumpMaxDuration = MaxDuration; }
 
+	UFUNCTION()
+	float GetJumpMinDuration() { return JumpMinDuration; }
+
+	UFUNCTION()
+	float GetJumpMaxDuration() { return JumpMaxDuration; }
+
 	virtual void OnDie() override;
 	virtual void OnAbsorberDetectCharacter(ADiamondProjectCharacter* Character, AAbsorber* Absorber);
 
