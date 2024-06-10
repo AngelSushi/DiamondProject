@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{8004e991-0727-47ba-a574-d9190c1a28ec}">
+		<property name="assetPath">
+			<value>FT/FT_MC_Stone/FT_MC_Stone_Jump/FT_MC_Stone_Jump_03.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>0.20000000000000001</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{9770f1ba-763d-4a07-a99d-0700eaaf3b3b}</destination>
+		</relationship>
+	</object>
+</objects>

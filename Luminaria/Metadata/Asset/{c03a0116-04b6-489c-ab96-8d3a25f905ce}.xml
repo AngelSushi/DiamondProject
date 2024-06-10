@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="EncodableAsset" id="{c03a0116-04b6-489c-ab96-8d3a25f905ce}">
+		<property name="color">
+			<value>Magenta</value>
+		</property>
+		<property name="assetPath">
+			<value>UI/UI_Menu_Close/</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{9770f1ba-763d-4a07-a99d-0700eaaf3b3b}</destination>
+		</relationship>
+	</object>
+</objects>
