@@ -37,6 +37,7 @@ void ADiamondProjectPlayerController::BeginPlay() {
 	}
 
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
+
 }
 
 void ADiamondProjectPlayerController::Tick(float DeltaTime) {
@@ -56,10 +57,6 @@ void ADiamondProjectPlayerController::Tick(float DeltaTime) {
 	//JumpMaxDuration = GetPlayer()->GetPlayerAsset()->JumpMaxDuration;
 	//JumpMinDuration = GetPlayer()->GetPlayerAsset()->JumpMinDuration;
 
-	if (GetPlayer()->GetStateMachine() && GetPlayer()->GetStateMachine()->StateJump) { // A MODIFIER DIRECT DEPUISLE STATE 
-		GetPlayer()->GetStateMachine()->StateJump->SetJumpMinDuration(GetPlayer()->GetPlayerAsset()->JumpMinDuration);
-		GetPlayer()->GetStateMachine()->StateJump->SetJumpMaxDuration(GetPlayer()->GetPlayerAsset()->JumpMaxDuration);
-	}
 
 
 	// Set Le deuxieme local player id sur 1
