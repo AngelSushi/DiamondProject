@@ -16,6 +16,7 @@ class DIAMONDPROJECT_API AMecanism : public AActor {
 public:	
 	AMecanism();
 
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USceneComponent> sceneRoot;
 

@@ -5,11 +5,12 @@
 #include "../SubSystems/InputUIManager.h"
 #include "../UMG/UIComboInput.h"
 
-void UInputUI::Register(UInputUIManager* Manager, TSubclassOf<class AActor> Class, bool IsEnabled /* = false */) {
+void UInputUI::Register(UInputUIManager* Manager, TSubclassOf<class AActor> Class, bool IsEnabled /* = false */, int InputIndex /*= -1*/) {
 	TargetClass = Class;
 	bIsEnabled = IsEnabled;
 	bHasCompleted = false;
 	InputManager = Manager;
+	Index = InputIndex;
 }
 
 void UInputUI::Init(TArray<TEnumAsByte<EInput>> TargetInputs) {
@@ -20,8 +21,15 @@ void UInputUI::Init(TArray<TEnumAsByte<EInput>> TargetInputs) {
 		for (EInput Input : TargetInputs) {
 			FKey Key = InputManager->ConvertInputToKey(Input);
 
-			Character->InputComponent->BindKey(Key, IE_Pressed, this, &UInputUI::InputListener);
-			Character->InputComponent->BindKey(Key, IE_Released, this, &UInputUI::InputReleasedListener);
+			if (Input == JOYSTICK_L || Input == JOYSTICK_R) {
+				Character->InputComponent->BindAxisKey(Key, this, &UInputUI::InputAxisListener);
+				AxisInput = Input; // Only Work With One Axis on InputUI
+			}
+			else {
+				Character->InputComponent->BindKey(Key, IE_Pressed, this, &UInputUI::InputListener);
+				Character->InputComponent->BindKey(Key, IE_Released, this, &UInputUI::InputReleasedListener);
+			}
+
 		}
 	}
 
@@ -33,6 +41,7 @@ void UInputUI::InputListener(FKey Key) {
 		return;
 	}
 
+	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, TEXT("Listen Input Trigger"));
 	EInput Input = InputManager->ConvertKeyToInput(Key);
 
 	if (Input != EInput::NO_INPUT) {
@@ -42,10 +51,34 @@ void UInputUI::InputListener(FKey Key) {
 	}
 }
 
+void UInputUI::InputAxisListener(float Value) {
+	if (!bIsEnabled || bHasCompleted) {
+		return;
+	}
+
+	if (Value != 0) {
+		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, TEXT("Listen Input"));
+		if (AxisInput != EInput::NO_INPUT) {
+			if (!PressedInputs.Contains(AxisInput)) {
+				GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, TEXT("Add Input"));
+				PressedInputs.Add(AxisInput);
+			}
+		}
+	}
+	else {
+		if (PressedInputs.Contains(AxisInput)) {
+			InputReleasedListener(InputManager->ConvertInputToKey(AxisInput));
+		}
+	}
+}
+
 void UInputUI::InputReleasedListener(FKey Key) {
 	if (!bIsEnabled || bHasCompleted) {
 		return;
 	}
+
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Cyan, TEXT("Input Listener"));
 
 	EInput Input = InputManager->ConvertKeyToInput(Key);
 	if (PressedInputs.Num() != Inputs.Num()) {
@@ -54,8 +87,13 @@ void UInputUI::InputReleasedListener(FKey Key) {
 		}
 	}
 	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Yellow, TEXT("Complete"));
 		bHasCompleted = true;
 		InputManager->OnInputComplete.Broadcast(this);
 		PressedInputs.Reset();
 	}
+}
+
+void UInputUI::Reset() {
+	PressedInputs.Reset();
 }

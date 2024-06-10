@@ -41,6 +41,9 @@ public:
 
 	UFUNCTION()
 	UMaterialInstanceDynamic* GetDynamicMaterial() { return DynamicMaterial; }
+
+	UFUNCTION()
+	UTextBlock* GetText() { return TextBlock; }
 	
 private:
 	void AddText(FText Text, UHorizontalBox* HorizontalBox,float Size);
@@ -58,9 +61,15 @@ protected:
 	TObjectPtr<class UMaterialInstanceDynamic> DynamicMaterial;
 
 	UPROPERTY()
+	TObjectPtr<class UFont> TextFont;
+
+	UPROPERTY()
 	FVector2D Offset;
 
 	UPROPERTY()
 	FVector2D Scale;
+
+	UPROPERTY()
+	UTextBlock* TextBlock;
 
 };

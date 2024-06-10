@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="EncodableAsset" id="{c7f5575d-ea72-4cb0-a68e-38ce64cee484}">
+		<property name="assetPath">
+			<value>FT/FT_MC_Stone/FT_MC_Stone_Jump/</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{9770f1ba-763d-4a07-a99d-0700eaaf3b3b}</destination>
+		</relationship>
+	</object>
+</objects>
