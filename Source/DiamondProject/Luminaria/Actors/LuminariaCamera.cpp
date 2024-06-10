@@ -12,6 +12,10 @@
 
 #include "DiamondProject/Luminaria/Actors/CameraArea.h"
 
+#include "../CameraBehaviors/CameraShakeBehavior.h"
+
+#include "../SubSystems/MecanismEventsDispatcher.h"
+
 ALuminariaCamera::ALuminariaCamera() {
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -22,6 +26,9 @@ void ALuminariaCamera::BeginPlay() {
 	UPlayerManager* PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
 	PlayerManager->OnPlayerRegister.AddDynamic(this, &ALuminariaCamera::OnPlayerRegister);
 	PlayerManager->OnPlayerDeath.AddDynamic(this, &ALuminariaCamera::OnPlayerDeath);
+
+	UMecanismEventsDispatcher* MecanismEventsDispatcher = GetWorld()->GetSubsystem<UMecanismEventsDispatcher>();
+	MecanismEventsDispatcher->OnMecanismOn.AddDynamic(this, &ALuminariaCamera::OnMecanismOn);
 
 	StartPosition = GetActorLocation();
 
@@ -37,8 +44,6 @@ void ALuminariaCamera::InitBehavior() {
 	SwitchBehavior(BehaviorState);
 }
 
-// Utiliser Lerp et InverseLerp pour faire le zoomMax et la distanceMax du lien
-
 void ALuminariaCamera::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
@@ -47,16 +52,34 @@ void ALuminariaCamera::Tick(float DeltaTime) {
 	}
 
 	if (HeightBehavior) {
-		//HeightBehavior->TickBehavior(DeltaTime);
+		HeightBehavior->TickBehavior(DeltaTime);
 	}
 
 	if (CameraBehavior) {
 		CameraBehavior->TickBehavior(DeltaTime);
 	}
+
+	if (ShakeBehavior) {
+		ShakeBehavior->TickBehavior(DeltaTime);
+	}
 }
 
 void ALuminariaCamera::OnPlayerRegister(ADiamondProjectCharacter* Character) {
 	Characters.Add(Character);
+}
+
+void ALuminariaCamera::InitCameraShake() {
+	ShakeBehavior = NewObject<UCameraShakeBehavior>();
+
+	ShakeBehavior->BeginBehavior(this);
+
+	FTimerHandle ShakeTimer;
+
+	GetWorld()->GetTimerManager().SetTimer(ShakeTimer, [this]() {
+		ShakeBehavior = nullptr;	
+	}, 3.F, false);
+
+	
 }
 
 void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc /*= [](UCameraBehavior* CameraBehavior) {}*/) {
@@ -105,7 +128,6 @@ void ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavio
 
 	case ECameraBehavior::FOLLOW_PATH:
 		FollowBehavior = NewObject<UCameraFollowBehavior>();
-		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Blue, TEXT("His Follow"));
 
 		CameraBehavior = FollowBehavior;
 		break;
@@ -166,4 +188,7 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathC
 			GoToBehaviorComponent->NextBehavior = CurrentBehavior;
 		}
 	});
+}
+
+void ALuminariaCamera::OnMecanismOn(AMecanism* Mecanism) {
 }

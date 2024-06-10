@@ -16,6 +16,9 @@ ALink::ALink() {
 
 	_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	_mesh->SetupAttachment(RootComponent);
+
+	DeathParticleSystem = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Death"));
+	DeathParticleSystem->SetupAttachment(_mesh);
 }
 
 void ALink::BeginPlay() {
@@ -30,6 +33,7 @@ void ALink::BeginPlay() {
 
 void ALink::RegisterPlayer(ADiamondProjectCharacter* character) {
 	_characters.Add(character);
+	PlayersLastDirection.Add(character, FVector::Zero());
 }
 
 void ALink::Tick(float DeltaTime) {
@@ -75,22 +79,26 @@ void ALink::CalculateBarycenter() {
 }
 
 void ALink::OnPlayerMove(ADiamondProjectCharacter* Character,FVector2D Input,FVector Direction,bool& IsCanceled) {
-	
-	if (LastDirection == FVector::Zero()) {
-		LastDirection = Direction;
-	}
-
 	AActor* OtherPlayer = PlayerManager->GetOtherPlayer(Character);
 	float Distance = FVector::Distance(Character->GetActorLocation(), OtherPlayer->GetActorLocation());
 	DistanceAlpha = Distance / DistanceMax;
 
-	if (Direction == LastDirection) {
-		if (Distance >= DistanceMax) {
-			IsCanceled = true;
+	FVector LastDirection = PlayersLastDirection[Character];
+
+	FVector OtherPlayerPosition = OtherPlayer->GetActorLocation();
+
+	float FirstOrderPlayerIndex = PlayerManager->GetOrderedPlayers()[0];
+
+	if (Distance >= DistanceMax) {
+		if (Character == PlayerManager->GetAllCharactersRef()[FirstOrderPlayerIndex]) {
+			if (Direction != FVector(0, 1, 0)) {
+				IsCanceled = true;
+			}
 		}
-	}
-	else {
-		IsCanceled = false;
-		Direction = LastDirection;
+		else {
+			if (Direction != FVector(0, -1, 0)) {
+				IsCanceled = true;
+			}
+		}
 	}
 }

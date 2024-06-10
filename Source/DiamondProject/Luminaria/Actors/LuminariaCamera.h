@@ -48,12 +48,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentArea(ACameraArea* NewArea) { CurrentArea = NewArea; }
 
-
 	UFUNCTION()
 	void OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathCause DeathCause);
 
 	UFUNCTION()
 	void OnPlayerRegister(ADiamondProjectCharacter* Character);
+
+	UFUNCTION(BlueprintCallable)
+	void InitCameraShake();
 
 	/* State Machine Variable */
 	
@@ -69,6 +71,7 @@ public:
 	UPROPERTY() TObjectPtr<class UCameraLeaderBehavior> LeaderBehavior;
 	UPROPERTY() TObjectPtr<class UHeightCameraBehavior> HeightBehavior;
 	UPROPERTY() TObjectPtr<class UCameraFollowBehavior> FollowBehavior;
+	UPROPERTY() TObjectPtr<class UCameraShakeBehavior> ShakeBehavior;
 
 	/* State Machine Functions */
 	void SwitchBehavior(ECameraBehavior SwitchBehavior,TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc = [](UCameraBehavior* CameraBehavior) {});
@@ -77,6 +80,9 @@ public:
 	void SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavior);
 
 	void InitBehavior();
+
+	UFUNCTION()
+	void OnMecanismOn(AMecanism* Mecanism);
 
 private:
 	UPROPERTY()

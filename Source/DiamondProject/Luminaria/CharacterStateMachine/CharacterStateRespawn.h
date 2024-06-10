@@ -10,6 +10,7 @@ class DIAMONDPROJECT_API UCharacterStateRespawn : public UCharacterState {
 	GENERATED_BODY()
 
 protected:
+	virtual void OnStateInit() override;
 	virtual void OnStateBegin() override;
 	virtual void OnStateTick(float DeltaTime) override;
 
@@ -19,5 +20,8 @@ private:
 
 	UPROPERTY()
 	float RespawnTickTimer;
+
+	UPROPERTY()
+	TObjectPtr<class ALink> LinkRef;
 	
 };

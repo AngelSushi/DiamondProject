@@ -4,6 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "MecanismRewardActor.generated.h"
 
+class AMecanism;
+
 UCLASS()
 class DIAMONDPROJECT_API AMecanismRewardActor : public AActor {
 	GENERATED_BODY()
@@ -11,8 +13,8 @@ class DIAMONDPROJECT_API AMecanismRewardActor : public AActor {
 public:	
 	AMecanismRewardActor();
 
-	UPROPERTY()
-	TObjectPtr<class AMecanism> TargetMecanism;
+	UPROPERTY(VisibleAnywhere)
+	TArray<AMecanism*> TargetMecanisms;
 
 	virtual void Reward();
 	virtual void CancelReward();
