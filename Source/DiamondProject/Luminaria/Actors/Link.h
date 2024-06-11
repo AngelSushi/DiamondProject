@@ -16,6 +16,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<class UStaticMeshComponent> _mesh;
 
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	TObjectPtr<class UNiagaraComponent> DeathParticleSystem;
+
 	UFUNCTION()
 	float GetDistanceMax() const { return DistanceMax; }
 
@@ -51,7 +54,7 @@ private:
 	float DistanceAlpha;
 
 	UPROPERTY()
-	FVector LastDirection;
+	TMap<ADiamondProjectCharacter*, FVector> PlayersLastDirection;
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;

@@ -18,10 +18,16 @@
 #include "Kismet/GameplayStatics.h"
 #include "../Actors/Link.h"
 
+#include "../DataAssets/PlayerAsset.h"
+
 void UCharacterStateJump::OnStateInit() {
 	Super::OnStateInit();
 
 	LinkRef = Cast<ALink>(UGameplayStatics::GetActorOfClass(GetWorld(), ALink::StaticClass()));
+
+	SetJumpMinDuration(GetCharacter()->GetPlayerAsset()->JumpMinDuration);
+	SetJumpMaxDuration(GetCharacter()->GetPlayerAsset()->JumpMaxDuration);
+	
 }
 
 void UCharacterStateJump::OnStateBegin() {

@@ -45,7 +45,10 @@ private:
     UPROPERTY()
     bool bEnable;
 
+    UFUNCTION()
     void OnMecanismOn(AMecanism* Mecanism);
+    
+    UFUNCTION()
     void OnMecanismOff(AMecanism* Mecanism);
 
     UPROPERTY(EditAnywhere)

@@ -1,4 +1,4 @@
-#include "DiamondProject/Luminaria/Actors/MovingPlatefomCPPTest.h"
+ #include "DiamondProject/Luminaria/Actors/MovingPlatefomCPPTest.h"
 #include "DiamondProject/Luminaria/SubSystems/MecanismEventsDispatcher.h"
 #include "DiamondProject/Luminaria/DataAssets/PlateformDataAsset.h"
 
@@ -33,8 +33,6 @@ void AMovingPlatefomCPPTest::BeginPlay() {
 
     bIsGroundPlateform = Cube->GetMaterials().Num() == 8;
 
-    GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Orange, FString::FromInt(Cube->GetMaterials().Num()));
-
     if (!bIsGroundPlateform) {
         for (int i = 0; i < 4; i++) {
             UMaterialInstanceDynamic* InstanceDynamic = UMaterialInstanceDynamic::Create(CrystalMaterialRef, this);
@@ -61,7 +59,7 @@ void AMovingPlatefomCPPTest::Tick(float DeltaTime) {
     if (Waypoints.Num() == 0)
         return;
 
-    if (!TargetMecanism || (TargetMecanism && bEnable)) {
+    if (TargetMecanisms.Num() == 0 || (TargetMecanisms.Num() != 0 && bEnable)) {
         
         FVector TargetLocation = Waypoints[CurrentWaypointIndex]->GetActorLocation();
         FVector CurrentLocation = GetActorLocation();
@@ -94,13 +92,13 @@ void AMovingPlatefomCPPTest::Tick(float DeltaTime) {
 }
 
 void AMovingPlatefomCPPTest::OnMecanismOn(AMecanism* Mecanism) {
-    if (Mecanism == TargetMecanism) {
+    if (TargetMecanisms.Contains(Mecanism)) {
         bEnable = true;
     }
 }
 
 void AMovingPlatefomCPPTest::OnMecanismOff(AMecanism* Mecanism) {
-    if (Mecanism == TargetMecanism) {
+    if (TargetMecanisms.Contains(Mecanism)) {
         bEnable = false;
     }
 }

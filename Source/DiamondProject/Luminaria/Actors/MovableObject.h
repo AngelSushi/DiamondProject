@@ -23,6 +23,8 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void DisableInputListener();
+
+	UFUNCTION()
 	virtual void CompleteInput(UInputUI* Input);
 
 };
