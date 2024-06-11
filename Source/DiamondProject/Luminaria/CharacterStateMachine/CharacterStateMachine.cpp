@@ -11,6 +11,8 @@
 #include "InputActionValue.h"
 #include "../Core/DiamondProjectCharacter.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
+
 UCharacterStateMachine::UCharacterStateMachine() {
 	StateIdle = CreateDefaultSubobject<UCharacterStateIdle>(TEXT("StateIdle"));
 	StateMovement = CreateDefaultSubobject<UCharacterStateMovement>(TEXT("StateMovement"));
@@ -41,6 +43,10 @@ void UCharacterStateMachine::SMBegin() {
 
 void UCharacterStateMachine::SMTick(float DeltaTime) {
 	if (CurrentState) {
+		if (CurrentState != StateJump && CurrentState != StateFall) {
+			GetCharacter()->GetCharacterMovement()->GravityScale = 5.0F;
+		}
+		
 		CurrentState->StateTick(DeltaTime);
 	}
 }
@@ -53,7 +59,6 @@ void UCharacterStateMachine::ChangeState(UCharacterState* NewState) {
 	CurrentState = NewState;
 
 	if (CurrentState) {
-		//GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Cyan, FString::Printf(TEXT("[CharacterStateMachine - %s] NewState : %s"),*GetCharacter()->GetActorNameOrLabel(), *CurrentState->GetName()));
 		CurrentState->StateBegin();
 	}
 }
