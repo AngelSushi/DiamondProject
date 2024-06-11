@@ -20,13 +20,16 @@ public:
 	virtual void PostInitialize() override;
 
 	UFUNCTION()
-	void AddInput(UInputUI* Input, TSubclassOf<class AActor> Class, bool IsEnabled = false);
+	void AddInput(UInputUI* Input, TSubclassOf<class AActor> Class, bool IsEnabled = false,int InputIndex = -1);
 
 	UFUNCTION()
-	void EnableInput(TSubclassOf<class AActor> Class);
+	void EnableInput(TSubclassOf<class AActor> Class,int Index = -1);
 
 	UFUNCTION()
-	void DisableInput(TSubclassOf<class AActor> Class);
+	void DisableInput(TSubclassOf<class AActor> Class,int Index = -1);
+
+	UFUNCTION()
+	UInputUI* GetInputWithClass(TSubclassOf<class AActor> Class);
 
 	UFUNCTION()
 	static EInput ConvertKeyToInput(FKey Key);
@@ -42,10 +45,14 @@ public:
 private:
 	UPROPERTY() TObjectPtr<class UInputUI> InputMovableObject;
 	UPROPERTY() TObjectPtr<class UInputUI> InputJump;
+	UPROPERTY() TObjectPtr<class UInputUI> InputMegaJump;
+	UPROPERTY() TObjectPtr<class UInputUI> InputLever;
+	UPROPERTY() TObjectPtr<class UInputUI> InputTransfer;
 
 	UPROPERTY()
 	TArray<UInputUI*> Inputs;
 
 	UPROPERTY()
 	TArray<AActor*> ActivatedActors;
+
 };

@@ -34,6 +34,8 @@
 
 #include "NiagaraComponent.h"
 
+#include "Components/TextBlock.h"
+
 ADiamondProjectCharacter::ADiamondProjectCharacter() {
 
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -150,6 +152,7 @@ void ADiamondProjectCharacter::SetupPlayerInputComponent(UInputComponent* Player
 	PlayerInputComponent->BindKey(EKeys::Gamepad_FaceButton_Right, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
 	PlayerInputComponent->BindKey(EKeys::Gamepad_FaceButton_Left, IE_Pressed, this, &ADiamondProjectCharacter::AbsorberInputStarted);
 
+
 }
 
 void ADiamondProjectCharacter::AbsorberInputStarted(FKey Key) {
@@ -192,18 +195,20 @@ void ADiamondProjectCharacter::OnPlayerUpdateCheckpoint(ADiamondProjectCharacter
 }
 
 void ADiamondProjectCharacter::EnableInputListener() {
-	InputUIManager->EnableInput(ADiamondProjectCharacter::StaticClass());
+	InputUIManager->EnableInput(ADiamondProjectCharacter::StaticClass(),0);
 
 	ComboWidget = CreateWidget<UUIComboInput>(GetWorld(), UISystem->GetUIAsset()->ComboInputClass);
-	ComboWidget->InitComboUI({ EInput::Y }, FText::FromString(TEXT("Sauter")));
+	ComboWidget->InitComboUI({ EInput::Y }, FText::FromString(TEXT("SAUTER")));
 
+	
 	int32 ScreenX;
 	int32 ScreenY;
 
 	GetWorld()->GetFirstPlayerController()->GetViewportSize(ScreenX, ScreenY);
-	ScreenY -= 600.F;
-	ScreenX -= 200.F;
 
+	ScreenY -= 200.F;
+	ScreenX -= 200.F;
+	
 	ComboWidget->SetPositionInViewport(FVector2D(ScreenX / 2, ScreenY / 2));
 	ComboWidget->AddToViewport();
 }
@@ -213,13 +218,21 @@ void ADiamondProjectCharacter::DisableInputListener() {
 		return;
 	}
 
-	InputUIManager->DisableInput(GetClass());
+	InputUIManager->DisableInput(GetClass(),0);
 	ComboWidget->RemoveFromViewport();
+
+	// Ajoutez ici le nouveau 
 }
 
 void ADiamondProjectCharacter::CompleteInput(UInputUI* Input) { // Add Event
-	if (Input->GetClass()->GetName().Equals(ADiamondProjectCharacter::StaticClass()->GetName())) {
-		ComboWidget->RemoveFromViewport();
+	if (Input->IsEnabled() && Input->GetClass()->GetName().Equals(ADiamondProjectCharacter::StaticClass()->GetName())) {
+		if (Input->GetIndex() == 0) {
+			InputUIManager->EnableInput(ADiamondProjectCharacter::StaticClass(), 1);
+			ComboWidget->GetText()->SetText(FText::FromString("MAINTENIR SAUTER"));
+		}
+		else {
+			ComboWidget->RemoveFromViewport();
+		}
 	}
 }
 
