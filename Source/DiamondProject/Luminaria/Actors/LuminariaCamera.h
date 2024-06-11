@@ -77,7 +77,7 @@ public:
 	void SwitchBehavior(ECameraBehavior SwitchBehavior,TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc = [](UCameraBehavior* CameraBehavior) {});
 
 	UFUNCTION(BlueprintCallable)
-	void SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavior);
+	UCameraBehavior* SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavior);
 
 	void InitBehavior();
 

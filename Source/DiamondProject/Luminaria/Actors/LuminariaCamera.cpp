@@ -87,10 +87,10 @@ void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<
 	ResultFunc(CameraBehavior);
 }
 
-void ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavior) {
+UCameraBehavior* ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavior) {
 	if (CameraBehavior && BehaviorState == SwitchBehavior) {
 		UE_LOG(LogTemp, Error, TEXT("The camera has already this behavior."));
-		return;
+		return nullptr;
 	}
 
 	//CameraBehavior = NewObject<UCameraBehavior>(Behavior); Doesn't work with child functions
@@ -150,6 +150,8 @@ void ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavio
 	if (HeightBehavior) {
 		HeightBehavior->BeginBehavior(this);
 	}
+
+	return CameraBehavior;
 }
 
 void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathCause DeathCause) {
