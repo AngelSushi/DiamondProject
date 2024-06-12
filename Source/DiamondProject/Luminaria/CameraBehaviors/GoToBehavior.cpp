@@ -41,7 +41,13 @@ void UGoToBehavior::TickBehavior(float DeltaTime) {
 		}
 		else {
 			OwnerActor->SetActorLocation(GoTo);
-			OwnerActor->SwitchBehavior(NextBehavior);
+
+			FTimerHandle ReachDelay;
+
+			OwnerActor->GetWorld()->GetTimerManager().SetTimer(ReachDelay, [this]() {
+				OwnerActor->SwitchBehavior(NextBehavior);
+			}, DelayAtReach, false);
+
 		}
 	}
 }
