@@ -264,7 +264,7 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 				PlayerManager->OnChangeNewArea.Broadcast(HitArea->GetDataAsset()->Id);
 
 				if (TargetBehavior != LastHitArea->AreaBehavior) {
-					/*MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this, &OriginBehavior](UCameraBehavior* Behavior) {
+					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this, &OriginBehavior](UCameraBehavior* Behavior) {
 						
 
 						GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("OnSwitchBehavior"));
@@ -292,9 +292,9 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 								GoTo->GoTo = Barycenter;
 								GoTo->NextBehavior = ECameraBehavior::DYNAMIC;
 							}
-							FIN DE COMMENTAIRE ICI /*
+							FIN DE COMMENTAIRE ICI */
 						}
-					});*/
+					});
 				}
 			}
 		}

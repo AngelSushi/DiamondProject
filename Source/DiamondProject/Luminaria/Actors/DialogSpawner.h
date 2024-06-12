@@ -26,6 +26,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent,Category = "DialogSpawner")
 	void OnDisplayDialog();
 
+	UFUNCTION(BlueprintImplementableEvent,Category = "DialogSpawner")
+	void OnLeaveDialog();
+
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	int GetDialogID() { return DialogId; }
 
