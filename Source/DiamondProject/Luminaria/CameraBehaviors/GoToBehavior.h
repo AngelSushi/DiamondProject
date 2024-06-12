@@ -18,6 +18,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	TEnumAsByte<ECameraBehavior> NextBehavior;
 
+	UPROPERTY(BlueprintReadWrite)
+	float DelayAtReach = 0.1F;
+
 	virtual void BeginBehavior(ALuminariaCamera* Owner) override;
 	virtual void TickBehavior(float DeltaTime) override;
 

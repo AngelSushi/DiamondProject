@@ -12,11 +12,18 @@ void UCharacterStateIdle::OnStateBegin() {}
 void UCharacterStateIdle::OnStateTick(float DeltaTime) {
 
 	if (!GetCharacter()->GetCharacterMovement()->IsMovingOnGround()) {
-		ChangeState(GetStateMachine()->StateFall);
+		//ChangeState(GetStateMachine()->StateFall);
 	}
+
+
 }
 
 void UCharacterStateIdle::OnMovement(const FInputActionValue& MovementValue) {
+
+	if (MovementValue.Get<FVector2D>().Length() < 0.2F) {
+		return;
+	}
+
 	ChangeState(GetStateMachine()->StateMovement);
 }
 
