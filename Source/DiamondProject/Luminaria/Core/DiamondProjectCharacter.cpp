@@ -36,6 +36,8 @@
 
 #include "Components/TextBlock.h"
 
+#include "../DataAssets/CameraAreaDataAsset.h"
+
 ADiamondProjectCharacter::ADiamondProjectCharacter() {
 
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -259,8 +261,10 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 				// Faire le switch
 				MainCamera->CurrentArea = HitArea;
 
+				PlayerManager->OnChangeNewArea.Broadcast(HitArea->GetDataAsset()->Id);
+
 				if (TargetBehavior != LastHitArea->AreaBehavior) {
-					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this,&OriginBehavior](UCameraBehavior* Behavior) {
+					/*MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this, &OriginBehavior](UCameraBehavior* Behavior) {
 						
 
 						GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("OnSwitchBehavior"));
@@ -288,14 +292,16 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 								GoTo->GoTo = Barycenter;
 								GoTo->NextBehavior = ECameraBehavior::DYNAMIC;
 							}
-							*/
+							FIN DE COMMENTAIRE ICI /*
 						}
-					});
+					});*/
 				}
 			}
 		}
 		else {
 			MainCamera->CurrentArea = HitArea;
+
+			PlayerManager->OnChangeNewArea.Broadcast(HitArea->GetDataAsset()->Id);
 			
 			if (TargetBehavior != LastHitArea->AreaBehavior) {
 				MainCamera->SwitchBehavior(TargetBehavior, [&HitArea,&OtherPlayer, this,&OriginBehavior](UCameraBehavior* Behavior) {
