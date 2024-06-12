@@ -15,12 +15,16 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerDeath,ADiamondProjectChara
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPlayerRespawn, ADiamondProjectCharacter*, Character, EDeathCause, DeathCause, FVector, RespawnPosition);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerUpdateCheckpoint, ADiamondProjectCharacter*, Character, ACheckpoint*, Checkpoint);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerLandOnGround, ADiamondProjectCharacter*, Character);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeNewArea,int,AreaID);
 
 UCLASS()	
 class DIAMONDPROJECT_API UPlayerManager : public UTickableWorldSubsystem {
 	GENERATED_BODY()
 
 public:
+
+	UPROPERTY(VisibleAnywhere,BlueprintAssignable)
+	FOnChangeNewArea OnChangeNewArea;
 	
 	UPROPERTY(VisibleAnywhere)
 	FOnPlayerMove OnPlayerMove;

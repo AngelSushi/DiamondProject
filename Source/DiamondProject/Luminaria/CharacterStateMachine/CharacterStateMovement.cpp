@@ -26,7 +26,7 @@ void UCharacterStateMovement::OnStateBegin() {
 void UCharacterStateMovement::OnStateTick(float DeltaTime) {
 	if (GetClass() == UCharacterStateMovement::StaticClass()) { // Pas besoin juste pas mettre de super dans le state jump 
 		if (!GetCharacter()->GetCharacterMovement()->IsMovingOnGround()) {
-			ChangeState(GetStateMachine()->StateFall);
+			//ChangeState(GetStateMachine()->StateFall);
 		}
 	}
 }

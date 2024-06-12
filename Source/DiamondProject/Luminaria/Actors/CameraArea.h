@@ -88,6 +88,7 @@ public:
 
 	UFUNCTION()
 	void SetVisited(bool HasVisited) { bHasVisited = HasVisited; }
+
 protected:
 	virtual void BeginPlay() override;
 
