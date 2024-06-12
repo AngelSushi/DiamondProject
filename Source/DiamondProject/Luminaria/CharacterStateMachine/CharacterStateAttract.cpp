@@ -90,7 +90,8 @@ void UCharacterStateAttract::OnDetectPlayer(ADiamondProjectCharacter* Character,
 	CurrentAbsorber = Absorber;
 }
 
-void UCharacterStateAttract::OnUnDetectPlayer(ADiamondProjectCharacter* Character, AAbsorber* Absorber) {
+void UCharacterStateAttract::OnUnDetectPlayer(ADiamondProjectCharacter* Character, AAbsorber* Absorber) 
+{
 	ChangeState(GetStateMachine()->StateIdle);
 }
 
