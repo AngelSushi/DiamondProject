@@ -23,10 +23,10 @@ public:
 	UPROPERTY(EditAnywhere)
 	float SpeedIncrease = 40.F;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	float JumpMinDuration = 0.05F;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	float JumpMaxDuration = 0.35F;
 
 	UPROPERTY(EditAnywhere)

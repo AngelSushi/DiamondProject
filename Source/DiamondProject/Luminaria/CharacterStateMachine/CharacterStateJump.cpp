@@ -59,6 +59,7 @@ void UCharacterStateJump::OnStateBegin() {
 
 void UCharacterStateJump::OnStateTick(float DeltaTime) {
 	if (bIsJumping) {
+
 		JumpTimer += DeltaTime;
 
 		if (JumpTimer >= JumpMaxDuration) {

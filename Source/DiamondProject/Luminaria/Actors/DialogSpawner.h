@@ -26,11 +26,17 @@ public:
 	UFUNCTION(BlueprintImplementableEvent,Category = "DialogSpawner")
 	void OnDisplayDialog();
 
+	UFUNCTION(BlueprintImplementableEvent,Category = "DialogSpawner")
+	void OnLeaveDialog();
+
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	int GetDialogID() { return DialogId; }
 
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	float GetTextDuration() { return TextDuration; }
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bHasBeenDisplayed;
 
 protected:
 	virtual void BeginPlay() override;
@@ -48,5 +54,5 @@ private:
 	float TextDuration = 5.0F;
 
 	UPROPERTY()
-	bool bHasChecked;
+	bool bCanDisplay;
 };
