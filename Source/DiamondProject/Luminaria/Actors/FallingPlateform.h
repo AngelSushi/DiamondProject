@@ -37,6 +37,9 @@ private:
     UPROPERTY(VisibleAnywhere)
     bool bCharacterOnPlatform;
 
+    UPROPERTY(VisibleAnywhere)
+    bool bPlateformAlreadyFall;
+
     UPROPERTY(EditAnywhere)
     int32 numPlayersInside;
 
