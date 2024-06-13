@@ -51,6 +51,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UNiagaraComponent> LandOnGroundParticle;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UBoxComponent> CameraDetection;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UPointLightComponent* Light;
