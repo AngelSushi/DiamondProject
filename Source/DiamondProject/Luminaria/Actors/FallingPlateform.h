@@ -60,6 +60,8 @@ private:
 
     bool bIsShaking;
 
+    bool bIsMeshCollisionReset;
+
     UPROPERTY(VisibleAnywhere)
     float ShakeTime;
 
@@ -78,4 +80,5 @@ private:
 
     void FallPlatform();
     void ResetPlatform();
+    void ResetMeshCollider();
 };
