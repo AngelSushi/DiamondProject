@@ -67,7 +67,4 @@ protected:
 private:
 	UFUNCTION()
 	FVector CalculateMaxFrustum(ADiamondProjectCharacter* Character,FVector Position,float Direction);
-
-	UPROPERTY()
-	TMap<ADiamondProjectCharacter*, FVector> NextCharacterPosition;
 };

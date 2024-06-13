@@ -127,8 +127,9 @@ void ADiamondProjectCharacter::OnMovementModeChanged(EMovementMode PrevMovementM
 
 void ADiamondProjectCharacter::Landed(const FHitResult& Hit) {
 	bIsOnGround = true;
-	PlayerManager->OnPlayerLandOnGround.Broadcast(this);
 	GroundActor = Hit.GetActor();
+	PlayerManager->OnPlayerLandOnGround.Broadcast(this);
+	
 	
 	FTimerHandle AnimationTimer;
 
@@ -255,9 +256,8 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 			return;
 		}
 
-		if (HitArea->PlayerNeeded == 2) {	
+		if (HitArea->PlayerNeeded == 2) {
 			if (OtherPlayer->LastHitArea == HitArea) {
-				GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Yellow, TEXT("Switch"));
 				// Faire le switch
 				MainCamera->CurrentArea = HitArea;
 
@@ -266,12 +266,9 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 				if (TargetBehavior != LastHitArea->AreaBehavior) {
 					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this, &OriginBehavior](UCameraBehavior* Behavior) {
 						
-
-						GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("OnSwitchBehavior"));
 						if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
 							
 							if (OriginBehavior == ECameraBehavior::DEFAULT) {
-								GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("Default Behavior"));
 								GoTo->NextBehavior = ECameraBehavior::DEFAULT;
 								if (HitArea->GoTo) {
 									GoTo->GoTo = HitArea->GoTo->GetComponentLocation();

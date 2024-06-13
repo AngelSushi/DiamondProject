@@ -35,6 +35,9 @@ public:
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	float GetTextDuration() { return TextDuration; }
 
+	UPROPERTY(BlueprintReadWrite)
+	bool bHasBeenDisplayed;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -51,5 +54,5 @@ private:
 	float TextDuration = 5.0F;
 
 	UPROPERTY()
-	bool bHasChecked;
+	bool bCanDisplay;
 };

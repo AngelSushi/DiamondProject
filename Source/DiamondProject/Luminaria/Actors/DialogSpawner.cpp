@@ -30,12 +30,18 @@ void ADialogSpawner::Tick(float DeltaTime) {
 
 	int Index = 0;
 
+	if (bHasBeenDisplayed) {
+		return;
+	}
+
 	for (ADiamondProjectCharacter* Character : PlayerManager->GetAllCharactersRef()) {
 		FVector PointToPlayer = GetActorLocation() - Character->GetActorLocation();
 		FVector Forward = GetActorForwardVector();
 
 		float Angle = FVector::DotProduct(PointToPlayer, Forward);
 		float DistanceY = FMath::Abs(PointToPlayer.Y);
+
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, FString::Printf(TEXT("Distance %f"), DistanceY));
 
 		if (Angle < 0) {
 			Index++;
@@ -44,11 +50,11 @@ void ADialogSpawner::Tick(float DeltaTime) {
 
 	if (Index == 2) {
 		OnDisplayDialog();
-		bHasChecked = true;
+		bCanDisplay = true;
 	}
-	else if(Index == 0 && bHasChecked) {
+	else if(Index == 0 && bCanDisplay) {
 		OnLeaveDialog();
-		bHasChecked = false;
+		bCanDisplay = false;
 	}
 }
 
