@@ -15,10 +15,14 @@ class DIAMONDPROJECT_API UCharacterStateJump : public UCharacterStateMovement {
 public:
 
 	UFUNCTION()
-	void SetJumpMinDuration(float MinDuration) { JumpMinDuration = MinDuration; }
+	void SetJumpMinDuration(float MinDuration) { 
+		JumpMinDuration = MinDuration;
+	}
 	
 	UFUNCTION()
-	void SetJumpMaxDuration(float MaxDuration) { JumpMaxDuration = MaxDuration; }
+	void SetJumpMaxDuration(float MaxDuration) { 
+		JumpMaxDuration = MaxDuration; 
+	}
 
 	UFUNCTION()
 	float GetJumpMinDuration() { return JumpMinDuration; }
