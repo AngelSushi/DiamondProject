@@ -70,7 +70,11 @@ void AAbsorber::Tick(float DeltaTime) {
 		else {
 			float Distance = FVector::DistSquared(DetectedPlayer->GetActorLocation(), GetActorLocation());
 
+				//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, FString::Printf(TEXT("Value %f"), Distance >= RadiusDetection * RadiusDetection));
 			if (Distance >= RadiusDetection * RadiusDetection) {
+
+
+				GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, TEXT("TonTexte"));
 				AbsorberEventsDispatcher->OnUnDetectPlayer.Broadcast(DetectedPlayer, this);
 				DetectedPlayer = nullptr;
 				return;

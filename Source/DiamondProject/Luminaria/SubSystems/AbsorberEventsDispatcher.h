@@ -18,16 +18,16 @@ class DIAMONDPROJECT_API UAbsorberEventsDispatcher : public UWorldSubsystem {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintAssignable)
 	FOnDetectPlayer OnDetectPlayer;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintAssignable)
 	FOnUnDetectPlayer OnUnDetectPlayer;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintAssignable)
 	FOnStunAbsorber OnStunAbsorber;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintAssignable)
 	FOnDeStunAbsorber OnDeStunAbsorber;
 	
 };
