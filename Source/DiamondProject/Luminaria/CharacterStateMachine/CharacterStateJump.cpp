@@ -60,9 +60,6 @@ void UCharacterStateJump::OnStateBegin() {
 void UCharacterStateJump::OnStateTick(float DeltaTime) {
 	if (bIsJumping) {
 
-		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, FString::Printf(TEXT("[%s] JumpMinDuration %f"),*GetCharacter()->GetActorNameOrLabel(),JumpMinDuration));
-		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, FString::Printf(TEXT("[%s] JumpMaxDuration %f"),*GetCharacter()->GetActorNameOrLabel(),JumpMaxDuration));
-
 		JumpTimer += DeltaTime;
 
 		if (JumpTimer >= JumpMaxDuration) {
