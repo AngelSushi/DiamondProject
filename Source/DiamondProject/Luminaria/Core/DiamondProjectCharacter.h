@@ -165,14 +165,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetJumpMinDuration(float NewJumpMinDuration) {
 		NewJumpMinDuration = FMath::Clamp(NewJumpMinDuration, 0, 1000);
-		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Yellow, FString::Printf(TEXT("[%s] NewJumpMinDuration %f"),*GetActorNameOrLabel(), NewJumpMinDuration));
 		GetStateMachine()->StateJump->SetJumpMinDuration(NewJumpMinDuration);
 	}
 
 	UFUNCTION(BlueprintCallable)
 	void SetJumpMaxDuration(float NewJumpMaxDuration) {
 		NewJumpMaxDuration = FMath::Clamp(NewJumpMaxDuration, 0, 1000);
-		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, FString::Printf(TEXT("[%s] NewJumpMaxDuration %f"),*GetActorNameOrLabel(),NewJumpMaxDuration));
 		GetStateMachine()->StateJump->SetJumpMaxDuration(NewJumpMaxDuration);
 	}
 
