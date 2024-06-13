@@ -10,7 +10,7 @@
 
 void UCameraBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	PlayerManager = Owner->GetWorld()->GetSubsystem<UPlayerManager>();
-	//PlayerManager->OnPlayerMove.AddDynamic(this, &UCameraBehavior::OnPlayerMove);
+	PlayerManager->OnPlayerMove.AddDynamic(this, &UCameraBehavior::OnPlayerMove);
 
 	OwnerActor = Owner;
 
@@ -51,26 +51,6 @@ void UCameraBehavior::TickBehavior(float DeltaTime) {
 	}
 }
 
-void UCameraBehavior::OnPlayerMove(ADiamondProjectCharacter* Character, FVector2D Input, FVector Direction, bool& IsCanceled) {
-	const FRotator Rotation = Character->GetControlRotation();
-	const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-	const FVector FDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	const FVector RDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-	FVector NextFramePosition = Character->GetActorLocation() + (Character->GetVelocity() * OwnerActor->GetWorld()->GetDeltaSeconds());
-	FVector MovementInput = FVector(Input.X * FDirection.X, Input.X * RDirection.Y, 0.0F);
-	NextFramePosition += MovementInput * OwnerActor->GetWorld()->GetDeltaSeconds();
-
-	if (NextCharacterPosition.Contains(Character)) {
-		NextCharacterPosition[Character] = NextFramePosition;
-	}
-	else {
-		NextCharacterPosition.Add(Character, NextFramePosition);
-	}
-}
-
-
 FVector UCameraBehavior::CalculateMaxFrustum(ADiamondProjectCharacter* Character,FVector Position,float Direction) {
 	ULocalPlayer* LocalPlayer = Character->GetWorld()->GetFirstLocalPlayerFromController();
 
@@ -101,6 +81,8 @@ void UCameraBehavior::CalculateBarycenter() {
 	Barycenter += FVector(0, 0, 45.F);
 	Barycenter.X = DefaultX;
 }
+
+void UCameraBehavior::OnPlayerMove(ADiamondProjectCharacter* character, FVector2D Input, FVector direction, bool& isCanceled) {}
 
 float UCameraBehavior::Approach(float Current, float Target, float Incr) {
 	if (Current < Target) {
