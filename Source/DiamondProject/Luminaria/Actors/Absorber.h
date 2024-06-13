@@ -30,6 +30,9 @@ private:
 	UFUNCTION()
 	void GenerateInput();
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UDeathComponent> DeathComponent;
+
 	UFUNCTION()
 	void OnStunAbsorber(AAbsorber* Absorber);
 

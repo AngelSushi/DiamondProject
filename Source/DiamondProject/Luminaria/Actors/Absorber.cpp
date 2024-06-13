@@ -4,6 +4,7 @@
 #include "../CharacterStateMachine/CharacterStateMachine.h"
 #include "../UMG/UIComboInput.h"
 #include "../DataAssets/AbsorberDataAsset.h"
+#include "DiamondProject/Luminaria/ActorComponents/DeathComponent.h"
 
 AAbsorber::AAbsorber() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -13,6 +14,9 @@ AAbsorber::AAbsorber() {
 
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
+
+	DeathComponent = CreateDefaultSubobject<UDeathComponent>(TEXT("Death Component"));
+	DeathComponent->SetupAttachment(RootComponent);
 }
 
 void AAbsorber::BeginPlay() {
