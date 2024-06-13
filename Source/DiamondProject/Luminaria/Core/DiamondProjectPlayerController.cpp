@@ -96,11 +96,12 @@ void ADiamondProjectPlayerController::SetupInputComponent() {
 }
 
 void ADiamondProjectPlayerController::Move(const FInputActionValue& Value) {
-	GetPlayer()->GetStateMachine()->OnMovement(Value);
+	if(bCanMove)
+		GetPlayer()->GetStateMachine()->OnMovement(Value);
 }
 
 void ADiamondProjectPlayerController::Jump() {
-	if (GetPlayer()->GetCharacterMovement()->IsMovingOnGround()) {
+	if (GetPlayer()->GetCharacterMovement()->IsMovingOnGround() && bCanMove) {
 		GetPlayer()->GetStateMachine()->OnJump();
 	}
 }
