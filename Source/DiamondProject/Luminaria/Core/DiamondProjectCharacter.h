@@ -164,13 +164,35 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetJumpMinDuration(float NewJumpMinDuration) {
-		//JumpMinDuration = NewJumpMinDuration; 
+		NewJumpMinDuration = FMath::Clamp(NewJumpMinDuration, 0, 1000);
+		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Yellow, FString::Printf(TEXT("[%s] NewJumpMinDuration %f"),*GetActorNameOrLabel(), NewJumpMinDuration));
 		GetStateMachine()->StateJump->SetJumpMinDuration(NewJumpMinDuration);
 	}
 
 	UFUNCTION(BlueprintCallable)
 	void SetJumpMaxDuration(float NewJumpMaxDuration) {
+		NewJumpMaxDuration = FMath::Clamp(NewJumpMaxDuration, 0, 1000);
+		GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Green, FString::Printf(TEXT("[%s] NewJumpMaxDuration %f"),*GetActorNameOrLabel(),NewJumpMaxDuration));
 		GetStateMachine()->StateJump->SetJumpMaxDuration(NewJumpMaxDuration);
+	}
+
+	UFUNCTION(BlueprintPure)
+	int GetJumpFactor() { // Light Energy
+		if (LightEnergy == 50000.F) {
+			return 0;
+		}
+		else if (LightEnergy == 35000.F || LightEnergy == 65000.F) {
+			return 1;
+		}
+		else if (LightEnergy == 20000.F || LightEnergy == 80000.F) {
+			return 2;
+		}
+		else if (LightEnergy == 5000.F || LightEnergy == 95000.F) {
+			return 3;
+		}
+		else {
+			return -1;
+		}
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
