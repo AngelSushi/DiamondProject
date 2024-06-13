@@ -68,7 +68,6 @@ void UHeightCameraBehavior::OnPlayerLandOnGround(ADiamondProjectCharacter* Chara
 		if (Character->GetActorLocation().Z >= OtherCharacter->GetActorLocation().Z && ExceedCharacters.Num() == 1) {
 			if (ExceedCharacters.Contains(OtherCharacter)) {
 				OffsetZ = CalculateOffset(Character, OtherCharacter,CharacterPosition);
-				GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Cyan, FString::FromInt(OffsetZ));
 			}
 		}
 		else {
@@ -142,9 +141,6 @@ float UHeightCameraBehavior::CalculateOffset(ADiamondProjectCharacter* Character
 		if (HitResults.Num() > 0) {
 			FVector GroundPosition = HitResults[0].GetActor()->GetActorLocation();
 			float DistanceZ = FMath::Abs(GroundActor->GetActorLocation().Z - GroundPosition.Z);
-
-			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Black, FString::FromInt(DistanceZ));
-
 			bChangeLimit = true;
 			ExceedCharacters.Empty();
 
