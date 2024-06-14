@@ -7,6 +7,7 @@
 #include "CharacterStateFall.h"
 #include "CharacterStateAttract.h"
 #include "CharacterStateRespawn.h"
+#include "CharacterStateReplacePosition.h"
 
 #include "InputActionValue.h"
 #include "../Core/DiamondProjectCharacter.h"
@@ -21,6 +22,7 @@ UCharacterStateMachine::UCharacterStateMachine() {
 	StateFall = CreateDefaultSubobject<UCharacterStateFall>(TEXT("StateFall"));
 	StateAttract = CreateDefaultSubobject<UCharacterStateAttract>(TEXT("StateAttract"));
 	StateRespawn = CreateDefaultSubobject<UCharacterStateRespawn>(TEXT("StateRespawn"));
+	StateReplace = CreateDefaultSubobject<UCharacterStateReplacePosition>(TEXT("StateReplace"));
 }
 
 
@@ -34,6 +36,9 @@ void UCharacterStateMachine::SMInit(ADiamondProjectCharacter* StateCharacter) {
 	StateFall->StateInit(this);
 	StateAttract->StateInit(this);
 	StateRespawn->StateInit(this);
+	StateReplace->StateInit(this);
+
+	bForceReplacePosition = true;
 
 }
 
@@ -49,6 +54,16 @@ void UCharacterStateMachine::SMTick(float DeltaTime) {
 		
 		CurrentState->StateTick(DeltaTime);
 	}
+
+	if (bForceReplacePosition) {
+		if (!bLastForceReplacePosition) {
+			StateReplace->StateBegin();
+		}
+
+		StateReplace->StateTick(DeltaTime);
+	}
+
+	bLastForceReplacePosition = bForceReplacePosition;
 }
 
 void UCharacterStateMachine::ChangeState(UCharacterState* NewState) {

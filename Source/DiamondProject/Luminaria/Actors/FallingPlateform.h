@@ -37,6 +37,9 @@ private:
     UPROPERTY(VisibleAnywhere)
     bool bCharacterOnPlatform;
 
+    UPROPERTY(VisibleAnywhere)
+    bool bPlateformAlreadyFall;
+
     UPROPERTY(EditAnywhere)
     int32 numPlayersInside;
 
@@ -57,6 +60,8 @@ private:
 
     bool bIsShaking;
 
+    bool bIsMeshCollisionReset;
+
     UPROPERTY(VisibleAnywhere)
     float ShakeTime;
 
@@ -75,4 +80,5 @@ private:
 
     void FallPlatform();
     void ResetPlatform();
+    void ResetMeshCollider();
 };

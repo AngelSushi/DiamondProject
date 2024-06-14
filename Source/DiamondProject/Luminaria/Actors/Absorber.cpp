@@ -4,6 +4,7 @@
 #include "../CharacterStateMachine/CharacterStateMachine.h"
 #include "../UMG/UIComboInput.h"
 #include "../DataAssets/AbsorberDataAsset.h"
+#include "DiamondProject/Luminaria/ActorComponents/DeathComponent.h"
 
 AAbsorber::AAbsorber() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -13,6 +14,9 @@ AAbsorber::AAbsorber() {
 
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
+
+	DeathComponent = CreateDefaultSubobject<UDeathComponent>(TEXT("Death Component"));
+	DeathComponent->SetupAttachment(RootComponent);
 }
 
 void AAbsorber::BeginPlay() {
@@ -70,7 +74,11 @@ void AAbsorber::Tick(float DeltaTime) {
 		else {
 			float Distance = FVector::DistSquared(DetectedPlayer->GetActorLocation(), GetActorLocation());
 
+				//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, FString::Printf(TEXT("Value %f"), Distance >= RadiusDetection * RadiusDetection));
 			if (Distance >= RadiusDetection * RadiusDetection) {
+
+
+				GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, TEXT("TonTexte"));
 				AbsorberEventsDispatcher->OnUnDetectPlayer.Broadcast(DetectedPlayer, this);
 				DetectedPlayer = nullptr;
 				return;
