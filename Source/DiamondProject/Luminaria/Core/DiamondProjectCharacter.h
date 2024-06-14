@@ -219,6 +219,8 @@ public:
 	virtual void CompleteInput(UInputUI* Input);
 
 private:
+
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
 
