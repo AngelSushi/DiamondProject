@@ -38,6 +38,8 @@
 
 #include "../DataAssets/CameraAreaDataAsset.h"
 
+#include "Components/BoxComponent.h"
+
 ADiamondProjectCharacter::ADiamondProjectCharacter() {
 
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -63,6 +65,9 @@ ADiamondProjectCharacter::ADiamondProjectCharacter() {
 
 	LandOnGroundParticle = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LandOnGroundParticle"));
 	LandOnGroundParticle->SetupAttachment(GetMesh());
+
+	CameraDetection = CreateDefaultSubobject<UBoxComponent>(TEXT("CameraDetection"));
+	CameraDetection->SetupAttachment(GetMesh());
 }
 
 void ADiamondProjectCharacter::BeginPlay() {
@@ -85,7 +90,7 @@ void ADiamondProjectCharacter::BeginPlay() {
 
 	_checkPoint = GetActorLocation();
 
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ADiamondProjectCharacter::OnBeginOverlap);
+	CameraDetection->OnComponentBeginOverlap.AddDynamic(this, &ADiamondProjectCharacter::OnBeginOverlap);
 
 	MainCamera = Cast<ALuminariaCamera>(UGameplayStatics::GetActorOfClass(GetWorld(), ALuminariaCamera::StaticClass()));
 
@@ -103,6 +108,7 @@ void ADiamondProjectCharacter::BeginPlay() {
 
 void ADiamondProjectCharacter::Tick(float DeltaSeconds) {
     Super::Tick(DeltaSeconds);
+
 
 	MinEnergy = GetPlayerAsset()->MinEnergy;
 	MaxEnergy = GetPlayerAsset()->MaxEnergy;
@@ -263,9 +269,9 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 
 				PlayerManager->OnChangeNewArea.Broadcast(HitArea->GetDataAsset()->Id);
 
-				if (TargetBehavior != LastHitArea->AreaBehavior) {
+			//	if (TargetBehavior != LastHitArea->AreaBehavior) {
 					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this, &OriginBehavior](UCameraBehavior* Behavior) {
-						
+						GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Magenta, TEXT("[DiamondProjectCharacter] Switch Behavior"));
 						if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
 							
 							if (OriginBehavior == ECameraBehavior::DEFAULT) {
@@ -274,25 +280,9 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 									GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
 								}
 							}
-							/*else if (OriginBehavior == ECameraBehavior::DYNAMIC) {
-								FVector Barycenter = (GetActorLocation() + OtherPlayer->GetActorLocation()) / 2;
-
-								if (HitArea->ZoomMin > HitArea->ZoomMax) { // For Some Reason, In Certain Level ZoomMin is Greater Than ZoomMax. We Manage This Case
-									Barycenter.X = FMath::Clamp(Barycenter.X, HitArea->ZoomMax, HitArea->ZoomMin);
-								}
-								else {
-									Barycenter.X = FMath::Clamp(Barycenter.X, HitArea->ZoomMin, HitArea->ZoomMax);
-								}
-
-								Barycenter.Z = GoTo->DefaultZ;
-
-								GoTo->GoTo = Barycenter;
-								GoTo->NextBehavior = ECameraBehavior::DYNAMIC;
-							}
-							FIN DE COMMENTAIRE ICI */
 						}
 					});
-				}
+			//	}
 			}
 		}
 		else {
@@ -308,22 +298,6 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 							GoTo->NextBehavior = ECameraBehavior::DEFAULT;
 							GoTo->GoTo = HitArea->GoTo->GetComponentLocation();
 						}
-						/*else if (OriginBehavior == ECameraBehavior::DYNAMIC) {
-							GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Blue, TEXT("Dynamic Behavior"));
-							FVector Barycenter = (GetActorLocation() + OtherPlayer->GetActorLocation()) / 2;
-
-							if (HitArea->ZoomMin > HitArea->ZoomMax) { // For Some Reason, In Certain Level ZoomMin is Greater Than ZoomMax. We Manage This Case
-								Barycenter.X = FMath::Clamp(Barycenter.X, HitArea->ZoomMax, HitArea->ZoomMin);
-							}
-							else {
-								Barycenter.X = FMath::Clamp(Barycenter.X, HitArea->ZoomMin, HitArea->ZoomMax);
-							}
-
-							Barycenter.Z = GoTo->DefaultZ;
-
-							GoTo->GoTo = Barycenter;
-							GoTo->NextBehavior = ECameraBehavior::DYNAMIC;
-						}*/
 					}
 				});
 			}
