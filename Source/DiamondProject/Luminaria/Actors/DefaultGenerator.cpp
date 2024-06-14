@@ -32,13 +32,12 @@ void ADefaultGenerator::Tick(float DeltaTime) {
 	if (IsActivatorActive()) {
 		CrystalTimer += DeltaTime;
 
-		float Alpha = (0.6 + CrystalTimer) / MaxCrystalTimer;
-		Alpha = FMath::Clamp(Alpha, 0.6F, 1.0F);
-		// 0.6 = 0; 1 = 1
+		float Alpha = (CrystalTimer) / MaxCrystalTimer;
+		Alpha = FMath::Clamp(Alpha, 0.F, 1.0F);
 		InstanceCrystalMaterial->SetScalarParameterValue("BlendAlpha", Alpha);
 	}
 	else {
-		InstanceCrystalMaterial->SetScalarParameterValue("BlendAlpha", 0.6f);
+		InstanceCrystalMaterial->SetScalarParameterValue("BlendAlpha", 0.f);
 	}
 }
 

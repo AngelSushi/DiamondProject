@@ -52,7 +52,7 @@ void ALuminariaCamera::Tick(float DeltaTime) {
 	}
 
 	if (HeightBehavior) {
-		HeightBehavior->TickBehavior(DeltaTime);
+		//HeightBehavior->TickBehavior(DeltaTime);
 	}
 
 	if (CameraBehavior) {
@@ -60,7 +60,7 @@ void ALuminariaCamera::Tick(float DeltaTime) {
 	}
 
 	if (ShakeBehavior) {
-		ShakeBehavior->TickBehavior(DeltaTime);
+		//ShakeBehavior->TickBehavior(DeltaTime);
 	}
 }
 
@@ -98,48 +98,39 @@ UCameraBehavior* ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior S
 
 	switch (SwitchBehavior) {
 	case ECameraBehavior::DEFAULT:
-		GoToBehavior = nullptr;
-		FollowBehavior = nullptr;
+		ResetAll();
 		DefaultBehavior = NewObject<UCameraDefaultBehavior>();
 		CameraBehavior = DefaultBehavior;
 		break;
 
 	case ECameraBehavior::DYNAMIC:
-		GoToBehavior = nullptr;
-		FollowBehavior = nullptr;
+		ResetAll();
 		DynamicBehavior = NewObject<UCameraDynamicBehavior>();
 		HeightBehavior = NewObject<UHeightCameraBehavior>();
 		CameraBehavior = DynamicBehavior;
 		break;
 
 	case ECameraBehavior::GOTO:
-		DynamicBehavior = nullptr;
-		DefaultBehavior = nullptr;
-		HeightBehavior = nullptr;
-		FollowBehavior = nullptr;
+		ResetAll();
 		GoToBehavior = NewObject<UGoToBehavior>();
 		CameraBehavior = GoToBehavior;
 		break;
 
 	case ECameraBehavior::LEADER:
+		ResetAll();
 		LeaderBehavior = NewObject<UCameraLeaderBehavior>();
 		CameraBehavior = LeaderBehavior;
 		break;
 
 	case ECameraBehavior::FOLLOW_PATH:
+		ResetAll();
 		FollowBehavior = NewObject<UCameraFollowBehavior>();
-
 		CameraBehavior = FollowBehavior;
 		break;
 
 	case ECameraBehavior::NO_BEHAVIOR:
 	default:
-		DynamicBehavior = nullptr;
-		DefaultBehavior = nullptr;
-		HeightBehavior = nullptr;
-		GoToBehavior = nullptr;
-		FollowBehavior = nullptr;
-		CameraBehavior = nullptr;
+		ResetAll();
 		break;
 	}
 
@@ -152,6 +143,16 @@ UCameraBehavior* ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior S
 	}
 
 	return CameraBehavior;
+}
+
+void ALuminariaCamera::ResetAll() {
+	DynamicBehavior = nullptr;
+	DefaultBehavior = nullptr;
+	HeightBehavior = nullptr;
+	GoToBehavior = nullptr;
+	FollowBehavior = nullptr;
+	CameraBehavior = nullptr;
+	ShakeBehavior = nullptr;
 }
 
 void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathCause DeathCause) {
