@@ -7,6 +7,8 @@
 #include "DiamondProject/Luminaria/Actors/LuminariaCamera.h"
 #include "DiamondProject/Luminaria/Actors/CameraArea.h"
 
+#include "Kismet/GameplayStatics.h"
+
 // Behavior that Control Z Axis Of the Camera. 
 
 
@@ -25,14 +27,21 @@ void UHeightCameraBehavior::TickBehavior(float DeltaTime) {
 	Super::TickBehavior(DeltaTime);
 
 	if (PlayerManager->Characters.Num() >= 2) {
-		if (LinePositionTop == FVector::Zero() || bChangeLimit) {
-			LinePositionTop = PlayerManager->Characters[0]->GetActorLocation();
-			LinePositionTop.Z += 650.F;
-			LinePositionBot = PlayerManager->Characters[0]->GetActorLocation();
-			LinePositionBot.Z -= 175.F;
+		//if (LinePositionTop == FVector::Zero() /* || bChangeLimit*/) {
+		FVector2D ViewportSize;
+		GEngine->GameViewport->GetViewportSize(ViewportSize);
 
-			bChangeLimit = false;
-		}
+		FVector WorldPosition;
+		FVector WorldDirection;
+
+		PlayerManager->Characters[1]->GetLuminariaController()->DeprojectScreenPositionToWorld(0,100.F, WorldPosition, WorldDirection);
+
+		LinePositionTop = WorldPosition + (WorldDirection * FVector::Distance(OwnerActor->GetActorLocation(), PlayerManager->Characters[1]->GetActorLocation()));
+
+		PlayerManager->Characters[1]->GetLuminariaController()->DeprojectScreenPositionToWorld(ViewportSize.X,ViewportSize.Y - 100.F, WorldPosition, WorldDirection);
+		
+		LinePositionBot = WorldPosition + (WorldDirection * FVector::Distance(OwnerActor->GetActorLocation(),PlayerManager->Characters[1]->GetActorLocation()));
+		bChangeLimit = false;
 
 		if (OwnerActor->bDebugCamera) {
 			DrawDebugLine(OwnerActor->GetWorld(), LinePositionTop + FVector::LeftVector * 5000000.F, LinePositionTop + FVector::RightVector * 5000000.F, FColor::White, false, 1.F, 1, 2.F);
@@ -47,9 +56,7 @@ void UHeightCameraBehavior::TickBehavior(float DeltaTime) {
 
 		HeightCameraPosition.Z = Approach(HeightCameraPosition.Z, OffsetZ, 700 * DeltaTime);
 		HeightCameraPosition.Z = FMath::Clamp(HeightCameraPosition.Z,OwnerActor->CurrentArea->HeightMin,OwnerActor->CurrentArea->HeightMax);
-
-	//	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, FString::Printf(TEXT("Pos %s"),*HeightCameraPosition.ToString()));
-			 
+		 
 		OwnerActor->SetActorLocation(HeightCameraPosition);
 	}
 }
@@ -68,7 +75,6 @@ void UHeightCameraBehavior::OnPlayerLandOnGround(ADiamondProjectCharacter* Chara
 		if (Character->GetActorLocation().Z >= OtherCharacter->GetActorLocation().Z && ExceedCharacters.Num() == 1) {
 			if (ExceedCharacters.Contains(OtherCharacter)) {
 				OffsetZ = CalculateOffset(Character, OtherCharacter,CharacterPosition);
-				GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Cyan, FString::FromInt(OffsetZ));
 			}
 		}
 		else {
@@ -85,6 +91,7 @@ void UHeightCameraBehavior::OnPlayerLandOnGround(ADiamondProjectCharacter* Chara
 	}
 
 	if (Character->GetActorLocation().Z <= LinePositionBot.Z) {
+		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, TEXT("[HeightCameraBehavior] Depasse La Line Bot "));
 		ADiamondProjectCharacter* OtherCharacter = PlayerManager->GetOtherPlayer(Character);
 
 		FVector CharacterPosition = Character->GetActorLocation();
@@ -142,9 +149,6 @@ float UHeightCameraBehavior::CalculateOffset(ADiamondProjectCharacter* Character
 		if (HitResults.Num() > 0) {
 			FVector GroundPosition = HitResults[0].GetActor()->GetActorLocation();
 			float DistanceZ = FMath::Abs(GroundActor->GetActorLocation().Z - GroundPosition.Z);
-
-			GEngine->AddOnScreenDebugMessage(-1, 15.F, FColor::Black, FString::FromInt(DistanceZ));
-
 			bChangeLimit = true;
 			ExceedCharacters.Empty();
 

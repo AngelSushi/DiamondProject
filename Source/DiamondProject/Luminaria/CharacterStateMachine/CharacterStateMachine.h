@@ -12,6 +12,7 @@ class UCharacterStateDie;
 class UCharacterStateFall;
 class UCharacterStateAttract;
 class UCharacterStateRespawn;
+class UCharacterStateReplacePosition;
 class AAbsorber;
 
 UCLASS()
@@ -35,6 +36,7 @@ public:
 	UPROPERTY() TObjectPtr<UCharacterStateFall> StateFall;
 	UPROPERTY() TObjectPtr<UCharacterStateAttract> StateAttract;
 	UPROPERTY() TObjectPtr<UCharacterStateRespawn> StateRespawn;
+	UPROPERTY() TObjectPtr<UCharacterStateReplacePosition> StateReplace;
 
 	// Fonction Init ? 
 private:
@@ -43,6 +45,12 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<ADiamondProjectCharacter> Character;
+
+	UPROPERTY()
+	bool bForceReplacePosition;
+
+	UPROPERTY()
+	bool bLastForceReplacePosition;
 
 public:
 	void SMInit(ADiamondProjectCharacter* StateCharacter);
