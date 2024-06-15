@@ -50,6 +50,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bCanFlip = true;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCanMove = true;
 
 	bool bIsLookingLeft;
 

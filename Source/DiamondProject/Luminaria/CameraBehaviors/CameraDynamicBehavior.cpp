@@ -35,9 +35,9 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character,FV
 			float angle = FVector::DotProduct(ExtendToPlayer, Forward);
 
 			//float Distance = FVector::Distance(extendData.Position, character->GetActorLocation());
-			float DistanceX = FMath::Abs(extendData.Position.X - character->GetActorLocation().X);
+			float DistanceY = FMath::Abs(extendData.Position.Y - character->GetActorLocation().Y);
 
-			if (angle < 0 && Forward == -direction && DistanceX < 100.F) {
+			if (angle < 0 && Forward == -direction && DistanceY < 100.F) {
 				OffsetX += FMath::Abs(extendData.Offset);
 				return true;
 			}
@@ -59,9 +59,9 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 		if (Barycenter.Y == 0.F) {
 			Barycenter.Y = ToApproachY;
 		}
-			
+		
+		ToApproachY = FMath::Clamp(ToApproachY, MinY, MaxY);
 		Barycenter.Y = Approach(Barycenter.Y, ToApproachY, 700 * DeltaTime); // 350 de base 
-		Barycenter.Y = FMath::Clamp(Barycenter.Y, MinY, MaxY);
 		
 
 		float ToApproachZ = (PlayerManager->Characters[0]->GetActorLocation().Z + PlayerManager->Characters[1]->GetActorLocation().Z) / 2;
@@ -69,8 +69,6 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 		DefaultZ = OwnerActor->GetActorLocation().Z;
 
 		Barycenter.Z = DefaultZ;
-
-			
 
 		if (OwnerActor->CurrentArea) {
 			if (OwnerActor->CurrentArea->ZoomMin > OwnerActor->CurrentArea->ZoomMax) { // For Some Reason, In Certain Level ZoomMin is Greater Than ZoomMax. We Manage This Case
@@ -83,9 +81,7 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 		}
 
 		Barycenter.X = Approach(Barycenter.X, OffsetX, 700 * DeltaTime);
-		
-
-	//	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Cyan, FString::Printf(TEXT("Cam Z %f"), Barycenter.Z));
+	
 		OwnerActor->SetActorLocation(Barycenter);
 
 		if (OwnerActor->bDebugCamera) {
@@ -147,7 +143,7 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 
 				OffsetX -= Offset;
 
-				GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Yellow, FString::Printf(TEXT("Calcul OffsetX %f"), Offset));
+				GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Magenta, FString::Printf(TEXT("Calcul OffsetX %f"), Offset));
 				
 				_extendPositions.Add(FExtendData(Center, direction, _extendPositions.Num(),Offset));
 			}

@@ -54,14 +54,9 @@ void UHeightCameraBehavior::TickBehavior(float DeltaTime) {
 			return;
 		}
 
-		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, FString::Printf(TEXT("HeightMin %i"), OwnerActor->CurrentArea->HeightMin));
-		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, FString::Printf(TEXT("HeightMax %i"), OwnerActor->CurrentArea->HeightMax));
-
 		HeightCameraPosition.Z = Approach(HeightCameraPosition.Z, OffsetZ, 700 * DeltaTime);
 		HeightCameraPosition.Z = FMath::Clamp(HeightCameraPosition.Z,OwnerActor->CurrentArea->HeightMin,OwnerActor->CurrentArea->HeightMax);
-
-	//	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, FString::Printf(TEXT("Pos %s"),*HeightCameraPosition.ToString()));
-			 
+		 
 		OwnerActor->SetActorLocation(HeightCameraPosition);
 	}
 }

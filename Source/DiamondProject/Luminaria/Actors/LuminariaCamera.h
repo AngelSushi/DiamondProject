@@ -57,6 +57,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void InitCameraShake();
 
+	UFUNCTION()
+	void ResetAll();
+
 	/* State Machine Variable */
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
