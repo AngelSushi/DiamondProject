@@ -38,7 +38,7 @@ void AFallingPlateform::BeginPlay()
 void AFallingPlateform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	if (bIsShaking)
 	{
 		ShakeTime += DeltaTime;
@@ -55,11 +55,17 @@ void AFallingPlateform::Tick(float DeltaTime)
 
 	if (bCharacterOnPlatform)
 	{
-		TimeSinceCharacterOnPlatform += DeltaTime;
-		if (TimeSinceCharacterOnPlatform >= TimeBeforeFall)
+		if (!bPlateformAlreadyFall)
 		{
-			FallPlatform();
+			TimeSinceCharacterOnPlatform += DeltaTime;
+			if (TimeSinceCharacterOnPlatform >= TimeBeforeFall)
+			{
+				FallPlatform();
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, FString::Printf(TEXT("Bool: %s"), bPlateformAlreadyFall ? TEXT("true") : TEXT("false")));
+								
+			}
 		}
+		
 
 	}
 	if (bPlateformFall) 
@@ -68,9 +74,23 @@ void AFallingPlateform::Tick(float DeltaTime)
 		if (TimePlateformFall >= ResetDelay)
 		{
 			ResetPlatform();
+
 		}
 		
 	}
+	if (bIsMeshCollisionReset)
+	{	
+		ResetMeshCollider();
+	}
+
+}
+
+void AFallingPlateform::ResetMeshCollider()
+{
+	PlatformMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	bIsMeshCollisionReset = true;
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, FString::Printf(TEXT("Bool: %s"), bIsMeshCollisionReset ? TEXT("true") : TEXT("false")));
+
 }
 
 void AFallingPlateform::ShakeBox()
@@ -85,19 +105,24 @@ void AFallingPlateform::FallPlatform()
 {
 	// Simule la gravité pour faire tomber la plateforme
 	PlatformMesh->SetSimulatePhysics(true);
+	DetectionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	bPlateformFall = true;
-
+	bPlateformAlreadyFall = true;
 
 }
 void AFallingPlateform::ResetPlatform()
 {
 	// Remet la plateforme à sa position d'origine
 	PlatformMesh->SetSimulatePhysics(false);
+	DetectionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	SetActorLocation(InitialLocation, true, nullptr, ETeleportType::TeleportPhysics);
 	bPlateformFall = false;
 	TimeSinceCharacterOnPlatform = 0.0f;
 	TimePlateformFall = 0.0f;
 	ShakeTime = 0.0f;
+	bPlateformAlreadyFall = false;
+	PlatformMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	bIsMeshCollisionReset = false;
 }
 
 
@@ -113,6 +138,8 @@ void AFallingPlateform::OnCharacterOverlapBegin(class UPrimitiveComponent* Overl
 			bIsShaking = true;
 			TimeSinceCharacterOnPlatform = 0.0f;
 			ShakeTime = 0.0f;
+			bIsMeshCollisionReset = true;
+
 		}
 		
 	}

@@ -7,9 +7,12 @@
 #include "CharacterStateFall.h"
 #include "CharacterStateAttract.h"
 #include "CharacterStateRespawn.h"
+#include "CharacterStateReplacePosition.h"
 
 #include "InputActionValue.h"
 #include "../Core/DiamondProjectCharacter.h"
+
+#include "GameFramework/CharacterMovementComponent.h"
 
 UCharacterStateMachine::UCharacterStateMachine() {
 	StateIdle = CreateDefaultSubobject<UCharacterStateIdle>(TEXT("StateIdle"));
@@ -19,6 +22,7 @@ UCharacterStateMachine::UCharacterStateMachine() {
 	StateFall = CreateDefaultSubobject<UCharacterStateFall>(TEXT("StateFall"));
 	StateAttract = CreateDefaultSubobject<UCharacterStateAttract>(TEXT("StateAttract"));
 	StateRespawn = CreateDefaultSubobject<UCharacterStateRespawn>(TEXT("StateRespawn"));
+	StateReplace = CreateDefaultSubobject<UCharacterStateReplacePosition>(TEXT("StateReplace"));
 }
 
 
@@ -32,6 +36,9 @@ void UCharacterStateMachine::SMInit(ADiamondProjectCharacter* StateCharacter) {
 	StateFall->StateInit(this);
 	StateAttract->StateInit(this);
 	StateRespawn->StateInit(this);
+	StateReplace->StateInit(this);
+
+	bForceReplacePosition = true;
 
 }
 
@@ -41,8 +48,22 @@ void UCharacterStateMachine::SMBegin() {
 
 void UCharacterStateMachine::SMTick(float DeltaTime) {
 	if (CurrentState) {
+		if (CurrentState != StateJump && CurrentState != StateFall) {
+			GetCharacter()->GetCharacterMovement()->GravityScale = 5.0F;
+		}
+		
 		CurrentState->StateTick(DeltaTime);
 	}
+
+	if (bForceReplacePosition) {
+		if (!bLastForceReplacePosition) {
+			StateReplace->StateBegin();
+		}
+
+		StateReplace->StateTick(DeltaTime);
+	}
+
+	bLastForceReplacePosition = bForceReplacePosition;
 }
 
 void UCharacterStateMachine::ChangeState(UCharacterState* NewState) {
@@ -53,7 +74,6 @@ void UCharacterStateMachine::ChangeState(UCharacterState* NewState) {
 	CurrentState = NewState;
 
 	if (CurrentState) {
-		//GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Cyan, FString::Printf(TEXT("[CharacterStateMachine - %s] NewState : %s"),*GetCharacter()->GetActorNameOrLabel(), *CurrentState->GetName()));
 		CurrentState->StateBegin();
 	}
 }
