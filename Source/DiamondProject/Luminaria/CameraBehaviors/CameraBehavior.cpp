@@ -45,10 +45,9 @@ void UCameraBehavior::TickBehavior(float DeltaTime) {
 
 		DrawDebugSphere(OwnerActor->GetWorld(), LeftCorner, 32.F, 24.F, FColor::Cyan);
 		DrawDebugSphere(OwnerActor->GetWorld(), RightCorner, 64.F, 24.F, FColor::Magenta);
-
-		DrawDebugSphere(OwnerActor->GetWorld(),NewMinPosition, 32.F, 24.F, FColor::Red);
-		DrawDebugSphere(OwnerActor->GetWorld(),NewMaxPosition, 64.F, 24.F, FColor::Purple);
 	}
+
+	
 }
 
 FVector UCameraBehavior::CalculateMaxFrustum(ADiamondProjectCharacter* Character,FVector Position,float Direction) {
