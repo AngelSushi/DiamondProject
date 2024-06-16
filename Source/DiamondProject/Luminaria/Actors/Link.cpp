@@ -8,6 +8,9 @@
 
 #include "NiagaraComponent.h"
 
+#include "CameraArea.h"
+#include "../DataAssets/CameraAreaDataAsset.h"
+
 ALink::ALink() {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -28,12 +31,17 @@ void ALink::BeginPlay() {
 	PlayerManager->OnPlayerRegister.AddDynamic(this, &ALink::RegisterPlayer);
 	PlayerManager->OnPlayerMove.AddDynamic(this, &ALink::OnPlayerMove);
 
+	PlayerManager->OnChangeNewArea.AddDynamic(this, &ALink::OnChangeNewArea);
+
 	//ParticleSystem->AddRelativeRotation(FRotator(90, 0, 0));
+}
+
+void ALink::OnChangeNewArea(ACameraArea* NewArea) {
+	DistanceMax = NewArea->GetDataAsset()->LinkMaxDistance;
 }
 
 void ALink::RegisterPlayer(ADiamondProjectCharacter* character) {
 	_characters.Add(character);
-	PlayersLastDirection.Add(character, FVector::Zero());
 }
 
 void ALink::Tick(float DeltaTime) {
@@ -44,17 +52,12 @@ void ALink::Tick(float DeltaTime) {
 		float distance = FVector::Distance(_characters[0]->GetActorLocation(), _characters[1]->GetActorLocation());
 		float ScaleZ = FMath::Lerp(CrushMin, CrushMax, DistanceAlpha);
 		
-		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Magenta, FString::Printf(TEXT("DistanceAlpha %f"), DistanceAlpha));
-		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Cyan, FString::Printf(TEXT("ScaleZ %f"), ScaleZ));
-
 		SetActorLocation(_barycenter);
 		SetActorScale3D(FVector(distance / 100,0.05f, ScaleZ));
 
 		FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(_characters[0]->GetActorLocation(),_characters[1]->GetActorLocation());
 		SetActorRotation(Rotation);
 
-		//ParticleSystem->SetWorldLocation(FVector(0,GetActorScale3D().X / 2.F,0));
-		//ParticleSystem->AddRelativeRotation(FRotator(90, 0, 0));
 	}
 
 }
@@ -80,25 +83,29 @@ void ALink::CalculateBarycenter() {
 
 void ALink::OnPlayerMove(ADiamondProjectCharacter* Character,FVector2D Input,FVector Direction,bool& IsCanceled) {
 	AActor* OtherPlayer = PlayerManager->GetOtherPlayer(Character);
-	float Distance = FVector::Distance(Character->GetActorLocation(), OtherPlayer->GetActorLocation());
-	DistanceAlpha = Distance / DistanceMax;
-
-	FVector LastDirection = PlayersLastDirection[Character];
-
-	FVector OtherPlayerPosition = OtherPlayer->GetActorLocation();
 
 	float FirstOrderPlayerIndex = PlayerManager->GetOrderedPlayers()[0];
 
-	if (Distance >= DistanceMax) {
+	float DistanceY = FMath::Abs(Character->GetActorLocation().Y - OtherPlayer->GetActorLocation().Y);
+	float DistanceZ = FMath::Abs(Character->GetActorLocation().Z - OtherPlayer->GetActorLocation().Z);
+
+	float Distance = FVector(1, DistanceY, DistanceZ).Length();
+
+	DistanceAlpha = Distance / DistanceMax;
+
+	if (DistanceY >= DistanceMax) { // Celui qui est le plus a gauche peut bouger si DistanceZ >= DistanceMax ( A verifier si pas trop chiant niveau gamefeel)
 		if (Character == PlayerManager->GetAllCharactersRef()[FirstOrderPlayerIndex]) {
 			if (Direction != FVector(0, 1, 0)) {
 				IsCanceled = true;
 			}
 		}
 		else {
-			if (Direction != FVector(0, -1, 0)) {
+			if (DistanceZ >= DistanceMax || Direction != FVector(0, -1, 0)) {
 				IsCanceled = true;
 			}
 		}
+	}
+	else {
+		IsCanceled = false;
 	}
 }
