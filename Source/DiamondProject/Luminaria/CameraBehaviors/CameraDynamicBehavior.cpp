@@ -23,8 +23,6 @@ void UCameraDynamicBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character,FVector2D Input,FVector direction,bool& isCanceled) { // VERIFIER QUE CELA SAPPELLE BIEN
 	Super::OnPlayerMove(character,Input,direction, isCanceled);
 
-	isCanceled	= false;
-
 	CalculateOffsideFrustumOffset(character, direction);
 
 	if (_extendPositions.Num() > 0) {

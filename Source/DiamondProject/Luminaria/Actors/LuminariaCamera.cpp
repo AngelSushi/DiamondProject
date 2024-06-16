@@ -52,7 +52,7 @@ void ALuminariaCamera::Tick(float DeltaTime) {
 	}
 
 	if (HeightBehavior) {
-		//HeightBehavior->TickBehavior(DeltaTime);
+		HeightBehavior->TickBehavior(DeltaTime);
 	}
 
 	if (CameraBehavior) {
@@ -60,7 +60,7 @@ void ALuminariaCamera::Tick(float DeltaTime) {
 	}
 
 	if (ShakeBehavior) {
-		//ShakeBehavior->TickBehavior(DeltaTime);
+		ShakeBehavior->TickBehavior(DeltaTime);
 	}
 }
 

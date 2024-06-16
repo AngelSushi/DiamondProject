@@ -102,7 +102,7 @@ void UHeightCameraBehavior::OnPlayerLandOnGround(ADiamondProjectCharacter* Chara
 				AActor* GroundDetect = Character->GetGroundActor();
 
 				if (GroundDetect) {
-					float GroundZ = GroundDetect->GetActorLocation().Z /* + GroundDetect->GetActorScale().Z * 50.F*/; // Ajoutez Offset Si besoin
+					float GroundZ = GroundDetect->GetActorLocation().Z;
 					OffsetZ = OwnerActor->GetActorLocation().Z - (FMath::Abs(OwnerActor->GetActorLocation().Z - GroundZ) / 2);
 					
 					bChangeLimit = true;
