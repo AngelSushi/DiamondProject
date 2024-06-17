@@ -88,10 +88,10 @@ void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<
 }
 
 UCameraBehavior* ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavior) {
-	if (CameraBehavior && BehaviorState == SwitchBehavior) {
-		UE_LOG(LogTemp, Error, TEXT("The camera has already this behavior."));
-		return nullptr;
-	}
+	//if (CameraBehavior && BehaviorState == SwitchBehavior) {
+		//UE_LOG(LogTemp, Error, TEXT("The camera has already this behavior."));
+		//return nullptr;
+	//}
 
 	//CameraBehavior = NewObject<UCameraBehavior>(Behavior); Doesn't work with child functions
 	BehaviorState = SwitchBehavior;

@@ -20,6 +20,8 @@ void UHeightCameraBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 
 	PlayerManager->OnPlayerLandOnGround.AddDynamic(this, &UHeightCameraBehavior::OnPlayerLandOnGround);
 
+	GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("Begin Behavior"));
+
 	OffsetZ = OwnerActor->GetActorLocation().Z;
 }
 
@@ -56,7 +58,11 @@ void UHeightCameraBehavior::TickBehavior(float DeltaTime) {
 
 		HeightCameraPosition.Z = Approach(HeightCameraPosition.Z, OffsetZ, 700 * DeltaTime);
 		HeightCameraPosition.Z = FMath::Clamp(HeightCameraPosition.Z,OwnerActor->CurrentArea->HeightMin,OwnerActor->CurrentArea->HeightMax);
-		 
+	
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, FString::Printf(TEXT("HeightMin %i"), OwnerActor->CurrentArea->HeightMin));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, FString::Printf(TEXT("HeightMax %i"), OwnerActor->CurrentArea->HeightMax));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Magenta, FString::Printf(TEXT("OffsetZ %i"), OffsetZ));
+
 		OwnerActor->SetActorLocation(HeightCameraPosition);
 	}
 }
