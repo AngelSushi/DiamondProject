@@ -108,6 +108,9 @@ void AMovingPlatefomCPPTest::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
         if (!CrystalsColor.Contains(Character->GetPlayerColor())) {
             CrystalsColor.Add(Character->GetPlayerColor());
         }
+        else { // For Some Reasons On Begin Overlap is called 2 times when 1 player is on 
+            return;
+        }
 
         PlayerOn++;
         PlayerOn = FMath::Clamp(PlayerOn, 0, 2);
@@ -118,6 +121,9 @@ void AMovingPlatefomCPPTest::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
             for (int i = 0; i < PlayerMaxIndex; i++) {
                 int ColorIndex = i / 2;
                 UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[i];
+                
+                GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, FString::Printf(TEXT("Index %i"), ColorIndex));
+                
                 InstanceMaterial->SetScalarParameterValue("BlendAlpha", 1.0F);
                 InstanceMaterial->SetVectorParameterValue("Color", CrystalsColor[ColorIndex]);
             }
@@ -139,6 +145,7 @@ void AMovingPlatefomCPPTest::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
             InstanceMaterial->SetScalarParameterValue("Value", Value);
         }
     }
+    
 }
 
 void AMovingPlatefomCPPTest::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
