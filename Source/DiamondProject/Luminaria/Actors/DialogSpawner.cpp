@@ -43,7 +43,7 @@ void ADialogSpawner::Tick(float DeltaTime) {
 
 		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, FString::Printf(TEXT("Distance %f"), DistanceY));
 
-		if (Angle < 0) {
+		if (Angle < 0 && PointToPlayer.Length() < 200) {
 			Index++;
 		}
 	}
