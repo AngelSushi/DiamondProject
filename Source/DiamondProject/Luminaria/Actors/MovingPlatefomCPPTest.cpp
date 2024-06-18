@@ -122,8 +122,6 @@ void AMovingPlatefomCPPTest::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
                 int ColorIndex = i / 2;
                 UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[i];
                 
-                GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, FString::Printf(TEXT("Index %i"), ColorIndex));
-                
                 InstanceMaterial->SetScalarParameterValue("BlendAlpha", 1.0F);
                 InstanceMaterial->SetVectorParameterValue("Color", CrystalsColor[ColorIndex]);
             }
