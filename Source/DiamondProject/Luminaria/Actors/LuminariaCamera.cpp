@@ -88,58 +88,49 @@ void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<
 }
 
 UCameraBehavior* ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavior) {
-	if (CameraBehavior && BehaviorState == SwitchBehavior) {
-		UE_LOG(LogTemp, Error, TEXT("The camera has already this behavior."));
-		return nullptr;
-	}
+	//if (CameraBehavior && BehaviorState == SwitchBehavior) {
+		//UE_LOG(LogTemp, Error, TEXT("The camera has already this behavior."));
+		//return nullptr;
+	//}
 
 	//CameraBehavior = NewObject<UCameraBehavior>(Behavior); Doesn't work with child functions
 	BehaviorState = SwitchBehavior;
 
 	switch (SwitchBehavior) {
 	case ECameraBehavior::DEFAULT:
-		GoToBehavior = nullptr;
-		FollowBehavior = nullptr;
+		ResetAll();
 		DefaultBehavior = NewObject<UCameraDefaultBehavior>();
 		CameraBehavior = DefaultBehavior;
 		break;
 
 	case ECameraBehavior::DYNAMIC:
-		GoToBehavior = nullptr;
-		FollowBehavior = nullptr;
+		ResetAll();
 		DynamicBehavior = NewObject<UCameraDynamicBehavior>();
 		HeightBehavior = NewObject<UHeightCameraBehavior>();
 		CameraBehavior = DynamicBehavior;
 		break;
 
 	case ECameraBehavior::GOTO:
-		DynamicBehavior = nullptr;
-		DefaultBehavior = nullptr;
-		HeightBehavior = nullptr;
-		FollowBehavior = nullptr;
+		ResetAll();
 		GoToBehavior = NewObject<UGoToBehavior>();
 		CameraBehavior = GoToBehavior;
 		break;
 
 	case ECameraBehavior::LEADER:
+		ResetAll();
 		LeaderBehavior = NewObject<UCameraLeaderBehavior>();
 		CameraBehavior = LeaderBehavior;
 		break;
 
 	case ECameraBehavior::FOLLOW_PATH:
+		ResetAll();
 		FollowBehavior = NewObject<UCameraFollowBehavior>();
-
 		CameraBehavior = FollowBehavior;
 		break;
 
 	case ECameraBehavior::NO_BEHAVIOR:
 	default:
-		DynamicBehavior = nullptr;
-		DefaultBehavior = nullptr;
-		HeightBehavior = nullptr;
-		GoToBehavior = nullptr;
-		FollowBehavior = nullptr;
-		CameraBehavior = nullptr;
+		ResetAll();
 		break;
 	}
 
@@ -152,6 +143,16 @@ UCameraBehavior* ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior S
 	}
 
 	return CameraBehavior;
+}
+
+void ALuminariaCamera::ResetAll() {
+	DynamicBehavior = nullptr;
+	DefaultBehavior = nullptr;
+	HeightBehavior = nullptr;
+	GoToBehavior = nullptr;
+	FollowBehavior = nullptr;
+	CameraBehavior = nullptr;
+	ShakeBehavior = nullptr;
 }
 
 void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathCause DeathCause) {

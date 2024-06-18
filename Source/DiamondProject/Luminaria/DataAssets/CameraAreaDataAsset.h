@@ -22,6 +22,9 @@ public:
 	TEnumAsByte<ECameraBehavior> AreaBehavior;
 
 	UPROPERTY(EditAnywhere)
+	uint16 LinkMaxDistance = 1000.F;
+
+	UPROPERTY(EditAnywhere)
 	uint16 ZoomMin;
 
 	UPROPERTY(EditAnywhere)

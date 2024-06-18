@@ -30,6 +30,9 @@ private:
 	TArray<ADiamondProjectCharacter*> _characters;
 
 	UFUNCTION()
+	void OnChangeNewArea(ACameraArea* NewArea);
+
+	UFUNCTION()
 	void RegisterPlayer(ADiamondProjectCharacter* character);
 
 	UFUNCTION()
@@ -52,9 +55,6 @@ private:
 
 	UPROPERTY()
 	float DistanceAlpha;
-
-	UPROPERTY()
-	TMap<ADiamondProjectCharacter*, FVector> PlayersLastDirection;
 
 	UPROPERTY()
 	UPlayerManager* PlayerManager;

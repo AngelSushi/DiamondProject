@@ -20,6 +20,8 @@ void UHeightCameraBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 
 	PlayerManager->OnPlayerLandOnGround.AddDynamic(this, &UHeightCameraBehavior::OnPlayerLandOnGround);
 
+	GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("Begin Behavior"));
+
 	OffsetZ = OwnerActor->GetActorLocation().Z;
 }
 
@@ -54,14 +56,13 @@ void UHeightCameraBehavior::TickBehavior(float DeltaTime) {
 			return;
 		}
 
-		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, FString::Printf(TEXT("HeightMin %i"), OwnerActor->CurrentArea->HeightMin));
-		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, FString::Printf(TEXT("HeightMax %i"), OwnerActor->CurrentArea->HeightMax));
-
 		HeightCameraPosition.Z = Approach(HeightCameraPosition.Z, OffsetZ, 700 * DeltaTime);
 		HeightCameraPosition.Z = FMath::Clamp(HeightCameraPosition.Z,OwnerActor->CurrentArea->HeightMin,OwnerActor->CurrentArea->HeightMax);
+	
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, FString::Printf(TEXT("HeightMin %i"), OwnerActor->CurrentArea->HeightMin));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, FString::Printf(TEXT("HeightMax %i"), OwnerActor->CurrentArea->HeightMax));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Magenta, FString::Printf(TEXT("OffsetZ %i"), OffsetZ));
 
-	//	GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, FString::Printf(TEXT("Pos %s"),*HeightCameraPosition.ToString()));
-			 
 		OwnerActor->SetActorLocation(HeightCameraPosition);
 	}
 }
@@ -107,7 +108,7 @@ void UHeightCameraBehavior::OnPlayerLandOnGround(ADiamondProjectCharacter* Chara
 				AActor* GroundDetect = Character->GetGroundActor();
 
 				if (GroundDetect) {
-					float GroundZ = GroundDetect->GetActorLocation().Z /* + GroundDetect->GetActorScale().Z * 50.F*/; // Ajoutez Offset Si besoin
+					float GroundZ = GroundDetect->GetActorLocation().Z;
 					OffsetZ = OwnerActor->GetActorLocation().Z - (FMath::Abs(OwnerActor->GetActorLocation().Z - GroundZ) / 2);
 					
 					bChangeLimit = true;

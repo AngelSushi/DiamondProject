@@ -267,7 +267,9 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 				// Faire le switch
 				MainCamera->CurrentArea = HitArea;
 
-				PlayerManager->OnChangeNewArea.Broadcast(HitArea->GetDataAsset()->Id);
+				PlayerManager->OnChangeNewArea.Broadcast(HitArea);
+
+				GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, FString::Printf(TEXT("Nouvelle Zone %s"), *UEnum::GetDisplayValueAsText(HitArea->AreaBehavior).ToString()));
 
 			//	if (TargetBehavior != LastHitArea->AreaBehavior) {
 					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this, &OriginBehavior](UCameraBehavior* Behavior) {
@@ -288,7 +290,7 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 		else {
 			MainCamera->CurrentArea = HitArea;
 
-			PlayerManager->OnChangeNewArea.Broadcast(HitArea->GetDataAsset()->Id);
+			PlayerManager->OnChangeNewArea.Broadcast(HitArea);
 			
 			if (TargetBehavior != LastHitArea->AreaBehavior) {
 				MainCamera->SwitchBehavior(TargetBehavior, [&HitArea,&OtherPlayer, this,&OriginBehavior](UCameraBehavior* Behavior) {
