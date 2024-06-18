@@ -53,44 +53,6 @@ void AMovingPlatefomCPPTest::BeginPlay() {
 }
 
 
-void AMovingPlatefomCPPTest::Tick(float DeltaTime) {
-    Super::Tick(DeltaTime);
-
-    if (Waypoints.Num() == 0)
-        return;
-
-    if (TargetMecanisms.Num() == 0 || (TargetMecanisms.Num() != 0 && bEnable)) {
-        
-        FVector TargetLocation = Waypoints[CurrentWaypointIndex]->GetActorLocation();
-        FVector CurrentLocation = GetActorLocation();
-
-        FVector Direction = (TargetLocation - CurrentLocation).GetSafeNormal();
-        FVector NewLocation = CurrentLocation + Direction * GetPlateformAsset()->Speed * DeltaTime;
-
-        SetActorLocation(NewLocation);
-
-        float DistanceSquared = FVector::DistSquared(CurrentLocation, TargetLocation);
-        if (DistanceSquared <= FMath::Square(10.0f)) // Distance de tolérance
-        {
-            if (bMovingForward) {
-                CurrentWaypointIndex++;
-                if (CurrentWaypointIndex >= Waypoints.Num()) {
-                    CurrentWaypointIndex = Waypoints.Num() - 2;
-                    bMovingForward = false;
-                }
-            }
-            else {
-                CurrentWaypointIndex--;
-                if (CurrentWaypointIndex < 0) {
-                    CurrentWaypointIndex = 1;
-                    bMovingForward = true;
-                }
-            }
-        }
-    }
-
-}
-
 void AMovingPlatefomCPPTest::OnMecanismOn(AMecanism* Mecanism) {
     if (TargetMecanisms.Contains(Mecanism)) {
         bEnable = true;

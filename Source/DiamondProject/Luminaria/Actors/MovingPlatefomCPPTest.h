@@ -32,7 +32,7 @@ protected:
     virtual void BeginPlay() override;
 
 public:
-    virtual void Tick(float DeltaTime) override;
+    //virtual void Tick(float DeltaTime) override;
 
 private:
     UPROPERTY(EditAnywhere, Category = "Platform Settings")
