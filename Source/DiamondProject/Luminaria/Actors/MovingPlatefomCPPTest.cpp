@@ -53,6 +53,7 @@ void AMovingPlatefomCPPTest::BeginPlay() {
 }
 
 
+
 void AMovingPlatefomCPPTest::OnMecanismOn(AMecanism* Mecanism) {
     if (TargetMecanisms.Contains(Mecanism)) {
         bEnable = true;

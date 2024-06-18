@@ -39,6 +39,8 @@ protected:
 
 public:
     //virtual void Tick(float DeltaTime) override;
+    UPROPERTY(BlueprintReadWrite)
+    bool bEnable;
 
 private:
     UPROPERTY(EditAnywhere, Category = "Platform Settings")
@@ -48,8 +50,7 @@ private:
     int32 CurrentWaypointIndex;
     bool bMovingForward;
 
-    UPROPERTY()
-    bool bEnable;
+    
 
     UFUNCTION()
     void OnMecanismOn(AMecanism* Mecanism);
