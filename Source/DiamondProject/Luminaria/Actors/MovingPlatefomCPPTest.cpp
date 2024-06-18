@@ -108,9 +108,6 @@ void AMovingPlatefomCPPTest::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
         if (!CrystalsColor.Contains(Character->GetPlayerColor())) {
             CrystalsColor.Add(Character->GetPlayerColor());
         }
-        else { // For Some Reasons On Begin Overlap is called 2 times when 1 player is on 
-            return;
-        }
 
         PlayerOn++;
         PlayerOn = FMath::Clamp(PlayerOn, 0, 2);
