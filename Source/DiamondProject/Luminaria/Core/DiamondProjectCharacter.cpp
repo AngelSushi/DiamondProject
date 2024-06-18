@@ -66,7 +66,7 @@ ADiamondProjectCharacter::ADiamondProjectCharacter() {
 	LandOnGroundParticle = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LandOnGroundParticle"));
 	LandOnGroundParticle->SetupAttachment(GetMesh());
 
-	CameraDetection = CreateDefaultSubobject<UBoxComponent>(TEXT("CameraDetection"));
+		CameraDetection = CreateDefaultSubobject<UBoxComponent>(TEXT("CameraDetection"));
 	CameraDetection->SetupAttachment(GetMesh());
 }
 
