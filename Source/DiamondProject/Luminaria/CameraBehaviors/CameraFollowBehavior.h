@@ -16,8 +16,6 @@ public:
 	virtual void TickBehavior(float DeltaTime) override;
 
 private:
-	UPROPERTY()
-	float DistanceToSpline;
 
 	UFUNCTION()
 	void OnRegisterPlayer(ADiamondProjectCharacter* Character);
