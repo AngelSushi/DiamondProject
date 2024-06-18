@@ -26,7 +26,6 @@ void UCameraFollowBehavior::TickBehavior(float DeltaTime) {
 
 	if (PlayerManager->GetAllCharactersRef().Num() >= 2) {
 		CalculateBarycenter();
-
 		
 		FVector SplinePosition = OwnerActor->CurrentArea->Spline->GetLocationAtDistanceAlongSpline(0, ESplineCoordinateSpace::World);
 
@@ -39,20 +38,10 @@ void UCameraFollowBehavior::TickBehavior(float DeltaTime) {
 
 		FVector NewLocation = OwnerActor->CurrentArea->Spline->GetLocationAtDistanceAlongSpline(Distance, ESplineCoordinateSpace::World);
 
-		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Yellow, FString::Printf(TEXT("BarycenterOnSpline %s"),*BarycenterOnSpline.ToString()));
-		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, FString::Printf(TEXT("Distance %f"),Distance));
-		
-		//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Magenta, FString::Printf(TEXT("NewLoc %s"), *NewLocation.ToString()));
-
 		OwnerActor->SetActorLocation(NewLocation);
 	}
 }
 
 void UCameraFollowBehavior::OnRegisterPlayer(ADiamondProjectCharacter* Character) {
 	_characters.Add(Character);
-
-	if (PlayerManager->GetAllCharactersRef().Num() == 2) {
-		DistanceToSpline = FVector::Distance(FVector(Character->GetActorLocation().X,0,0),FVector(OwnerActor->CurrentArea->Spline->GetComponentLocation().X,0, 0));
-		GEngine->AddOnScreenDebugMessage(-1, 10.F, FColor::Green, FString::Printf(TEXT("Distance %f"), DistanceToSpline));
-	}
 }

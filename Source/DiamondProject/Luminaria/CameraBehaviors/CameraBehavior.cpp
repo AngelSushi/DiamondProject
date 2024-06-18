@@ -8,6 +8,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Camera/CameraComponent.h"
 
+#include "../SubSystems/PlayerManager.h"
+
 void UCameraBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	PlayerManager = Owner->GetWorld()->GetSubsystem<UPlayerManager>();
 	PlayerManager->OnPlayerMove.AddDynamic(this, &UCameraBehavior::OnPlayerMove);
@@ -70,15 +72,17 @@ FVector UCameraBehavior::CalculateMaxFrustum(ADiamondProjectCharacter* Character
 
 
 void UCameraBehavior::CalculateBarycenter() {
-	FVector First = _characters[0]->GetActorLocation();
-	FVector Second = _characters[1]->GetActorLocation();
+	if (PlayerManager->GetAllCharactersRef().Num() >= 2) {
+		FVector First = PlayerManager->GetAllCharactersRef()[0]->GetActorLocation();
+		FVector Second = PlayerManager->GetAllCharactersRef()[1]->GetActorLocation();
 
-	float divider = 2.F;
-		
-	Barycenter = (First + Second) / divider;
+		float divider = 2.F;
 
-	Barycenter += FVector(0, 0, 45.F);
-	Barycenter.X = DefaultX;
+		Barycenter = (First + Second) / divider;
+
+		Barycenter += FVector(0, 0, 45.F);
+		Barycenter.X = DefaultX;
+	}
 }
 
 void UCameraBehavior::OnPlayerMove(ADiamondProjectCharacter* character, FVector2D Input, FVector direction, bool& isCanceled) {}
