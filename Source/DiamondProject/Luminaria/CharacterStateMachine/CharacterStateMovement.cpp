@@ -16,14 +16,18 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 void UCharacterStateMovement::OnStateInit() {
-	PlayerManager = GetCharacter()->GetWorld()->GetSubsystem<UPlayerManager>();
+	Super::OnStateInit();
 }
 
 void UCharacterStateMovement::OnStateBegin() {
+	Super::OnStateBegin();
+
 	Controller = GetCharacter()->GetLuminariaController();
 }
 
 void UCharacterStateMovement::OnStateTick(float DeltaTime) {
+	Super::OnStateTick(DeltaTime);
+
 	if (GetClass() == UCharacterStateMovement::StaticClass()) { // Pas besoin juste pas mettre de super dans le state jump 
 		if (!GetCharacter()->GetCharacterMovement()->IsMovingOnGround()) {
 			//ChangeState(GetStateMachine()->StateFall);
@@ -78,7 +82,7 @@ void UCharacterStateMovement::OnMovement(const FInputActionValue& MovementValue)
 	GetCharacter()->GetLuminariaController()->SetMovevalue(MovementVector);
 
 	bool isCanceled = false;
-	PlayerManager->OnPlayerMove.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()), MovementVector, MovementDirection, isCanceled);
+	PlayerManager->OnPlayerWalk.Broadcast(Cast<ADiamondProjectCharacter>(GetCharacter()), MovementVector, MovementDirection, isCanceled);
 
 	if (isCanceled) {
 		return;

@@ -1,4 +1,4 @@
- #include "DiamondProject/Luminaria/Actors/MovingPlatefomCPPTest.h"
+     #include "DiamondProject/Luminaria/Actors/MovingPlatefomCPPTest.h"
 #include "DiamondProject/Luminaria/SubSystems/MecanismEventsDispatcher.h"
 #include "DiamondProject/Luminaria/DataAssets/PlateformDataAsset.h"
 

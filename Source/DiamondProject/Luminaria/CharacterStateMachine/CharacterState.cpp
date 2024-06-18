@@ -3,8 +3,12 @@
 #include "InputActionValue.h"
 #include "../Actors/Absorber.h"
 
+#include "../Core/DiamondProjectCharacter.h"
+#include "../SubSystems/PlayerManager.h"
+
 void UCharacterState::StateInit(UCharacterStateMachine* CharacterStateMachine) {
 	StateMachine = CharacterStateMachine;
+	PlayerManager = GetCharacter()->GetWorld()->GetSubsystem<UPlayerManager>();
 
 	OnStateInit();
 }
@@ -15,6 +19,12 @@ void UCharacterState::StateBegin() {
 
 void UCharacterState::StateTick(float DeltaTime) {
 	OnStateTick(DeltaTime);
+
+	if (GetCharacter()->GetActorLocation() != LastPosition) {
+		PlayerManager->OnPlayerMove.Broadcast(GetCharacter());
+	}
+
+	LastPosition = GetCharacter()->GetActorLocation();
 }
 
 void UCharacterState::StateExit() {
@@ -37,3 +47,4 @@ void UCharacterState::OnAbsorberDetectCharacter(ADiamondProjectCharacter* Charac
 void UCharacterState::OnAbsorberInputStarted(FKey Key) {}
 
 
+	
