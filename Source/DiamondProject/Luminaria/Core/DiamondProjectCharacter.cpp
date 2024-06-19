@@ -174,9 +174,6 @@ void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que f
 	FTimerHandle RespawnHandle;
 	GetStateMachine()->OnDie();
 
-	
-	
-	GEngine->AddOnScreenDebugMessage(-1, 10.F, FColor::Orange, UEnum::GetValueAsString(DeathCause));
 	//Respawn(DeathCause);
 
 	GetWorld()->GetTimerManager().SetTimer(RespawnHandle, [&]() {
@@ -186,7 +183,6 @@ void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que f
 
 void ADiamondProjectCharacter::Respawn(EDeathCause DeathCause) {
 	if (_checkPoint != FVector::Zero()) {
-		GEngine->AddOnScreenDebugMessage(-1, 100.F, FColor::Cyan, FString::Printf(TEXT("Respawn Position %s For %s"), *_checkPoint.ToString(),*GetActorNameOrLabel()));
 		SetActorLocation(_checkPoint);
 	}
 
@@ -248,6 +244,13 @@ void ADiamondProjectCharacter::CompleteInput(UInputUI* Input) { // Add Event
 void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	if (ACameraArea* HitArea = Cast<ACameraArea>(OtherActor)) {
 		HitArea->SetVisited(true);
+
+		if (HitArea == LastHitArea) {
+			return;
+		}
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Black,TEXT("Here"));
+
 		
 		ECameraBehavior OriginBehavior = HitArea->AreaBehavior;
 		ECameraBehavior TargetBehavior = HitArea->AreaBehavior;
@@ -269,9 +272,9 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 
 				PlayerManager->OnChangeNewArea.Broadcast(HitArea);
 
-				GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Green, FString::Printf(TEXT("Nouvelle Zone %s"), *UEnum::GetDisplayValueAsText(HitArea->AreaBehavior).ToString()));
+				GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Green, FString::Printf(TEXT("Nouvelle Zone %s"), *UEnum::GetDisplayValueAsText(HitArea->AreaBehavior).ToString()));
 
-			//	if (TargetBehavior != LastHitArea->AreaBehavior) {
+				//if (HitArea != LastHitArea) {
 					MainCamera->SwitchBehavior(TargetBehavior, [&HitArea, &OtherPlayer, this, &OriginBehavior](UCameraBehavior* Behavior) {
 						GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Magenta, TEXT("[DiamondProjectCharacter] Switch Behavior"));
 						if (UGoToBehavior* GoTo = Cast<UGoToBehavior>(Behavior)) {
@@ -284,7 +287,7 @@ void ADiamondProjectCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedCom
 							}
 						}
 					});
-			//	}
+				//}
 			}
 		}
 		else {

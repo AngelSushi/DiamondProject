@@ -34,12 +34,21 @@ public:
 	virtual void BeginBehavior(ALuminariaCamera* Owner) override;
 
 	void OnPlayerMove(ADiamondProjectCharacter* character, FVector2D Input, FVector direction, bool& isCanceled) override;
+
+	UFUNCTION()
+	void OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathCause DeathCause);
+
+	UFUNCTION()
+	void OnPlayerRespawn(ADiamondProjectCharacter* Character, EDeathCause DeathCause, FVector RespawnPosition);
 	
 	virtual void TickBehavior(float DeltaTime) override;
 
 private:
 	UPROPERTY()
 	float OffsetX;
+
+	UPROPERTY()
+	bool bIsDead;
 
 	UPROPERTY()
 	TArray<FExtendData> _extendPositions;

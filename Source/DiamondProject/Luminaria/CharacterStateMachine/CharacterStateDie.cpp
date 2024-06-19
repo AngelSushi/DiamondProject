@@ -13,7 +13,7 @@ void UCharacterStateDie::OnStateInit() {
 	Super::OnStateInit();
 
 	//PlayerManager = GetCharacter()->GetWorld()->GetSubsystem<UPlayerManager>();
-
+		
 	PlayerManager->OnPlayerRespawn.AddDynamic(this, &UCharacterStateDie::OnPlayerRespawn);
 	LinkRef = Cast<ALink>(UGameplayStatics::GetActorOfClass(GetCharacter()->GetWorld(), ALink::StaticClass()));
 }

@@ -7,16 +7,20 @@
 #include "DiamondProject/Luminaria/CameraBehaviors/HeightCameraBehavior.h"
 
 #include "../DataAssets/CameraAreaDataAsset.h"
+
 void UCameraDynamicBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	Super::BeginBehavior(Owner);
 	
 	PlayerManager->OnPlayerWalk.AddDynamic(this, &UCameraDynamicBehavior::OnPlayerMove);
+	PlayerManager->OnPlayerDeath.AddDynamic(this, &UCameraDynamicBehavior::OnPlayerDeath);
+	PlayerManager->OnPlayerRespawn.AddDynamic(this, &UCameraDynamicBehavior::OnPlayerRespawn);
 
 	OffsetX = DefaultX; // Possiblement Faux passer a Location.X
 	Barycenter.X = OwnerActor->GetActorLocation().X;
 	Barycenter.Y = OwnerActor->GetActorLocation().Y;
 	Barycenter.Z = OwnerActor->GetActorLocation().Z;
 
+	//bIsDead = false;
 }
 
 
@@ -46,13 +50,23 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character,FV
 	
 }
 
+void UCameraDynamicBehavior::OnPlayerDeath(ADiamondProjectCharacter* Character, EDeathCause DeathCause) {
+	bIsDead = true;
+}
+
+void UCameraDynamicBehavior::OnPlayerRespawn(ADiamondProjectCharacter* Character,EDeathCause DeathCause, FVector RespawnPosition) {
+	bIsDead = false;
+
+	Barycenter = OwnerActor->GetActorLocation();
+
+	OffsetX = 0;
+}
+
 
 void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 	Super::TickBehavior(DeltaTime);
 
-	//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, FString::Printf(TEXT("Tick Dynamic %s"),*OwnerActor->CurrentArea->GetActorNameOrLabel()));
-
-	if(PlayerManager->Characters.Num() >= 2) {
+	if(PlayerManager->Characters.Num() >= 2 && !bIsDead) {
 		
 		float ToApproachY = (PlayerManager->Characters[0]->GetActorLocation().Y + PlayerManager->Characters[1]->GetActorLocation().Y) / 2;
 			

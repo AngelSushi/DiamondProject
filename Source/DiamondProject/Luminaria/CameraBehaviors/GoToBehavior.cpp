@@ -25,6 +25,7 @@ void UGoToBehavior::TickBehavior(float DeltaTime) {
 			OwnerActor->SetActorLocation(Barycenter);
 		}
 		else {
+			GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Blue, TEXT("[GoTo] Switch Behavior "));
 			OwnerActor->SetActorLocation(GoTo);
 			OwnerActor->SwitchBehavior(NextBehavior);
 		}
@@ -45,6 +46,7 @@ void UGoToBehavior::TickBehavior(float DeltaTime) {
 			FTimerHandle ReachDelay;
 
 			OwnerActor->GetWorld()->GetTimerManager().SetTimer(ReachDelay, [this]() {
+				GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Blue, TEXT("[GoTo] Reach Delay Switch Behavior "));
 				OwnerActor->SwitchBehavior(NextBehavior);
 			}, DelayAtReach, false);
 
