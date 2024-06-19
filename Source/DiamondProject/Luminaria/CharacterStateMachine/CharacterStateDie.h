@@ -17,8 +17,6 @@ protected:
 	virtual void OnStateTick(float DeltaTime) override;
 
 private:
-	UPROPERTY()
-	TObjectPtr<class UPlayerManager> PlayerManager;
 
 	UFUNCTION()
 	void OnPlayerRespawn(ADiamondProjectCharacter* Character,EDeathCause DeathCause,FVector RespawnPoint);

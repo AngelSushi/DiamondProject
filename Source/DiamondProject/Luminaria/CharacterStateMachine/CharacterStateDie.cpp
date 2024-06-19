@@ -10,17 +10,23 @@
 #include "../Actors/Link.h"
 
 void UCharacterStateDie::OnStateInit() {
-	PlayerManager = GetCharacter()->GetWorld()->GetSubsystem<UPlayerManager>();
+	Super::OnStateInit();
+
+	//PlayerManager = GetCharacter()->GetWorld()->GetSubsystem<UPlayerManager>();
 
 	PlayerManager->OnPlayerRespawn.AddDynamic(this, &UCharacterStateDie::OnPlayerRespawn);
 	LinkRef = Cast<ALink>(UGameplayStatics::GetActorOfClass(GetCharacter()->GetWorld(), ALink::StaticClass()));
 }
 
 void UCharacterStateDie::OnStateBegin() {
+	Super::OnStateBegin();
+
 	DieTickTimer = 0.F;
 }
 
 void UCharacterStateDie::OnStateTick(float DeltaTime) {
+	Super::OnStateTick(DeltaTime);
+	
 	DieTickTimer += DeltaTime;
 	float Alpha = DieTickTimer / DieTimer;
 
