@@ -52,7 +52,7 @@ void ALuminariaCamera::Tick(float DeltaTime) {
 	}
 
 	if (HeightBehavior) {
-		//HeightBehavior->TickBehavior(DeltaTime);
+		HeightBehavior->TickBehavior(DeltaTime);
 	}
 
 	if (CameraBehavior) {
@@ -60,7 +60,7 @@ void ALuminariaCamera::Tick(float DeltaTime) {
 	}
 
 	if (ShakeBehavior) {
-		//ShakeBehavior->TickBehavior(DeltaTime);
+		ShakeBehavior->TickBehavior(DeltaTime);
 	}
 }
 
@@ -88,10 +88,10 @@ void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<
 }
 
 UCameraBehavior* ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior SwitchBehavior) {
-	if (CameraBehavior && BehaviorState == SwitchBehavior) {
-		UE_LOG(LogTemp, Error, TEXT("The camera has already this behavior."));
-		return nullptr;
-	}
+	//if (CameraBehavior && BehaviorState == SwitchBehavior) {
+		//UE_LOG(LogTemp, Error, TEXT("The camera has already this behavior."));
+		//return nullptr;
+	//}
 
 	//CameraBehavior = NewObject<UCameraBehavior>(Behavior); Doesn't work with child functions
 	BehaviorState = SwitchBehavior;

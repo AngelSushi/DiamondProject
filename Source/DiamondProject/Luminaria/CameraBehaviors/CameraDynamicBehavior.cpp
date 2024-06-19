@@ -23,8 +23,6 @@ void UCameraDynamicBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character,FVector2D Input,FVector direction,bool& isCanceled) { // VERIFIER QUE CELA SAPPELLE BIEN
 	Super::OnPlayerMove(character,Input,direction, isCanceled);
 
-	isCanceled	= false;
-
 	CalculateOffsideFrustumOffset(character, direction);
 
 	if (_extendPositions.Num() > 0) {
@@ -52,6 +50,8 @@ void UCameraDynamicBehavior::OnPlayerMove(ADiamondProjectCharacter* character,FV
 void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 	Super::TickBehavior(DeltaTime);
 
+	//GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, FString::Printf(TEXT("Tick Dynamic %s"),*OwnerActor->CurrentArea->GetActorNameOrLabel()));
+
 	if(PlayerManager->Characters.Num() >= 2) {
 		
 		float ToApproachY = (PlayerManager->Characters[0]->GetActorLocation().Y + PlayerManager->Characters[1]->GetActorLocation().Y) / 2;
@@ -63,11 +63,7 @@ void UCameraDynamicBehavior::TickBehavior(float DeltaTime) {
 		ToApproachY = FMath::Clamp(ToApproachY, MinY, MaxY);
 		Barycenter.Y = Approach(Barycenter.Y, ToApproachY, 700 * DeltaTime); // 350 de base 
 		
-
-		float ToApproachZ = (PlayerManager->Characters[0]->GetActorLocation().Z + PlayerManager->Characters[1]->GetActorLocation().Z) / 2;
-
 		DefaultZ = OwnerActor->GetActorLocation().Z;
-
 		Barycenter.Z = DefaultZ;
 
 		if (OwnerActor->CurrentArea) {
