@@ -30,6 +30,9 @@ private:
 	UFUNCTION()
 	void OnMovePlayer(ADiamondProjectCharacter* Character);
 
+	UFUNCTION()
+	void OnPlayerRespawn(ADiamondProjectCharacter* Character, EDeathCause DeathCause, FVector RespawnPosition);
+
 	UPROPERTY()
 	TArray<ADiamondProjectCharacter*> ExceedCharacters;
 

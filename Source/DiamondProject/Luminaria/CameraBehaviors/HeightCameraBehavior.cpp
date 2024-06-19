@@ -15,6 +15,7 @@ void UHeightCameraBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("Begin Behavior"));
 
 	PlayerManager->OnPlayerMove.AddDynamic(this,&UHeightCameraBehavior::OnMovePlayer);
+	PlayerManager->OnPlayerRespawn.AddDynamic(this, &UHeightCameraBehavior::OnPlayerRespawn);
 
 	OffsetZ = OwnerActor->GetActorLocation().Z;
 }
@@ -64,6 +65,10 @@ void UHeightCameraBehavior::OnMovePlayer(ADiamondProjectCharacter* Character) {
 		float MiddleZ = FMath::Abs((OtherCharacterPosition.Z + CharacterPosition.Z) / 2);
 		OffsetZ = OwnerActor->GetActorLocation().Z - FMath::Abs(OwnerActor->GetActorLocation().Z - MiddleZ);
 	}
+}
+
+void UHeightCameraBehavior::OnPlayerRespawn(ADiamondProjectCharacter* Character, EDeathCause DeathCause, FVector RespawnPosition) {
+	OffsetZ = 0;
 }
 
 void UHeightCameraBehavior::DetermineLimit() {
