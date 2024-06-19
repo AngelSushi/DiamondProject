@@ -40,8 +40,15 @@ protected:
 	ADiamondProjectCharacter* GetCharacter() const { return StateMachine->GetCharacter(); }
 
 	UCharacterStateMachine* GetStateMachine() const { return StateMachine; }
+
+	UPROPERTY()
+	TObjectPtr<class UPlayerManager> PlayerManager;
+
 private:
 	UPROPERTY()
 	TObjectPtr<class UCharacterStateMachine> StateMachine;
+
+	UPROPERTY()
+	FVector LastPosition;
 	
 };

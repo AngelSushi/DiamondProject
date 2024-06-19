@@ -10,7 +10,7 @@
 void UCameraDynamicBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	Super::BeginBehavior(Owner);
 	
-	PlayerManager->OnPlayerMove.AddDynamic(this, &UCameraDynamicBehavior::OnPlayerMove);
+	PlayerManager->OnPlayerWalk.AddDynamic(this, &UCameraDynamicBehavior::OnPlayerMove);
 
 	OffsetX = DefaultX; // Possiblement Faux passer a Location.X
 	Barycenter.X = OwnerActor->GetActorLocation().X;
@@ -138,8 +138,6 @@ void UCameraDynamicBehavior::CalculateOffsideFrustumOffset(ADiamondProjectCharac
 				}
 
 				OffsetX -= Offset;
-
-				GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Magenta, FString::Printf(TEXT("Calcul OffsetX %f"), Offset));
 				
 				_extendPositions.Add(FExtendData(Center, direction, _extendPositions.Num(),Offset));
 			}

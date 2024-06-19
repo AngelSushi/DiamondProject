@@ -10,7 +10,7 @@ void UCameraDefaultBehavior::BeginBehavior(ALuminariaCamera* Owner)
 	Super::BeginBehavior(Owner);
 
 	PlayerManager->OnPlayerRegister.AddDynamic(this,&UCameraDefaultBehavior::RegisterPlayer);
-	PlayerManager->OnPlayerMove.AddDynamic(this,&UCameraDefaultBehavior::OnPlayerMove);
+	PlayerManager->OnPlayerWalk.AddDynamic(this,&UCameraDefaultBehavior::OnPlayerMove);
 	
 }
 

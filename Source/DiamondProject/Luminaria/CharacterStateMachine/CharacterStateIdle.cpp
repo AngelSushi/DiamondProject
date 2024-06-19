@@ -7,9 +7,12 @@
 #include "DiamondProject/Luminaria/Core/DiamondProjectCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-void UCharacterStateIdle::OnStateBegin() {}
+void UCharacterStateIdle::OnStateBegin() {
+	Super::OnStateBegin();
+}
 
 void UCharacterStateIdle::OnStateTick(float DeltaTime) {
+	Super::OnStateTick(DeltaTime);
 
 	if (!GetCharacter()->GetCharacterMovement()->IsMovingOnGround()) {
 		//ChangeState(GetStateMachine()->StateFall);
