@@ -25,7 +25,8 @@ void UCharacterStateAttract::OnStateBegin() {
 }
 
 void UCharacterStateAttract::OnStateTick(float DeltaTime) {
-	
+	Super::OnStateTick(DeltaTime);
+
 	if (!CurrentAbsorber) {
 		return;
 	}
@@ -79,6 +80,8 @@ void UCharacterStateAttract::OnStateTick(float DeltaTime) {
 }
 
 void UCharacterStateAttract::OnStateExit() {
+	Super::OnStateExit();
+
 	if (ComboWidget) {
 		ComboWidget->RemoveFromViewport();
 		ComboWidget = nullptr;

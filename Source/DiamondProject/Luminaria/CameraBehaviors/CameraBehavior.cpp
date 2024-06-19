@@ -12,7 +12,7 @@
 
 void UCameraBehavior::BeginBehavior(ALuminariaCamera* Owner) {
 	PlayerManager = Owner->GetWorld()->GetSubsystem<UPlayerManager>();
-	PlayerManager->OnPlayerMove.AddDynamic(this, &UCameraBehavior::OnPlayerMove);
+	PlayerManager->OnPlayerWalk.AddDynamic(this, &UCameraBehavior::OnPlayerMove);
 
 	OwnerActor = Owner;
 

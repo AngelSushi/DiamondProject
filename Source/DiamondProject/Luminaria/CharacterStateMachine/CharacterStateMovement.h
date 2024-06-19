@@ -19,10 +19,6 @@ protected:
 	virtual void OnStateBegin() override;
 	virtual void OnStateTick(float DeltaTime) override;
 
-
-	UPROPERTY()
-	TObjectPtr<class UPlayerManager> PlayerManager;
-
 private:
 
 	UPROPERTY()
