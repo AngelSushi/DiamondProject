@@ -3,7 +3,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MecanismRewardActor.h"
+//#include "Components/InterpToMovementComponent.h"
 #include "MovingPlatefomCPPTest.generated.h"
+
 
 UCLASS()
 class DIAMONDPROJECT_API AMovingPlatefomCPPTest : public AMecanismRewardActor {
@@ -14,6 +16,10 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Platform Settings")
     TArray<AActor*> Waypoints;
+
+    /*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Platform Settings")
+    TArray<FInterpControlPoint> ControlPoints;*/
+    
 
     UPROPERTY(EditAnywhere)
     TObjectPtr<class UStaticMeshComponent> Cube;
@@ -32,7 +38,9 @@ protected:
     virtual void BeginPlay() override;
 
 public:
-    virtual void Tick(float DeltaTime) override;
+    //virtual void Tick(float DeltaTime) override;
+    UPROPERTY(BlueprintReadWrite)
+    bool bEnable;
 
 private:
     UPROPERTY(EditAnywhere, Category = "Platform Settings")
@@ -42,8 +50,7 @@ private:
     int32 CurrentWaypointIndex;
     bool bMovingForward;
 
-    UPROPERTY()
-    bool bEnable;
+    
 
     UFUNCTION()
     void OnMecanismOn(AMecanism* Mecanism);
