@@ -162,7 +162,7 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathC
 		return;
 	}
 
-	//if (bHasDead) {
+	//if (bHasDead) {x	
 		//return;
 	//}
 	
