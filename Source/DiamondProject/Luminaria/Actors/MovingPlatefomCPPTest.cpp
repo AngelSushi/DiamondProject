@@ -53,43 +53,6 @@ void AMovingPlatefomCPPTest::BeginPlay() {
 }
 
 
-void AMovingPlatefomCPPTest::Tick(float DeltaTime) {
-    Super::Tick(DeltaTime);
-
-    if (Waypoints.Num() == 0)
-        return;
-
-    if (TargetMecanisms.Num() == 0 || (TargetMecanisms.Num() != 0 && bEnable)) {
-        
-        FVector TargetLocation = Waypoints[CurrentWaypointIndex]->GetActorLocation();
-        FVector CurrentLocation = GetActorLocation();
-
-        FVector Direction = (TargetLocation - CurrentLocation).GetSafeNormal();
-        FVector NewLocation = CurrentLocation + Direction * GetPlateformAsset()->Speed * DeltaTime;
-
-        SetActorLocation(NewLocation);
-
-        float DistanceSquared = FVector::DistSquared(CurrentLocation, TargetLocation);
-        if (DistanceSquared <= FMath::Square(10.0f)) // Distance de tolérance
-        {
-            if (bMovingForward) {
-                CurrentWaypointIndex++;
-                if (CurrentWaypointIndex >= Waypoints.Num()) {
-                    CurrentWaypointIndex = Waypoints.Num() - 2;
-                    bMovingForward = false;
-                }
-            }
-            else {
-                CurrentWaypointIndex--;
-                if (CurrentWaypointIndex < 0) {
-                    CurrentWaypointIndex = 1;
-                    bMovingForward = true;
-                }
-            }
-        }
-    }
-
-}
 
 void AMovingPlatefomCPPTest::OnMecanismOn(AMecanism* Mecanism) {
     if (TargetMecanisms.Contains(Mecanism)) {
@@ -108,9 +71,6 @@ void AMovingPlatefomCPPTest::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
         if (!CrystalsColor.Contains(Character->GetPlayerColor())) {
             CrystalsColor.Add(Character->GetPlayerColor());
         }
-        else { // For Some Reasons On Begin Overlap is called 2 times when 1 player is on 
-            return;
-        }
 
         PlayerOn++;
         PlayerOn = FMath::Clamp(PlayerOn, 0, 2);
@@ -121,8 +81,6 @@ void AMovingPlatefomCPPTest::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
             for (int i = 0; i < PlayerMaxIndex; i++) {
                 int ColorIndex = i / 2;
                 UMaterialInstanceDynamic* InstanceMaterial = CrystalsMat[i];
-                
-                GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Orange, FString::Printf(TEXT("Index %i"), ColorIndex));
                 
                 InstanceMaterial->SetScalarParameterValue("BlendAlpha", 1.0F);
                 InstanceMaterial->SetVectorParameterValue("Color", CrystalsColor[ColorIndex]);
