@@ -82,6 +82,9 @@ public:
 	UPROPERTY() // PASSER SA EN PRIVE
 	TArray<ADiamondProjectCharacter*> Characters;
 
+	UPROPERTY(BlueprintReadOnly)
+	TArray<AActor*> CinematicCharacters;
+
 	UFUNCTION()
 	TArray<int>& GetOrderedPlayers() { return OrderedPlayers; }
 
