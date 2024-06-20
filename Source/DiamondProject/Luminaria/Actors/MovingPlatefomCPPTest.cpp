@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 
 #include "../Core/DiamondProjectCharacter.h"
+#include "../SubSystems/MathUtilities.h"
 
 AMovingPlatefomCPPTest::AMovingPlatefomCPPTest(){
     PrimaryActorTick.bCanEverTick = true;
@@ -64,32 +65,13 @@ void AMovingPlatefomCPPTest::Tick(float DeltaTime) {
         return;
 
     if (TargetMecanisms.Num() == 0 || (TargetMecanisms.Num() != 0 && bEnable)) {
-        FVector TargetLocation = Positions[CurrentWaypointIndex];
-        FVector CurrentLocation = GetActorLocation();
 
-        FVector Direction = (TargetLocation - CurrentLocation).GetSafeNormal();
-        FVector NewLocation = CurrentLocation + Direction * GetPlateformAsset()->Speed * DeltaTime;
+        Timer += DeltaTime;
+        float Alpha = (Timer / 3.F) * GetPlateformAsset()->Speed ;
 
-        SetActorLocation(NewLocation);
+        FVector Location = UMathUtilities::PingPongVec(Alpha,Positions[0],Positions[1]);
 
-        float DistanceSquared = FVector::DistSquared(CurrentLocation, TargetLocation);
-        if (DistanceSquared <= FMath::Square(10.0f)) // Distance de tolerance
-        {
-            if (bMovingForward) {
-                CurrentWaypointIndex++;
-                if (CurrentWaypointIndex >= Positions.Num()) {
-                    CurrentWaypointIndex = Positions.Num() - 2;
-                    bMovingForward = false;
-                }
-            }
-            else {
-                CurrentWaypointIndex--;
-                if (CurrentWaypointIndex < 0) {
-                    CurrentWaypointIndex = 1;
-                    bMovingForward = true;
-                }
-            }
-        }
+        SetActorLocation(Location);      
     }
 
 }

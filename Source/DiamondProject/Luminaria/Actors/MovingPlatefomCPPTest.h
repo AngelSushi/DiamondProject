@@ -17,7 +17,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Platform Settings")
     TArray<AActor*> Waypoints;
 
-    UPROPERTY()
+    UPROPERTY(VisibleAnywhere)
     TArray<FVector> Positions;
 
     /*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Platform Settings")
@@ -54,7 +54,8 @@ private:
     int32 CurrentWaypointIndex;
     bool bMovingForward;
 
-    
+    UPROPERTY()
+    float Timer;
 
     UFUNCTION()
     void OnMecanismOn(AMecanism* Mecanism);
