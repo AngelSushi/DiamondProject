@@ -69,6 +69,7 @@ void UCharacterStateAttract::OnStateTick(float DeltaTime) {
 			SpamTimer = 0.F;
 			bIsSpam = false;
 			ChangeState(GetStateMachine()->StateIdle);
+			ComboWidget = nullptr;
 			AbsorberEventsDispatcher->OnStunAbsorber.Broadcast(CurrentAbsorber);
 		}
 	}

@@ -169,9 +169,18 @@ void ADiamondProjectCharacter::AbsorberInputStarted(FKey Key) {
 }
 
 void ADiamondProjectCharacter::Death(EDeathCause DeathCause) { // CHeck ce que fait la mort ya ptetre de le faire en respawn
-	PlayerManager->OnPlayerDeath.Broadcast(this,DeathCause);
+	bool IsCanceled = false;
+	PlayerManager->OnPlayerDeathCancellable.Broadcast(this, DeathCause, IsCanceled);
 
+	if (IsCanceled) {
+		return;
+	}
+	else {
+	}
+
+	PlayerManager->OnPlayerDeath.Broadcast(this, DeathCause);
 	FTimerHandle RespawnHandle;
+
 	GetStateMachine()->OnDie();
 
 	//Respawn(DeathCause);

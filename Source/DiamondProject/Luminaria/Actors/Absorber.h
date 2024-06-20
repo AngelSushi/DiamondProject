@@ -5,6 +5,7 @@
 #include "Absorber.generated.h"
 
 enum EInput;
+enum EDeathCause;
 
 UCLASS()
 class DIAMONDPROJECT_API AAbsorber : public AActor {
@@ -41,6 +42,9 @@ private:
 
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnPlayerDeathCancellable(ADiamondProjectCharacter* Character, EDeathCause DeathCause, bool& IsCanceled);
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USceneComponent> Root;

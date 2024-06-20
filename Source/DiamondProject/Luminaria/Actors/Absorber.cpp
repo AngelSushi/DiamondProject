@@ -1,4 +1,4 @@
-#include "DiamondProject/Luminaria/Actors/Absorber.h"
+	#include "DiamondProject/Luminaria/Actors/Absorber.h"
 #include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
 #include "../SubSystems/AbsorberEventsDispatcher.h"
 #include "../CharacterStateMachine/CharacterStateMachine.h"
@@ -23,12 +23,17 @@ void AAbsorber::BeginPlay() {
 	Super::BeginPlay();
 
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
+
+	PlayerManager->OnPlayerDeathCancellable.AddDynamic(this, &AAbsorber::OnPlayerDeathCancellable);
+
 	AbsorberEventsDispatcher = GetWorld()->GetSubsystem<UAbsorberEventsDispatcher>();
 
 	AbsorberEventsDispatcher->OnStunAbsorber.AddDynamic(this, &AAbsorber::OnStunAbsorber);
 	AbsorberEventsDispatcher->OnDeStunAbsorber.AddDynamic(this, &AAbsorber::OnDeStunAbsorber);
 
-	Mesh->OnComponentBeginOverlap.AddDynamic(this, &AAbsorber::OnBeginOverlap);
+	//Mesh->OnComponentBeginOverlap.AddDynamic(this, &AAbsorber::OnBeginOverlap);
+	
+	
 	if (!AbsorberAsset) {
 		return;
 	}
@@ -138,5 +143,11 @@ void AAbsorber::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 		for (ADiamondProjectCharacter* TargetCharacter : PlayerManager->GetAllCharactersRef()) {
 			TargetCharacter->Death(EDeathCause::ABSORBER);
 		}
+	}
+}
+
+void AAbsorber::OnPlayerDeathCancellable(ADiamondProjectCharacter* Character, EDeathCause DeathCause, bool& IsCanceled) {
+	if (bIsStun) {
+		IsCanceled = true;
 	}
 }
