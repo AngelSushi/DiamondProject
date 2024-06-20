@@ -168,50 +168,22 @@ void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathC
 	//}
 	//}
 
-	FVector First = PlayerManager->GetAllCharactersRef()[0]->GetActorLocation();
-	FVector Second = PlayerManager->GetAllCharactersRef()[1]->GetActorLocation();
+	if (CurrentBehavior == ECameraBehavior::DYNAMIC) {
+		FVector First = PlayerManager->GetAllCharactersRef()[0]->GetActorLocation();
+		FVector Second = PlayerManager->GetAllCharactersRef()[1]->GetActorLocation();
 
-	float divider = 2.F;
+		float divider = 2.F;
 
-	FVector Barycenter = (First + Second) / divider;
+		FVector Barycenter = (First + Second) / divider;
 
-	Barycenter += FVector(0, 0, 45.F);
-	Barycenter.X = CurrentArea->ZoomMin;
+		Barycenter += FVector(0, 0, 45.F);
+		Barycenter.X = CurrentArea->ZoomMin;
 
-	GEngine->AddOnScreenDebugMessage(-1, 10.F, FColor::Magenta, TEXT("[LuminariaCamera] Player Death TP"));
-
-	SetActorLocation(Barycenter);
-
-	//if (bHasDead) {x	
-		//return;
-	//}
-	
-	//bHasDead = true;
-
-	/*BehaviorState = ECameraBehavior::GOTO;
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("[CAMERA] DeathPlayer On Camera"));
-
-	FTimerHandle Timer;
-	
-	SwitchBehavior(BehaviorState, [this,CurrentBehavior](UCameraBehavior* Component) {
-		if (UGoToBehavior* GoToBehaviorComponent = Cast<UGoToBehavior>(Component)) {
-			FVector GoTo = FVector::Zero();
-
-			for (ADiamondProjectCharacter* ACharacter : Characters) {
-				GoTo += ACharacter->GetActorLocation();
-			}
-
-			GoTo /= Characters.Num();
-			GoTo.X = StartPosition.X;
-			GoTo.Z = StartPosition.Z;
-
-			
-			GoToBehaviorComponent->GoTo = GoTo;
-			GoToBehaviorComponent->NextBehavior = CurrentBehavior;
-		}
-	});
-	*/
+		SetActorLocation(Barycenter);
+	}
+	else {
+		SetActorLocation(CurrentArea->GoTo->GetComponentLocation());
+	}
 }
 
 void ALuminariaCamera::OnMecanismOn(AMecanism* Mecanism) {
