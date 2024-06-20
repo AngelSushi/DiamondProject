@@ -23,9 +23,9 @@ ALuminariaCamera::ALuminariaCamera() {
 void ALuminariaCamera::BeginPlay() {
 	Super::BeginPlay();
 
-	UPlayerManager* PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
+	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
 	PlayerManager->OnPlayerRegister.AddDynamic(this, &ALuminariaCamera::OnPlayerRegister);
-	PlayerManager->OnPlayerDeath.AddDynamic(this, &ALuminariaCamera::OnPlayerDeath);
+	PlayerManager->OnPlayerRespawn.AddDynamic(this, &ALuminariaCamera::OnPlayerDeath);
 
 	UMecanismEventsDispatcher* MecanismEventsDispatcher = GetWorld()->GetSubsystem<UMecanismEventsDispatcher>();
 	MecanismEventsDispatcher->OnMecanismOn.AddDynamic(this, &ALuminariaCamera::OnMecanismOn);
@@ -83,6 +83,9 @@ void ALuminariaCamera::InitCameraShake() {
 }
 
 void ALuminariaCamera::SwitchBehavior(ECameraBehavior SwitchBehavior, TFunction<void(UCameraBehavior* AddedComponent)> ResultFunc /*= [](UCameraBehavior* CameraBehavior) {}*/) {
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Cyan, TEXT("[Camera] Switch Behavior From CPP ???? "));
+	
 	SwitchBehaviorFromBlueprint(SwitchBehavior);
 	ResultFunc(CameraBehavior);
 }
@@ -92,6 +95,8 @@ UCameraBehavior* ALuminariaCamera::SwitchBehaviorFromBlueprint(ECameraBehavior S
 		//UE_LOG(LogTemp, Error, TEXT("The camera has already this behavior."));
 		//return nullptr;
 	//}
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Orange, TEXT("[Camera] Switch Behavior"));
 
 	//CameraBehavior = NewObject<UCameraBehavior>(Behavior); Doesn't work with child functions
 	BehaviorState = SwitchBehavior;
@@ -155,42 +160,30 @@ void ALuminariaCamera::ResetAll() {
 	ShakeBehavior = nullptr;
 }
 
-void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathCause DeathCause) {
+void ALuminariaCamera::OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathCause DeathCause,FVector RespawnPosition) {
 	ECameraBehavior CurrentBehavior = BehaviorState;
 
-	if (CurrentBehavior == ECameraBehavior::DEFAULT) {
-		return;
-	}
-
-	//if (bHasDead) {
+	//if (CurrentBehavior == ECameraBehavior::DEFAULT) {
 		//return;
 	//}
-	
-	//bHasDead = true;
+	//}
 
-	BehaviorState = ECameraBehavior::GOTO;
+	if (CurrentBehavior == ECameraBehavior::DYNAMIC) {
+		FVector First = PlayerManager->GetAllCharactersRef()[0]->GetActorLocation();
+		FVector Second = PlayerManager->GetAllCharactersRef()[1]->GetActorLocation();
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Red, TEXT("[CAMERA] DeathPlayer On Camera"));
+		float divider = 2.F;
 
-	FTimerHandle Timer;
-	
-	SwitchBehavior(BehaviorState, [this,CurrentBehavior](UCameraBehavior* Component) {
-		if (UGoToBehavior* GoToBehaviorComponent = Cast<UGoToBehavior>(Component)) {
-			FVector GoTo = FVector::Zero();
+		FVector Barycenter = (First + Second) / divider;
 
-			for (ADiamondProjectCharacter* ACharacter : Characters) {
-				GoTo += ACharacter->GetActorLocation();
-			}
+		Barycenter += FVector(0, 0, 45.F);
+		Barycenter.X = CurrentArea->ZoomMin;
 
-			GoTo /= Characters.Num();
-			GoTo.X = StartPosition.X;
-			GoTo.Z = StartPosition.Z;
-
-			
-			GoToBehaviorComponent->GoTo = GoTo;
-			GoToBehaviorComponent->NextBehavior = CurrentBehavior;
-		}
-	});
+		SetActorLocation(Barycenter);
+	}
+	else {
+		SetActorLocation(CurrentArea->GoTo->GetComponentLocation());
+	}
 }
 
 void ALuminariaCamera::OnMecanismOn(AMecanism* Mecanism) {

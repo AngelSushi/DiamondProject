@@ -29,7 +29,7 @@ void ALink::BeginPlay() {
 
 	PlayerManager = GetWorld()->GetSubsystem<UPlayerManager>();
 	PlayerManager->OnPlayerRegister.AddDynamic(this, &ALink::RegisterPlayer);
-	PlayerManager->OnPlayerMove.AddDynamic(this, &ALink::OnPlayerMove);
+	PlayerManager->OnPlayerWalk.AddDynamic(this, &ALink::OnPlayerMove);
 
 	PlayerManager->OnChangeNewArea.AddDynamic(this, &ALink::OnChangeNewArea);
 

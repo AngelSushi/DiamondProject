@@ -49,7 +49,7 @@ public:
 	void SetCurrentArea(ACameraArea* NewArea) { CurrentArea = NewArea; }
 
 	UFUNCTION()
-	void OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathCause DeathCause);
+	void OnPlayerDeath(ADiamondProjectCharacter* Character,EDeathCause DeathCause, FVector RespawnPosition);
 
 	UFUNCTION()
 	void OnPlayerRegister(ADiamondProjectCharacter* Character);
@@ -96,4 +96,7 @@ private:
 
 	UPROPERTY()
 	bool bHasDead;
+
+	UPROPERTY()
+	TObjectPtr<class UPlayerManager> PlayerManager;
 };

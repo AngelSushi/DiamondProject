@@ -3,12 +3,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "../Interface/InputDrawable.h"
+#include "../Interface/ButtonInteractable.h"
 #include "MovableObject.generated.h"
 
 class UInputUI;
 
 UCLASS()
-class DIAMONDPROJECT_API AMovableObject : public AActor, public IInputDrawable {
+class DIAMONDPROJECT_API AMovableObject : public AActor, public IInputDrawable,public IButtonInteractable {
 	GENERATED_BODY()
 	
 public:	

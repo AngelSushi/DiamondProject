@@ -9,7 +9,8 @@
 class ADiamondProjectCharacter;
 class ACheckpoint;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnPlayerMove,ADiamondProjectCharacter*,Character,FVector2D,Input,FVector,Direction,bool&,isCanceled);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnPlayerWalk,ADiamondProjectCharacter*,Character,FVector2D,Input,FVector,Direction,bool&,isCanceled);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerMove, ADiamondProjectCharacter*, Character);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerRegister,ADiamondProjectCharacter*,Character);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerDeath,ADiamondProjectCharacter*,Character,EDeathCause, DeathCause);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPlayerRespawn, ADiamondProjectCharacter*, Character, EDeathCause, DeathCause, FVector, RespawnPosition);
@@ -27,7 +28,10 @@ public:
 	FOnChangeNewArea OnChangeNewArea;
 	
 	UPROPERTY(VisibleAnywhere)
-	FOnPlayerMove OnPlayerMove;
+	FOnPlayerWalk OnPlayerWalk; // Called When The Player Pressed the Input To Walk
+
+	UPROPERTY(VisibleAnywhere)
+	FOnPlayerMove OnPlayerMove; // Called When The Player Moved (Include Input)
 
 	UPROPERTY(VisibleAnywhere,BlueprintAssignable)
 	FOnPlayerRegister OnPlayerRegister;
@@ -77,6 +81,9 @@ public:
 
 	UPROPERTY() // PASSER SA EN PRIVE
 	TArray<ADiamondProjectCharacter*> Characters;
+
+	UPROPERTY(BlueprintReadOnly)
+	TArray<AActor*> CinematicCharacters;
 
 	UFUNCTION()
 	TArray<int>& GetOrderedPlayers() { return OrderedPlayers; }

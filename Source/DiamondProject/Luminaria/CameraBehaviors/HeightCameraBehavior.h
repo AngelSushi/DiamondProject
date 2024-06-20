@@ -25,7 +25,13 @@ private:
 	FVector LinePositionBot;
 
 	UFUNCTION()
-	void OnPlayerLandOnGround(ADiamondProjectCharacter* Character);
+	void DetermineLimit();
+
+	UFUNCTION()
+	void OnMovePlayer(ADiamondProjectCharacter* Character);
+
+	UFUNCTION()
+	void OnPlayerRespawn(ADiamondProjectCharacter* Character, EDeathCause DeathCause, FVector RespawnPosition);
 
 	UPROPERTY()
 	TArray<ADiamondProjectCharacter*> ExceedCharacters;
@@ -38,4 +44,15 @@ private:
 
 	UFUNCTION()
 	float CalculateOffset(ADiamondProjectCharacter* Character,ADiamondProjectCharacter* Other,FVector Start);
+
+	bool bTestLimit;
+
+	void SetOffsetZ(float NewOffsetZ) {
+		if (NewOffsetZ == 0) {
+			GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, TEXT("[HeightCamera] Offset that we try to set is null"));
+			return;
+		}
+
+		OffsetZ = NewOffsetZ;
+	}
 };

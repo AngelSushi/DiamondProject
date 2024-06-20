@@ -3,6 +3,9 @@
 #include "Components/ArrowComponent.h"
 
 #include "DiamondProject/Luminaria/SubSystems/PlayerManager.h"
+#include "../Core/DiamondProjectCharacter.h"
+#include "CameraArea.h"
+#include "../DataAssets/CameraAreaDataAsset.h"
 
 ADialogSpawner::ADialogSpawner() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -47,7 +50,7 @@ void ADialogSpawner::Tick(float DeltaTime) {
 			if (bCanDisplay) {
 				Index++;
 			}
-			else if (PointToPlayer.Length() < 200) {
+			else if (PointToPlayer.Length() < Character->GetMainCamera()->CurrentArea->GetDataAsset()->LinkMaxDistance) {
 				Index++;
 			}
 		}

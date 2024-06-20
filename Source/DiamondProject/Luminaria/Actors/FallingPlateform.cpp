@@ -61,7 +61,6 @@ void AFallingPlateform::Tick(float DeltaTime)
 			if (TimeSinceCharacterOnPlatform >= TimeBeforeFall)
 			{
 				FallPlatform();
-				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, FString::Printf(TEXT("Bool: %s"), bPlateformAlreadyFall ? TEXT("true") : TEXT("false")));
 								
 			}
 		}
@@ -89,7 +88,6 @@ void AFallingPlateform::ResetMeshCollider()
 {
 	PlatformMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	bIsMeshCollisionReset = true;
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, FString::Printf(TEXT("Bool: %s"), bIsMeshCollisionReset ? TEXT("true") : TEXT("false")));
 
 }
 
@@ -115,7 +113,7 @@ void AFallingPlateform::ResetPlatform()
 	// Remet la plateforme à sa position d'origine
 	PlatformMesh->SetSimulatePhysics(false);
 	DetectionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	SetActorLocation(InitialLocation, true, nullptr, ETeleportType::TeleportPhysics);
+	SetActorLocation(InitialLocation);
 	bPlateformFall = false;
 	TimeSinceCharacterOnPlatform = 0.0f;
 	TimePlateformFall = 0.0f;
