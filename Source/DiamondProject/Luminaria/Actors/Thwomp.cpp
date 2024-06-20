@@ -104,7 +104,7 @@ void AThwomp::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* O
     ADiamondProjectCharacter* Character = Cast<ADiamondProjectCharacter>(OtherActor);
     if (Character)
     {
-        if (!bIsShaking && !bIsFalling)
+        if (!bIsShaking && !bIsFalling && !bIsDead)
         {
             bIsShaking = true;
         }

@@ -23,6 +23,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+    UPROPERTY(VisibleAnywhere)
+    bool bIsInZone = false;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+    bool bIsDead = false;
+
 private:
     UPROPERTY(EditAnywhere)
     class UBoxComponent* BoxComponent;
@@ -36,6 +42,8 @@ private:
 
     UPROPERTY(VisibleAnywhere)
     bool bIsTouchingSomething = false;
+
+    
 
     FVector InitialLocation;
 
