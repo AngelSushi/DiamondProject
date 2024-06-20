@@ -50,6 +50,48 @@ void AMovingPlatefomCPPTest::BeginPlay() {
 
     BoxOverlap->OnComponentBeginOverlap.AddDynamic(this, &AMovingPlatefomCPPTest::OnBeginOverlap);
     BoxOverlap->OnComponentEndOverlap.AddDynamic(this, &AMovingPlatefomCPPTest::OnEndOverlap);
+
+
+    Positions.Add(GetActorLocation());
+
+    for (AActor* Waypoint : Waypoints) {
+        Positions.Add(Waypoint->GetActorLocation());
+    }
+}
+
+void AMovingPlatefomCPPTest::Tick(float DeltaTime) {
+    if (Positions.Num() == 0)
+        return;
+
+    if (TargetMecanisms.Num() == 0 || (TargetMecanisms.Num() != 0 && bEnable)) {
+        FVector TargetLocation = Positions[CurrentWaypointIndex];
+        FVector CurrentLocation = GetActorLocation();
+
+        FVector Direction = (TargetLocation - CurrentLocation).GetSafeNormal();
+        FVector NewLocation = CurrentLocation + Direction * GetPlateformAsset()->Speed * DeltaTime;
+
+        SetActorLocation(NewLocation);
+
+        float DistanceSquared = FVector::DistSquared(CurrentLocation, TargetLocation);
+        if (DistanceSquared <= FMath::Square(10.0f)) // Distance de tolerance
+        {
+            if (bMovingForward) {
+                CurrentWaypointIndex++;
+                if (CurrentWaypointIndex >= Positions.Num()) {
+                    CurrentWaypointIndex = Positions.Num() - 2;
+                    bMovingForward = false;
+                }
+            }
+            else {
+                CurrentWaypointIndex--;
+                if (CurrentWaypointIndex < 0) {
+                    CurrentWaypointIndex = 1;
+                    bMovingForward = true;
+                }
+            }
+        }
+    }
+
 }
 
 

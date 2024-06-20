@@ -17,6 +17,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Platform Settings")
     TArray<AActor*> Waypoints;
 
+    UPROPERTY()
+    TArray<FVector> Positions;
+
     /*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Platform Settings")
     TArray<FInterpControlPoint> ControlPoints;*/
     
@@ -38,7 +41,8 @@ protected:
     virtual void BeginPlay() override;
 
 public:
-    //virtual void Tick(float DeltaTime) override;
+    virtual void Tick(float DeltaTime) override;
+
     UPROPERTY(BlueprintReadWrite)
     bool bEnable;
 
