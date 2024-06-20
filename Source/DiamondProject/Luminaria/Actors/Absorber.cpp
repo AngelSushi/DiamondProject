@@ -47,7 +47,7 @@ void AAbsorber::BeginPlay() {
 void AAbsorber::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	DrawDebugSphere(GetWorld(), GetActorLocation(), RadiusDetection, 16	, FColor::Cyan);
+	//DrawDebugSphere(GetWorld(), GetActorLocation(), RadiusDetection, 16	, FColor::Cyan);
 
 	if (!bIsStun) {
 		if (!DetectedPlayer) {
