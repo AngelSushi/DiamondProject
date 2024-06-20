@@ -9,6 +9,7 @@
 #include "../DataAssets/UIDataAsset.h"
 #include "Kismet/GameplayStatics.h"
 #include "../SubSystems/InputUIManager.h"
+#include "../SubSystems/PlayerManager.h"
 
 void UCharacterStateAttract::OnStateInit() {
 	Super::OnStateInit();
@@ -32,6 +33,7 @@ void UCharacterStateAttract::OnStateTick(float DeltaTime) {
 	}
 
 	if (!ComboWidget) {
+		GEngine->AddOnScreenDebugMessage(-1, 1.F, FColor::Red, TEXT("Add Absorber UI"));
 		ComboWidget = CreateWidget<UUIAbsorberInput>(GetCharacter()->GetWorld(), UISystem->GetUIAsset()->AbsorberInputClass);
 		TArray<TEnumAsByte<EInput>> Inputs;
 		Inputs.Add(CurrentAbsorber->GetCurrentInput());
@@ -48,10 +50,11 @@ void UCharacterStateAttract::OnStateTick(float DeltaTime) {
 		FVector PlayerPosition = DetectedCharacter->GetActorLocation();
 		FVector2D PlayerScreenPosition;
 
-		UGameplayStatics::ProjectWorldToScreen(DetectedCharacter->GetLuminariaController(), PlayerPosition, PlayerScreenPosition);
+		if (!UGameplayStatics::ProjectWorldToScreen(PlayerManager->GetAllCharactersRef()[1]->GetLuminariaController(), PlayerPosition, PlayerScreenPosition)) {
+		}
 		PlayerScreenPosition -= FVector2D(24, 24); // 24 is the width / 2 of the image
 		PlayerScreenPosition -= FVector2D(10, DetectedCharacter->GetSimpleCollisionRadius() + 50.F);
-		
+
 		ComboWidget->SetPositionInViewport(PlayerScreenPosition);
 	}
 
@@ -92,6 +95,8 @@ void UCharacterStateAttract::OnStateExit() {
 void UCharacterStateAttract::OnDetectPlayer(ADiamondProjectCharacter* Character, AAbsorber* Absorber) { // Called twice but not important 
 	DetectedCharacter = Character;
 	CurrentAbsorber = Absorber;
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.F, FColor::Green, FString::Printf(TEXT("Detect Player %s"), *Character->GetActorNameOrLabel()));
 }
 
 void UCharacterStateAttract::OnUnDetectPlayer(ADiamondProjectCharacter* Character, AAbsorber* Absorber) 
