@@ -91,7 +91,7 @@ public:
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	bool IsGrounded() { return bIsOnGround; }
 
-	UFUNCTION()
+	UFUNCTION(BlueprintPure)
 	FColor GetPlayerColor() { return PlayerColor; }
 
 	/* Light Functions */
@@ -219,7 +219,6 @@ public:
 
 	UFUNCTION()
 	virtual void CompleteInput(UInputUI* Input);
-
 private:
 
 

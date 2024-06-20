@@ -89,7 +89,7 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<AActor*> CinematicCharacters;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintPure)
 	TArray<int>& GetOrderedPlayers() { return OrderedPlayers; }
 
 	virtual void Tick(float DeltaTime) override;

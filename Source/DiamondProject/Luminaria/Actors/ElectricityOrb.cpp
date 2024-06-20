@@ -6,6 +6,8 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 
+#include "../Core/DiamondProjectCharacter.h"
+
 AElectricityOrb::AElectricityOrb() {
  	PrimaryActorTick.bCanEverTick = true;
 
@@ -55,10 +57,11 @@ void AElectricityOrb::Tick(float DeltaTime) {
 		FVector LerpPosition = FMath::Lerp(SenderPosition,ReceiverPosition,Alpha);	
 
 		if (Alpha < Limit) {
-			Particle->SetVariableLinearColor(FName("ParticleColor"), FLinearColor(0, 1.F, 0.F, 1.F));
+			
+			Particle->SetVariableLinearColor(FName("ParticleColor"), /*FLinearColor(0, 1.F, 0.F, 1.F)*/ Sender->GetPlayer()->GetPlayerColor()); // Partie Verte 
 		}
 		else {
-			Particle->SetVariableLinearColor(FName("ParticleColor"), FLinearColor(1.F, 0.45F, 0.F, 1.F));
+			Particle->SetVariableLinearColor(FName("ParticleColor"), /*FLinearColor(1.F, 0.45F, 0.F, 1.F)*/ Receiver->GetPlayer()->GetPlayerColor());
 		}
 
 		SetActorLocation(FVector(TargetX, LerpPosition.Y, LerpPosition.Z));
